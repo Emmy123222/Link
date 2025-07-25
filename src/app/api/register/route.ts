@@ -28,7 +28,3 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Invalid JSON or server error' }, { status: 500 })
   }
 }
-
-// export async function GET() {
-//   return new Response('API is alive')
-// }

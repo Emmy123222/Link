@@ -58,6 +58,31 @@ paths:
         '401':
           description: Unauthorized
 
+  /logout:
+    post:
+      summary: Logout user
+      responses:
+        '200':
+          description: Logout successful. Access token cookie cleared.
+
+  /me:
+    get:
+      summary: Get current authenticated user
+      responses:
+        '200':
+          description: Returns the current user if authenticated, otherwise null
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    type: object
+                    nullable: true
+                    example:
+                      id: "123"
+                      email: "user@example.com"
+
   /pay/initiate:
     post:
       summary: Initiate payment
