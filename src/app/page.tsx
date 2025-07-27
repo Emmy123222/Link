@@ -1,28 +1,18 @@
 "use client";
-import { useEffect, useState } from "react";
+
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-export default function Home() {
-  const [loading, setLoading] = useState(true);
+export default function HomePage() {
   const router = useRouter();
 
   useEffect(() => {
-    const checkUser = async () => {
-      const res = await fetch("/api/me");
-      const { user } = await res.json();
-      setLoading(false);
-      if (user) {
-        router.replace("/dashboard");
-      } else {
-        router.replace("/login");
-      }
-    };
-    checkUser();
-  }, [router]);
+    router.push('/login');
+  }, []);
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  return null;
+  return (
+    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+      <h1>Welcome to our platform</h1>
+    </main>
+  )
 }

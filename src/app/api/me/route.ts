@@ -12,7 +12,7 @@ export async function GET() {
   // Create a Supabase client with the access token
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    process.env.SUPABASE_ANON_KEY!,
     {
       global: {
         headers: {
