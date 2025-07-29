@@ -1,9 +1,0 @@
-{
-  "imports": {
-    "@sendgrid/mail": "npm:@sendgrid/mail@^8.1.5",
-    "axios": "npm:axios@^1.8.4",
-    "crypto": "npm:crypto@^1.0.1",
-    "uuid": "npm:uuid@^11.1.0",
-    "@supabase/supabase-js": "npm:@supabase/supabase-js@^2.49.1"
-  }
-}

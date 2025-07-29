@@ -70,7 +70,7 @@ export const updatePaymentRequest = async (data: any) => {
   return response || response2;
 };
 
-export const F = async (customerId: string) => {
+export const getPaymentsOut = async (customerId: string) => {
   const { data, error } = await supabase
     .from(TABLES.DocumentHeader)
     .select("*, customer:customer_id(*), vendor:vendor_id(*)")

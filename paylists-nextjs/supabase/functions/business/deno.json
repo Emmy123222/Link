@@ -1,6 +1,0 @@
-{
-  "imports": {
-    "@sendgrid/mail": "npm:@sendgrid/mail@^8.1.5",
-    "lodash.uniqby": "npm:lodash.uniqby@^4.7.0"
-  }
-}
