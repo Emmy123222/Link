@@ -34,9 +34,9 @@ export default function ConfirmCustomerType() {
 
   return (
     <div className="max-w-md mx-auto">
-      <div className="bg-white rounded-lg shadow-sm p-8 space-y-6">
+      <div className="bg-card rounded-lg shadow-sm border p-8 space-y-6">
         <h2 className="text-lg font-medium mb-6">Select customer type</h2>
-        <p className="text-sm text-gray-500 mb-6">Please select whether this is a business or personal customer.</p>
+        <p className="text-sm text-muted-foreground mb-6">Please select whether this is a business or personal customer.</p>
         <div className="space-y-4">
           <Radio
             name="customerType"

@@ -3,7 +3,7 @@
 import { useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { IoCheckmarkCircle } from "react-icons/io5"
+import { CheckCircle } from "lucide-react"
 import { useApp } from "@/providers/AppProvider"
 import { useCreateBusiness } from "@/hooks/use-businesses"
 import { BusinessType } from "@/types/business"
@@ -49,13 +49,13 @@ export default function Finish({ onBack, accountType }: FinishProps) {
 
   return (
     <div className="max-w-md mx-auto">
-      <div className="bg-white rounded-lg shadow-sm p-8 text-center">
+      <div className="bg-card rounded-lg shadow-sm p-8 text-center border">
         <div className="flex justify-center mb-6">
-          <IoCheckmarkCircle size={64} className="text-green-600" />
+          <CheckCircle size={64} className="text-green-600 dark:text-green-400" />
         </div>
 
-        <h2 className="text-2xl font-semibold mb-4">All set!</h2>
-        <p className="text-gray-600 mb-8">
+        <h2 className="text-2xl font-semibold mb-4 text-foreground">All set!</h2>
+        <p className="text-muted-foreground mb-8">
           You can start sending payment requests to your customers to receive
           money
         </p>

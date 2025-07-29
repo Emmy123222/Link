@@ -66,7 +66,7 @@ export default function BusinessDetail({ next, onBack }: Props) {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-sm p-8 overflow-auto max-h-[70vh]">
+    <div className="bg-card rounded-lg shadow-sm p-8 overflow-auto max-h-[70vh] border">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Name */}
         <div className="pt-4">

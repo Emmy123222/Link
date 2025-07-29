@@ -61,7 +61,7 @@ export default function ConfirmBusinessEmail({ next }: Props) {
   return (
 
     <div className="max-w-md mx-auto">
-      <div className="bg-white rounded-lg shadow-sm p-8 space-y-6">
+      <div className="bg-card rounded-lg shadow-sm p-8 space-y-6 border">
         <h2 className="text-lg font-medium mb-6">Does your business use this email ?</h2>
         <div>
           <label htmlFor="useEmail" className="block text-sm font-medium mb-1">

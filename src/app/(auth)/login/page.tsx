@@ -36,7 +36,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen grid grid-rows-7 grid-cols-2 md:flex-row p-5 gap-10 bg-[#f1f1f1]">
+    <div className="min-h-screen grid grid-rows-7 grid-cols-2 md:flex-row p-5 gap-10 bg-muted">
       {/* Left section with illustration and text */}
       <div className="mb-8 col-span-2 row-span-1 flex justify-center align-middle">
         <Image src="/logo.svg" alt="Paylists Logo" width={150} height={40} />
@@ -47,8 +47,8 @@ export default function LoginPage() {
 
       {/* Right section with login form */}
       <div className="col-span-2 md:col-span-1 row-span-5 flex justify-start items-center">
-        <div className="max-w-md w-full h-fit mx-auto md:mx-8 shadow-lg shadow-gray-400 p-10 bg-white rounded-2xl">
-          <h2 className="text-3xl font-semibold mb-6 text-center">Login</h2>
+        <div className="max-w-md w-full h-fit mx-auto md:mx-8 shadow-lg p-10 bg-card rounded-2xl border">
+          <h2 className="text-3xl font-semibold mb-6 text-center text-foreground">Login</h2>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div>
               <Input
@@ -58,6 +58,7 @@ export default function LoginPage() {
                 error={errors.email?.message}
                 placeholder="Enter your email"
                 {...register("email")}
+                className="text-black placeholder:text-muted-foreground"
               />
             </div>
 
@@ -67,7 +68,7 @@ export default function LoginPage() {
                 label="Password*"
                 error={errors.password?.message}
                 placeholder="Enter your password"
-                className="w-full"
+                className="w-full text-black"
                 {...register("password")}
               />
             </div>
@@ -77,10 +78,10 @@ export default function LoginPage() {
                 <input
                   id="rememberMe"
                   type="checkbox"
-                  className="h-4 w-4 border-gray-300 rounded text-green-600 focus:ring-green-500"
+                  className="h-4 w-4 border-border rounded text-green-600 focus:ring-green-500"
                   {...register("rememberMe")}
                 />
-                <label htmlFor="rememberMe" className="ml-2 block text-sm text-gray-600">
+                <label htmlFor="rememberMe" className="ml-2 block text-sm text-muted-foreground">
                   Remember me
                 </label>
               </div>
@@ -104,17 +105,17 @@ export default function LoginPage() {
           <div className="mt-6">
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300"></div>
+                <div className="w-full border-t border-border"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">Or sign in with</span>
+                <span className="px-2 bg-card text-muted-foreground">Or sign in with</span>
               </div>
             </div>
 
             <div className="mt-6">
               <Button
                 variant="outline"
-                className="w-full flex items-center justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50"
+                className="w-full flex items-center justify-center py-2 px-4 border border-border rounded-md shadow-sm bg-card text-sm font-medium text-muted-foreground hover:bg-accent"
               >
                 <SiXero size={20} className="mr-3 text-sky-500" />
                 Sign in with XERO
@@ -123,7 +124,7 @@ export default function LoginPage() {
           </div>
 
           <div className="mt-6 text-center text-sm">
-            <p className="text-gray-600">
+            <p className="text-muted-foreground">
               Don't have an account?{" "}
               <Link href="/register" className="font-medium text-green-600 hover:text-green-500">
                 register
@@ -132,8 +133,8 @@ export default function LoginPage() {
           </div>
 
           {/* Legal Links */}
-          <div className="mt-4 pt-4 border-t border-gray-200 text-center text-xs">
-            <p className="text-gray-500">
+          <div className="mt-4 pt-4 border-t border-border text-center text-xs">
+            <p className="text-muted-foreground">
               <Link href="/user-agreement" className="text-blue-600 hover:text-blue-800 underline">
                 User Agreement
               </Link>

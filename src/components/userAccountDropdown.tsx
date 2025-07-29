@@ -34,41 +34,41 @@ export function UserAccountDropdown({ isOpen, onClose }: UserAccountDropdownProp
   return (
     <div
       ref={dropdownRef}
-      className="fixed right-2 top-12 mt-2 w-48 bg-white rounded-md shadow-lg border border-gray-200 z-50 animate-fade-in"
+      className="fixed right-2 top-12 mt-2 w-48 bg-card rounded-md shadow-lg border border-border z-50 animate-fade-in"
     >
       <div className="py-1">
         <Link
           href="/my-account"
-          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+          className="block px-4 py-2 text-sm text-foreground hover:bg-muted"
           onClick={onClose}
         >
           My account
         </Link>
         <Link
           href="#"
-          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+          className="block px-4 py-2 text-sm text-foreground hover:bg-muted"
           onClick={onClose}
         >
           Billing & packages
         </Link>
-        <div className="border-t border-gray-200 my-1"></div>
+        <div className="border-t border-border my-1"></div>
         <Link
           href="/user-agreement"
-          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+          className="block px-4 py-2 text-sm text-foreground hover:bg-muted"
           onClick={onClose}
         >
           User Agreement
         </Link>
         <Link
           href="/privacy-policy"
-          className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+          className="block px-4 py-2 text-sm text-foreground hover:bg-muted"
           onClick={onClose}
         >
           Privacy Policy
         </Link>
-        <div className="border-t border-gray-200 my-1"></div>
+        <div className="border-t border-border my-1"></div>
         <button
-          className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+          className="block w-full text-left px-4 py-2 text-sm text-foreground hover:bg-muted"
           onClick={() => {
             logout()
           }}

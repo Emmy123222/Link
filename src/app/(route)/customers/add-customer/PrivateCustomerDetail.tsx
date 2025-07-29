@@ -11,6 +11,7 @@ import CountryList from "@/components/countryList";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Business } from "@/types/business";
+import { Country } from "@/types/country";
 import { useCustomersContext } from "../layout";
 import { useApp } from "@/providers/AppProvider";
 import { useCreateCustomerBusiness } from "@/hooks/use-customers";
@@ -24,9 +25,9 @@ const accountDetailsSchema = z.object({
   street_2: z.string().optional(),
   city: z.string().min(1, "City is required"),
   postal_code: z.string().min(1, "Postcode is required"),
-  countryCode: z.number().min(1, "Country is required"),
+  countryCode: z.string().min(1, "Country is required"),
   mobile_phone_number: z.string().min(1, "Mobile phone number is required"),
-  mobile_code_area: z.number().min(1, "Mobile phone code is required"),
+  mobile_code_area: z.string().min(1, "Mobile phone code is required"),
 });
 
 export type AccountDetailsFormValues = z.infer<typeof accountDetailsSchema>
@@ -51,18 +52,29 @@ export default function PrivateCustomerDetail() {
   })
 
   const onSubmit = async (data: AccountDetailsFormValues) => {
-    const { name, lastname, ...rest } = { ...data, ...formData } as unknown as Business
-    rest.business_name = name + " " + lastname
-    rest.trade_name = name + " " + lastname
-    rest.business_name_lowercase = name.toLowerCase() + " " + lastname.toLowerCase()
-    const res = await createCustomer({ customerData: rest, businessId: currentBusiness!.id, tempBusiness: customers.map(item => item.id) })
+    const businessData = {
+      ...data,
+      ...formData,
+      business_name: data.name + " " + data.lastname,
+      trade_name: data.name + " " + data.lastname,
+      business_name_lowercase: (data.name + " " + data.lastname).toLowerCase(),
+      countryCode: Number(data.countryCode),
+      mobile_code_area: Number(data.mobile_code_area),
+    } as unknown as Partial<Business>;
+    
+    const res = await createCustomer({ 
+      customerData: businessData, 
+      businessId: currentBusiness!.id, 
+      tempBusiness: customers.map(item => item.id) 
+    });
+    
     if (res.status === "success") {
-      setCurrentStep(STEPS.FINISH)
+      setCurrentStep(STEPS.FINISH);
     }
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-sm overflow-auto max-h-[70vh] p-8">
+    <div className="bg-card rounded-lg shadow-sm border overflow-auto max-h-[70vh] p-8">
       <form onSubmit={handleSubmit(onSubmit)}>
         {/* Name */}
         <div className="space-y-4">
@@ -71,7 +83,7 @@ export default function PrivateCustomerDetail() {
               label="Name*"
               id="name"
               type="text"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              className="w-full px-3 py-2 border border-border rounded-md"
               {...register("name")}
               error={errors.name?.message}
             />
@@ -82,7 +94,7 @@ export default function PrivateCustomerDetail() {
               label="Lastname*"
               id="lastname"
               type="text"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              className="w-full px-3 py-2 border border-border rounded-md"
               {...register("lastname")}
               error={errors.lastname?.message}
             />
@@ -92,17 +104,17 @@ export default function PrivateCustomerDetail() {
               label="Email*"
               id="email"
               type="email"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              className="w-full px-3 py-2 border border-border rounded-md"
               {...register("email")}
               error={errors.email?.message}
             />
           </div>
           <div className="mb-4">
-            <p className="text-sm text-gray-600 mb-2">Mobile Phone Number*</p>
+            <p className="text-sm text-muted-foreground mb-2">Mobile Phone Number*</p>
             <PhoneInput
               value={getValues('mobile_phone_number')}
               onCountryChange={(value) => {
-                setValue('mobile_code_area', Number(value))
+                setValue('mobile_code_area', value.toString())
               }}
               onChange={(value) => {
                 setValue('mobile_phone_number', value)
@@ -121,13 +133,13 @@ export default function PrivateCustomerDetail() {
 
         {/* Address Line 1 */}
         <div className="pt-4">
-          <p className="text-sm text-gray-600 mb-4">Or add address manually</p>
+          <p className="text-sm text-muted-foreground mb-4">Or add address manually</p>
           <div className="mb-4">
             <Input
               label="Address Line 1*"
               id="street_1"
               type="text"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              className="w-full px-3 py-2 border border-border rounded-md"
               {...register("street_1")}
               error={errors.street_1?.message}
             />
@@ -139,7 +151,7 @@ export default function PrivateCustomerDetail() {
               label="Address Line 2"
               id="street_2"
               type="text"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              className="w-full px-3 py-2 border border-border rounded-md"
               {...register("street_2")}
             />
           </div>
@@ -150,7 +162,7 @@ export default function PrivateCustomerDetail() {
               label="City*"
               id="city"
               type="text"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              className="w-full px-3 py-2 border border-border rounded-md"
               {...register("city")}
             />
             {errors.city && <p className="mt-1 text-sm text-red-600">{errors.city.message}</p>}
@@ -162,7 +174,7 @@ export default function PrivateCustomerDetail() {
               label="Postcode*"
               id="postal_code"
               type="text"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              className="w-full px-3 py-2 border border-border rounded-md"
               {...register("postal_code")}
               error={errors.postal_code?.message}
             />
@@ -170,8 +182,8 @@ export default function PrivateCustomerDetail() {
         </div>
         {/* Country */}
         <div className="mb-4 mt-4">
-          <p className="text-sm text-gray-600 mb-2">Country*</p>
-          <CountryList setCountry={(value) => setValue("countryCode", Number(value.ID))} />
+          <p className="text-sm text-muted-foreground mb-2">Country*</p>
+          <CountryList setCountry={(value: Country) => setValue("countryCode", value.ID.toString())} />
           {errors.countryCode && <p className="mt-1 text-sm text-red-600">{errors.countryCode.message}</p>}
         </div>
 

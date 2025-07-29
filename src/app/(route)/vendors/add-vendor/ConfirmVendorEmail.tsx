@@ -20,9 +20,9 @@ export default function ConfirmVendorEmail() {
 
   return (
     <div className="max-w-md mx-auto">
-      <div className="bg-white rounded-lg shadow-sm p-8 space-y-6">
+      <div className="bg-card rounded-lg shadow-sm border p-8 space-y-6">
         <h2 className="text-lg font-medium mb-6">Enter vendor email</h2>
-        <p className="text-sm text-gray-500 mb-6">Please enter the vendor's email address for communication.</p>
+        <p className="text-sm text-muted-foreground mb-6">Please enter the vendor's email address for communication.</p>
         <div>
           <Input
             label="Email Address*"

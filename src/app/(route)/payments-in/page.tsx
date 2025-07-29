@@ -61,7 +61,7 @@ export default function PaymentsInPage() {
             {row.customer.business_name}
           </Link>
         ) : (
-          <span className="text-gray-500">No customer</span>
+          <span className="text-muted-foreground">No customer</span>
         )
       )
     },
@@ -144,11 +144,11 @@ export default function PaymentsInPage() {
               <span>Create a request</span>
             </Link>
             <div className="flex flex-col sm:flex-row gap-2 sm:col-span-2 lg:col-span-2 justify-end">
-              <button className="p-2 text-gray-500 hover:text-gray-700 transition-colors">
+              <button className="p-2 text-muted-foreground hover:text-foreground transition-colors">
                 <Download size={20} />
               </button>
               <button
-                className="flex items-center justify-center gap-1 py-2 px-4 text-green-600 border border-green-600 rounded-md hover:bg-green-50 transition-colors"
+                className="flex items-center justify-center gap-1 py-2 px-4 text-green-600 border border-green-600 rounded-md hover:bg-green-50 dark:hover:bg-green-950 transition-colors"
                 onClick={() => setIsFilterOpen(true)}
               >
                 <FiFilter size={18} />
@@ -159,7 +159,7 @@ export default function PaymentsInPage() {
           <FilterCollapse isOpen={isFilterOpen} onClose={() => setIsFilterOpen(false)} />
 
           {/* Table wrapper for horizontal scroll */}
-          <div className="bg-white rounded-lg shadow-sm">
+          <div className="bg-card rounded-lg shadow-sm border">
             <TableList data={lists || []} columns={tableColumns} />
           </div>
         </div>

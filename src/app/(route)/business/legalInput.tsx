@@ -15,8 +15,8 @@ import { useApp } from "@/providers/AppProvider"
 
 // Form validation schema
 const legalSchema = z.object({
-  vat_number: z.coerce.number().optional(),
-  registration_number: z.coerce.number().optional(),
+  vat_number: z.string().optional(),
+  registration_number: z.string().optional(),
   currency: z.string().min(1, { message: BusinessConfig.validation.legal.currency.required }),
   payment_terms: z.string().min(1, { message: BusinessConfig.validation.legal.paymentTerms.required }),
   partial_payments: z.boolean().optional(),
@@ -33,7 +33,8 @@ export default function LegalInput({ editable }: { editable: boolean }) {
 
   const defaultValues = useMemo(() => ({
     defaultValues: {
-      registration_number: Number(currentBusiness?.registration_number),
+      vat_number: currentBusiness?.vat_number?.toString() || "",
+      registration_number: currentBusiness?.registration_number?.toString() || "",
       currency: currentBusiness?.currency || "",
       payment_terms: currentBusiness?.payment_terms?.toString() || "",
       partial_payments: currentBusiness?.partial_payments || false,
@@ -57,8 +58,8 @@ export default function LegalInput({ editable }: { editable: boolean }) {
   const onSubmit = async (data: LegalFormValues) => {
     setIsLoading(true)
     const dataToUpdate = {
-      vat_number: data.vat_number,
-      registration_number: data.registration_number,
+      vat_number: data.vat_number ? Number(data.vat_number) : undefined,
+      registration_number: data.registration_number ? Number(data.registration_number) : undefined,
       currency: data.currency,
       payment_terms: Number(data.payment_terms) || 7,
       partial_payments: data.partial_payments,
@@ -71,12 +72,16 @@ export default function LegalInput({ editable }: { editable: boolean }) {
         ...data,
         payment_terms: Number(data.payment_terms) || 7,
       } as Business)
+      toast.success(BusinessConfig.messages.success.update)
+    } else {
+      toast.error(BusinessConfig.messages.error.update)
     }
+    setIsLoading(false)
   }
 
-
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <div className="bg-card rounded-lg border p-6 max-w-lg">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       {/* VAT Number */}
       <div>
         <Input
@@ -99,13 +104,13 @@ export default function LegalInput({ editable }: { editable: boolean }) {
 
       {/* Main Currency */}
       <div>
-        <label htmlFor="currency" className="block text-sm text-gray-600 mb-1">
+        <label htmlFor="currency" className="block text-sm text-muted-foreground mb-1">
           {BusinessConfig.formLabels.mainCurrency}
         </label>
         <div className="relative">
           <select
             id="currency"
-            className="w-full appearance-none bg-white border border-gray-300 rounded-md px-3 py-2 pr-8 focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="w-full appearance-none bg-background border border-border rounded-md px-3 py-2 pr-8 text-foreground focus:outline-none focus:ring-2 focus:ring-green-500"
             {...register("currency")}
           >
             {BusinessConfig.currencies.map((currency) => (
@@ -114,20 +119,20 @@ export default function LegalInput({ editable }: { editable: boolean }) {
               </option>
             ))}
           </select>
-          <IoMdArrowDropdown className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500 pointer-events-none" />
+          <IoMdArrowDropdown className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
         </div>
         {errors.currency && <p className="mt-1 text-sm text-red-600">{errors.currency.message}</p>}
       </div>
 
       {/* Payment Terms */}
       <div>
-        <label htmlFor="payment_terms" className="block text-sm text-gray-600 mb-1">
+        <label htmlFor="payment_terms" className="block text-sm text-muted-foreground mb-1">
           {BusinessConfig.formLabels.paymentTerms}
         </label>
         <div className="relative">
           <select
             id="payment_terms"
-            className="w-full appearance-none bg-white border border-gray-300 rounded-md px-3 py-2 pr-8 focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="w-full appearance-none bg-background border border-border rounded-md px-3 py-2 pr-8 text-foreground focus:outline-none focus:ring-2 focus:ring-green-500"
             {...register("payment_terms")}
             defaultValue={watch("payment_terms") || BusinessConfig.paymentTerms[0]}
           >
@@ -137,20 +142,20 @@ export default function LegalInput({ editable }: { editable: boolean }) {
               </option>
             ))}
           </select>
-          <IoMdArrowDropdown className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500 pointer-events-none" />
+          <IoMdArrowDropdown className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
         </div>
         {errors.payment_terms && <p className="mt-1 text-sm text-red-600">{errors.payment_terms.message}</p>}
       </div>
 
       {/* Allow Partial Payments */}
       <div>
-        <label htmlFor="partial_payments" className="block text-sm text-gray-600 mb-1">
+        <label htmlFor="partial_payments" className="block text-sm text-muted-foreground mb-1">
           {BusinessConfig.formLabels.partialPayments}
         </label>
         <div className="relative">
           <select
             id="partial_payments"
-            className="w-full appearance-none bg-white border border-gray-300 rounded-md px-3 py-2 pr-8 focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="w-full appearance-none bg-background border border-border rounded-md px-3 py-2 pr-8 text-foreground focus:outline-none focus:ring-2 focus:ring-green-500"
             defaultValue={watch("partial_payments") ? "Yes" : "No"}
             onChange={(e) => setValue("partial_payments", e.target.value === "Yes")}
           >
@@ -160,20 +165,20 @@ export default function LegalInput({ editable }: { editable: boolean }) {
               </option>
             ))}
           </select>
-          <IoMdArrowDropdown className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500 pointer-events-none" />
+          <IoMdArrowDropdown className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
         </div>
         {errors.partial_payments && <p className="mt-1 text-sm text-red-600">{errors.partial_payments.message}</p>}
       </div>
 
       {/* Guest Payment Form */}
       <div>
-        <label htmlFor="guestPaymentForm" className="block text-sm text-gray-600 mb-1">
+        <label htmlFor="guestPaymentForm" className="block text-sm text-muted-foreground mb-1">
           {BusinessConfig.formLabels.guestPaymentForm}
         </label>
         <div className="relative">
           <select
             id="guest_customers_payment_form"
-            className="w-full appearance-none bg-white border border-gray-300 rounded-md px-3 py-2 pr-8 focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="w-full appearance-none bg-background border border-border rounded-md px-3 py-2 pr-8 text-foreground focus:outline-none focus:ring-2 focus:ring-green-500"
             {...register("guest_customers_payment_form")}
           >
             {BusinessConfig.formOptions.map((option) => (
@@ -182,20 +187,20 @@ export default function LegalInput({ editable }: { editable: boolean }) {
               </option>
             ))}
           </select>
-          <IoMdArrowDropdown className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500 pointer-events-none" />
+          <IoMdArrowDropdown className="absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
         </div>
         {errors.guest_customers_payment_form && <p className="mt-1 text-sm text-red-600">{errors.guest_customers_payment_form.message}</p>}
       </div>
 
       {/* Business ID */}
       <div>
-        <label htmlFor="businessId" className="block text-sm text-gray-600 mb-1">
+        <label htmlFor="businessId" className="block text-sm text-muted-foreground mb-1">
           {BusinessConfig.formLabels.businessId}
         </label>
         <input
           id="business_id"
           type="text"
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-gray-50"
+          className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-muted"
           readOnly
           disabled={true}
           value={currentBusiness?.id}
@@ -211,6 +216,7 @@ export default function LegalInput({ editable }: { editable: boolean }) {
           {BusinessConfig.buttonLabels.save}
         </Button>
       </div>
-    </form>
+      </form>
+    </div>
   )
 }

@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation"
 import { UserAccountDropdown } from "@/components/userAccountDropdown"
 import { ContactDrawer } from "@/components/contactDrawer"
 import { MenuListDropdown } from "@/components/menuListDropdown"
+import { ThemeToggle } from "@/components/ui/theme-toggle"
 import { IoMdMenu } from "react-icons/io"
 import { useApp } from "@/providers/AppProvider"
 import { routes } from "@/constants/routes"
@@ -94,10 +95,10 @@ export function Navbar() {
 
   return (
     <>
-      <header className="min-h-16 bg-white border-b flex items-center justify-between px-6 max-h-4/5 sticky top-0 z-10">
+      <header className="min-h-16 bg-card border-b flex items-center justify-between px-6 max-h-4/5 sticky top-0 z-10">
         <div className="relative block sm:hidden">
           <button
-            className="p-2 text-gray-500 hover:text-gray-700 transition-all"
+            className="p-2 text-muted-foreground hover:text-foreground transition-all"
             onClick={() => setIsMenuDropdownOpen(prev => !prev)}
             aria-label="Menu"
             aria-expanded={isMenuDropdownOpen}
@@ -108,11 +109,11 @@ export function Navbar() {
         </div>
         {!isMobile && <h1 className="text-2xl font-bold">{title || pageTitle}</h1>}
         
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center gap-4">
           <Button
             ref={contactButtonRef}
             variant="ghost"
-            className="p-2 text-gray-500 hover:text-gray-700 transition-all"
+            className="p-2 text-muted-foreground hover:text-foreground transition-all"
             onClick={handleContactButtonClick}
             aria-label="Contact us"
           >
@@ -155,16 +156,19 @@ export function Navbar() {
             }) : <div className="flex items-center justify-center h-full"><FaSpinner size={30} className="animate-spin" /></div>}
             <MenuItem onClick={() => router.push("/onboarding")}>Add Business</MenuItem>
           </Menu>
-          <Button
-            variant="ghost"
-            className="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-gray-700 font-medium hover:bg-gray-300 transition-colors"
-            onClick={() => setIsUserDropdownOpen(prev => !prev)}
-            aria-label="User account"
-            aria-expanded={isUserDropdownOpen}
-            aria-haspopup="true"
-          >
-            <Avatar src={user?.avatar_url || null} name={user?.name || ""} width={32} height={32} entityType="user" />
-          </Button>
+          <div className="flex items-center gap-4">
+            <ThemeToggle />
+            <Button
+              variant="ghost"
+              className="w-8 h-8 bg-muted rounded-full flex items-center justify-center text-foreground font-medium hover:bg-accent transition-colors"
+              onClick={() => setIsUserDropdownOpen(prev => !prev)}
+              aria-label="User account"
+              aria-expanded={isUserDropdownOpen}
+              aria-haspopup="true"
+            >
+              <Avatar src={user?.avatar_url || null} name={user?.name || ""} width={32} height={32} entityType="user" />
+            </Button>
+          </div>
         </div>
       </header >
       {isMobile && <h1 className="text-2xl font-bold text-center mt-2">{title || pageTitle}</h1>}

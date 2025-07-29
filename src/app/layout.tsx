@@ -7,6 +7,7 @@ import CircularLoadingSpinner from "@/components/circularLoadingBar";
 import { ConsoleWarningSuppressor } from "@/components/ConsoleWarningSuppressor";
 import { NavbarTitleProvider } from "@/context/NavbarTitleContext";
 import { AuthProvider } from "@/app/context/authcontext";
+import { ThemeScript } from "@/components/ui/theme-script";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,7 +23,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <ThemeScript />
+      </head>
       <body className={inter.className}>
         <ConsoleWarningSuppressor />
         <Providers>

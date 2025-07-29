@@ -107,8 +107,8 @@ export default function CustomersPage() {
     if (totalPages <= 1) return null
 
     return (
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6 p-4 bg-gray-50 rounded-lg">
-        <div className="text-sm text-gray-700">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6 p-4 bg-muted rounded-lg">
+        <div className="text-sm text-foreground">
           Showing {startIndex + 1} to {Math.min(endIndex, totalItems)} of {totalItems} customers
         </div>
         
@@ -193,7 +193,7 @@ export default function CustomersPage() {
         <div className="flex flex-col-reverse md:flex-row justify-between items-start md:items-center mb-8 gap-4">
           {/* Search */}
           <div className="relative w-full md:w-80">
-            <label htmlFor="search" className="text-sm text-gray-600 mb-1 block">
+            <label htmlFor="search" className="text-sm text-muted-foreground mb-1 block">
               Search
             </label>
             <div className="relative">
@@ -205,7 +205,7 @@ export default function CustomersPage() {
                 className="w-full pl-3 pr-10 py-2 border-b border-gray-300 bg-transparent focus:outline-none focus:border-green-500"
                 placeholder="Search customers..."
               />
-              <button className="absolute right-0 top-1/2 -translate-y-1/2 p-2 text-gray-500">
+              <button className="absolute right-0 top-1/2 -translate-y-1/2 p-2 text-muted-foreground">
                 <IoMdSearch size={18} />
               </button>
             </div>
@@ -233,12 +233,12 @@ export default function CustomersPage() {
         <div>
           {isLoading ? (
             <div className="flex justify-center items-center h-full">
-              <FaSpinner className="w-10 h-10 animate-spin text-gray-600" />
+              <FaSpinner className="w-10 h-10 animate-spin text-muted-foreground" />
             </div>
           ) : customers?.length === 0 ? (
-            <p className="text-xl text-gray-600 w-full text-center">No customers added yet :)</p>
+            <p className="text-xl text-muted-foreground w-full text-center">No customers added yet :)</p>
           ) : filteredCustomers?.length === 0 ? (
-            <p className="text-xl text-gray-600 w-full text-center">No customers found matching your search</p>
+            <p className="text-xl text-muted-foreground w-full text-center">No customers found matching your search</p>
           ) : cardView ? (
             <>
               <CardList customers={currentItems || []} />

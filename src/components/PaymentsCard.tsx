@@ -8,18 +8,18 @@ interface PaymentsCardProps {
 
 export const PaymentsCard: React.FC<PaymentsCardProps> = ({ title, payments }) => {
   return (
-    <div className="bg-white rounded-lg p-4 sm:p-6 shadow-sm aspect-square overflow-hidden">
-      <h2 className="text-base sm:text-lg font-medium mb-4">{title}</h2>
-      <div className="flex items-center justify-center text-gray-500 w-full">
+    <div className="bg-card rounded-lg p-4 sm:p-6 shadow-sm border aspect-square overflow-hidden">
+      <h2 className="text-base sm:text-lg font-medium mb-4 text-foreground">{title}</h2>
+      <div className="flex items-center justify-center text-muted-foreground w-full">
         {payments.length === 0 ? (
           <p>No payments yet</p>
         ) : (
-          <div className="text-gray-700 text-center w-full flex flex-col gap-2 overflow-y-auto">
+          <div className="text-foreground text-center w-full flex flex-col gap-2 overflow-y-auto">
             {payments.map((payment) => (
               <div key={payment.id} className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Avatar 
-                    src={payment.customer?.avatar_url || payment.customer?.logo_url || null} 
+                    src={payment.customer?.avatar_url || null} 
                     name={payment.customer?.business_name || ""} 
                     width={24} 
                     height={24} 

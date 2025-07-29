@@ -56,15 +56,15 @@ export default function VerifyCodeModal({ next, sendVerifyCode, isOpen, onClose,
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-      <div className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 animate-fade-in">
+      <div className="bg-card rounded-lg shadow-lg w-full max-w-md p-6 animate-fade-in">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">Verify Code</h2>
           <Button onClick={onClose} colorSchema="white" variant="outline" aria-label="Close">
             <IoClose size={20} />
           </Button>
         </div>
-        <div className="bg-white rounded-lg shadow-sm p-8">
-          <p className="text-gray-600 mb-6">
+        <div className="bg-card rounded-lg shadow-sm p-8">
+          <p className="text-muted-foreground mb-6">
             We've sent a 6-digit verification code to you. Please enter it below.
           </p>
           <div className="flex justify-between mb-6">
@@ -79,7 +79,7 @@ export default function VerifyCodeModal({ next, sendVerifyCode, isOpen, onClose,
                 value={digit}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleInputChange(index, e.target.value)}
                 onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => handleKeyDown(index, e)}
-                className="w-10 h-12 text-center text-lg font-medium border border-gray-300 rounded-md"
+                className="w-10 h-12 text-center text-lg font-medium border border-border rounded-md"
               />
             ))}
           </div>

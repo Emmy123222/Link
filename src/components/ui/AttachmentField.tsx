@@ -31,9 +31,9 @@ const AttachmentField: React.FC<AttachmentFieldProps> = ({ attachments, setAttac
 
   return (
     <div className="mb-6">
-      <label className="block text-sm font-medium text-gray-700 mb-2">{label}</label>
+      <label className="block text-sm font-medium text-foreground mb-2">{label}</label>
       <div
-        className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-6 bg-green-50 hover:bg-green-100 cursor-pointer transition-colors"
+        className="flex flex-col items-center justify-center border-2 border-dashed border-border rounded-lg p-6 bg-muted hover:bg-muted/80 cursor-pointer transition-colors"
         onDrop={handleDrop}
         onDragOver={handleDragOver}
         onClick={() => fileInputRef.current?.click()}
@@ -45,12 +45,12 @@ const AttachmentField: React.FC<AttachmentFieldProps> = ({ attachments, setAttac
           className="hidden"
           onChange={handleFileChange}
         />
-        <span className="text-gray-500">Drag or click to add attachments</span>
+        <span className="text-muted-foreground">Drag or click to add attachments</span>
       </div>
       {attachments.length > 0 && (
         <div className="mt-2 space-y-1 flex flex-wrap gap-2">
           {attachments.map((file, idx) => (
-            <div key={idx} className="flex items-center justify-between bg-gray-100 rounded px-2 py-1 ">
+            <div key={idx} className="flex items-center justify-between bg-muted rounded px-2 py-1 ">
               <span className="truncate max-w-xs text-sm">{file.name}</span>
               <button type="button" className="text-red-500 ml-2" onClick={() => handleRemoveAttachment(idx)}>
                 <IoMdClose size={16} />

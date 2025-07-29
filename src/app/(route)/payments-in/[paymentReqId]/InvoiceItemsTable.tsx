@@ -29,8 +29,8 @@ const InvoiceItemsTable: React.FC<InvoiceItemsTableProps> = ({ items, documentTy
     return (
       <Card className="mb-4">
         <CardContent className="p-6">
-          <h3 className="font-semibold text-gray-900 mb-4">Invoice Items</h3>
-          <div className="text-center text-gray-500 py-8">
+          <h3 className="font-semibold text-foreground mb-4">Invoice Items</h3>
+          <div className="text-center text-muted-foreground py-8">
             No invoice items found
           </div>
         </CardContent>
@@ -46,7 +46,7 @@ const InvoiceItemsTable: React.FC<InvoiceItemsTableProps> = ({ items, documentTy
   return (
     <Card className="mb-4">
       <CardContent className="p-6">
-        <h3 className="font-semibold text-gray-900 mb-4">Invoice Items</h3>
+        <h3 className="font-semibold text-foreground mb-4">Invoice Items</h3>
 
         <div className="overflow-x-auto">
           <table className="w-full border-collapse">

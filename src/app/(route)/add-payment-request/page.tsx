@@ -144,7 +144,7 @@ export default function AddPaymentRequestPage() {
 
         {/* Right side - form */}
         <div className="w-full md:w-1/2">
-          <div className="bg-white rounded-lg shadow-sm p-8">
+          <div className="bg-card rounded-lg shadow-sm p-8">
             <h1 className="text-2xl font-semibold mb-2">Select a customer</h1>
             <p className="text-gray-600 mb-6">Let's find the customer you are creating the request for.</p>
 
@@ -167,14 +167,14 @@ export default function AddPaymentRequestPage() {
                 
                 {/* Search Results Dropdown */}
                 {businesses.length > 0 && !selectedBusiness && (
-                  <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto">
+                  <div className="absolute z-10 w-full mt-1 bg-card border rounded-md shadow-lg max-h-60 overflow-y-auto">
                     <div className="text-sm text-gray-500 p-2 border-b">
                       {isSearchBusinessPending ? "Searching..." : `${businesses.length} customer${businesses.length !== 1 ? 's' : ''} found`}
                     </div>
                     {businesses.map((business: ExtendedBusiness) => (
                       <div
                         key={business.id}
-                        className="cursor-pointer hover:bg-gray-50 p-2 border-b last:border-b-0"
+                        className="cursor-pointer hover:bg-muted/50 p-2 border-b last:border-b-0"
                         onClick={() => handleBusinessSelect(business)}
                       >
                         <BusinessItem
@@ -190,7 +190,7 @@ export default function AddPaymentRequestPage() {
                 
                 {/* No results message */}
                 {name.trim().length > 0 && businesses.length === 0 && !isSearchBusinessPending && !selectedBusiness && (
-                  <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg">
+                  <div className="absolute z-10 w-full mt-1 bg-card border rounded-md shadow-lg">
                     <div className="text-sm text-gray-500 p-3">
                       No customers found. Try a different search term or create a new customer.
                     </div>
@@ -201,7 +201,7 @@ export default function AddPaymentRequestPage() {
               <div className="flex flex-col sm:flex-row gap-4 mt-8">
                 <button
                   type="button"
-                  className="flex-1 py-3 px-4 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
+                  className="flex-1 py-3 px-4 border text-foreground rounded-md hover:bg-muted/50 transition-colors"
                   onClick={handleCreateNewVendor}
                 >
                   Create new customer

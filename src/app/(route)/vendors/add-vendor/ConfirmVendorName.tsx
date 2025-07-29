@@ -41,7 +41,7 @@ export default function ConfirmVendorName() {
         const bannedIds = vendors.concat(currentBusiness!).map(item => item.id).join(",")
         const res = await searchBusiness({ name, bannedIds: `(${bannedIds})` })
         if (res && res.length > 0) {
-          setBusinesses(res)
+          setBusinesses(res as unknown as ExtendedBusiness[])
         }
       }
     }
@@ -67,20 +67,20 @@ export default function ConfirmVendorName() {
 
   return (
     <div className="max-w-md mx-auto ">
-      <div className="bg-white rounded-lg shadow-sm p-8 space-y-6 transition-all duration-300 ease-out">
+      <div className="bg-card rounded-lg shadow-sm border p-8 space-y-6 transition-all duration-300 ease-out">
         <h2 className="text-lg font-medium mb-6">Enter customer name</h2>
-        <p className="text-sm text-gray-500 mb-6">First, let's try to find the customer in Paylists network. If the customer's business exist you will only need to select it.</p>
+        <p className="text-sm text-muted-foreground mb-6">First, let's try to find the customer in Paylists network. If the customer's business exist you will only need to select it.</p>
         <div>
           <Input
             label="Customer Name*"
             value={name}
             onChange={handelSearch}
-            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-gray-100`}
+            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 bg-background"
           />
         </div>
         {selectedBusiness === null ? (businesses.length > 0 && (
           <div className="max-h-[400px] overflow-y-auto">
-            <h3 className="text-sm text-center sticky top-0 bg-white font-medium mb-2">Search Results</h3>
+            <h3 className="text-sm text-center sticky top-0 bg-card font-medium mb-2 text-foreground">Search Results</h3>
             <ul>
               {businesses.map((item: ExtendedBusiness) => (
                 <BusinessItem
@@ -101,7 +101,7 @@ export default function ConfirmVendorName() {
             <Card
               title={selectedBusiness?.business_name || ""}
               badge="Validated"
-              badgeIcon={<CheckCircle className="w-4 h-4 text-gray-400" />}
+              badgeIcon={<CheckCircle className="w-4 h-4 text-muted-foreground" />}
             >
               <BusinessItem
                 name={selectedBusiness?.business_name || ""}

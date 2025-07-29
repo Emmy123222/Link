@@ -32,7 +32,7 @@ export function FilterCollapse({ isOpen, onClose }: FilterCollapseProps) {
 	return (
 		<div
 			ref={panelRef}
-			className="bg-white w-full rounded-lg shadow-lg animate-slide-down overflow-hidden mb-3"
+			className="bg-card w-full rounded-lg shadow-lg border animate-slide-down overflow-hidden mb-3"
 		>
 			<div className="p-4 border-b flex justify-between items-center">
 				<h2 className="text-lg font-medium">Filter</h2>

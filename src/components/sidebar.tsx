@@ -41,7 +41,7 @@ export function Sidebar() {
     {
       href: "/dashboard",
       label: "Dashboard",
-      icon: <IoMdHome fontSize={"40px"} className="text-gray-600" />,
+      icon: <IoMdHome fontSize={"40px"} className="text-muted-foreground" />,
       delay: "delay-75"
     },
     {
@@ -60,19 +60,19 @@ export function Sidebar() {
     ...(canCreateCustomers(currentBusiness) ? [{
       href: "/customers",
       label: "Customers",
-      icon: <Handshake className="text-gray-500" size={40} />,
+      icon: <Handshake className="text-muted-foreground" size={40} />,
       delay: "delay-100"
     }] : []),
     {
       href: "/vendors",
       label: "Vendors",
-      icon: <TbTrolley fontSize={"40px"} className="text-gray-500" />,
+      icon: <TbTrolley fontSize={"40px"} className="text-muted-foreground" />,
       delay: "delay-100"
     },
     {
       href: "/business",
       label: "My business",
-      icon: <IoMdBriefcase fontSize={"40px"} className="text-gray-500" />,
+      icon: <IoMdBriefcase fontSize={"40px"} className="text-muted-foreground" />,
       delay: "delay-100"
     }
   ];
@@ -109,7 +109,7 @@ export function Sidebar() {
       <Link
         key={item.href}
         href={item.href}
-        className={`flex items-center px-4 py-3 gap-2 align-middle text-lg ${isActive ? "text-gray-800 bg-red-50" : "text-gray-600 hover:bg-gray-50"
+        className={`flex items-center px-4 py-3 gap-2 align-middle text-lg ${isActive ? "text-foreground bg-accent" : "text-muted-foreground hover:bg-accent/50"
           }`}
       >
         {item.icon}
@@ -125,7 +125,7 @@ export function Sidebar() {
 
   return (
     <>
-      <div className={`hidden sm:flex bg-white border-r flex-col h-screen transition-all duration-100 ease-in-out ${isExpanded ? 'w-64' : 'w-16'
+      <div className={`hidden sm:flex bg-card border-r flex-col h-screen transition-all duration-100 ease-in-out fixed ${isExpanded ? 'w-64' : 'w-16'
         }`}>
         {/* Logo */}
         <div className="p-4 border-b h-16 overflow-hidden cursor-pointer" onClick={toggleSidebar}>
@@ -171,7 +171,7 @@ export function Sidebar() {
                 <Link
                   key={option.href}
                   href={option.href}
-                  className="flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                  className="flex items-center px-3 py-2 text-sm text-foreground hover:bg-accent/50 rounded-md transition-colors"
                   style={{ animationDelay: `${index * 50}ms` }}
                 >
                   {option.icon}

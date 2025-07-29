@@ -25,7 +25,7 @@ export default function AccountTypeSelection({ onNext }: AccountTypeSelectionPro
         <Image src="/images/business.svg" alt="Account type illustration" width={500} height={500} priority />
       </div>
       <div className="w-full md:w-1/2">
-        <div className="bg-white rounded-lg shadow-sm py-8 px-4 sm:px-8 max-w-md mx-auto">
+        <div className="bg-card rounded-lg shadow-sm py-8 px-4 sm:px-8 max-w-md mx-auto border">
           <h2 className="text-lg font-medium mb-6">Do you want to create a business account or personal account?</h2>
           
           <div className="space-y-4 mb-6">

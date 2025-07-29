@@ -60,23 +60,23 @@ const PaymentRequestDetailsContent = () => {
     return (
       <Card className="mb-4">
         <CardContent className="p-4">
-          <h3 className="font-semibold text-gray-900 mb-3">Customer Details</h3>
+          <h3 className="font-semibold text-foreground mb-3">Customer Details</h3>
           <div className="space-y-2 grid grid-cols-2 items-center justify-between">
             <div className="flex xs:flex-row xs:items-center text-sm gap-1 xs:gap-2">
-              <span className="text-gray-600  whitespace-nowrap">Name:</span>
-              <span className="text-gray-900 font-medium break-words">{paymentRequestData?.customer?.business_name}</span>
+              <span className="text-muted-foreground whitespace-nowrap">Name:</span>
+              <span className="text-foreground font-medium break-words">{paymentRequestData?.customer?.business_name}</span>
             </div>
             <div className="flex xs:flex-row xs:items-center text-sm gap-1 xs:gap-2">
-              <span className="text-gray-600 whitespace-nowrap">Email:</span>
-              <span className="text-gray-900 break-all">{paymentRequestData?.customer?.email}</span>
+              <span className="text-muted-foreground whitespace-nowrap">Email:</span>
+              <span className="text-foreground break-all">{paymentRequestData?.customer?.email}</span>
             </div>
             <div className="flex xs:flex-row xs:items-center text-sm gap-1 xs:gap-2">
-              <span className="text-gray-600 whitespace-nowrap">Contact Person:</span>
-              <span className="text-gray-900 break-all">{paymentRequestData?.customer?.name}</span>
+              <span className="text-muted-foreground whitespace-nowrap">Contact Person:</span>
+              <span className="text-foreground break-all">{paymentRequestData?.customer?.name}</span>
             </div>
             <div className="flex xs:flex-row xs:items-center text-sm gap-1 xs:gap-2">
-              <span className="text-gray-600 whitespace-nowrap">Phone:</span>
-              <span className="text-gray-900 break-words">{paymentRequestData?.customer?.mobile_phone_number}</span>
+              <span className="text-muted-foreground whitespace-nowrap">Phone:</span>
+              <span className="text-foreground break-words">{paymentRequestData?.customer?.mobile_phone_number}</span>
             </div>
           </div>
         </CardContent>
@@ -85,9 +85,9 @@ const PaymentRequestDetailsContent = () => {
   }
 
   return (
-    <div className="bg-[#f6fbf7] p-4 space-y-4">
+    <div className="bg-background p-4 space-y-4">
       <div className="flex flex-col gap-4">
-        <button className="w-full max-w-xs flex items-center gap-2" onClick={() => router.push('/payments-in')}>
+        <button className="w-full max-w-xs flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors" onClick={() => router.push('/payments-in')}>
           <IoMdArrowBack size={20} />
           <span className="text-sm">Back</span>
         </button>

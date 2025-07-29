@@ -26,7 +26,7 @@ const TableHeader = React.forwardRef<
   <thead
     ref={ref}
     className={cn(
-      "bg-gray-50 [&_tr]:border-b",
+      "bg-muted [&_tr]:border-b",
       "animate-in fade-in slide-in-from-bottom-4 duration-500",
       className
     )}
@@ -58,7 +58,7 @@ const TableFooter = React.forwardRef<
   <tfoot
     ref={ref}
     className={cn(
-      "bg-gray-50 font-medium text-gray-900",
+      "bg-muted font-medium text-foreground",
       "animate-in fade-in slide-in-from-bottom-4 duration-500",
       className
     )}
@@ -74,7 +74,7 @@ const TableRow = React.forwardRef<
   <tr
     ref={ref}
     className={cn(
-      "border-b transition-colors hover:bg-gray-50/50 data-[state=selected]:bg-gray-50",
+      "border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted",
       "animate-in fade-in slide-in-from-bottom-4 duration-500",
       className
     )}
@@ -90,7 +90,7 @@ const TableHead = React.forwardRef<
   <th
     ref={ref}
     className={cn(
-      "h-12 px-4 text-left align-middle font-medium text-gray-500 [&:has([role=checkbox])]:pr-0",
+      "h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0",
       "animate-in fade-in slide-in-from-bottom-4 duration-500",
       className
     )}
@@ -122,7 +122,7 @@ const TableCaption = React.forwardRef<
   <caption
     ref={ref}
     className={cn(
-      "mt-4 text-sm text-gray-500",
+      "mt-4 text-sm text-muted-foreground",
       "animate-in fade-in slide-in-from-bottom-4 duration-500",
       className
     )}

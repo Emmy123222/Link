@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
-import { IoCheckmarkCircle } from "react-icons/io5"
+import { CheckCircle } from "lucide-react"
 
 
 export default function FinishStep() {
@@ -10,13 +10,13 @@ export default function FinishStep() {
 
   return (
     <div className="max-w-md mx-auto">
-      <div className="bg-white rounded-lg shadow-sm p-8 text-center">
+      <div className="bg-card rounded-lg shadow-sm border p-8 text-center">
         <div className="flex justify-center mb-6">
-          <IoCheckmarkCircle size={64} className="text-green-600" />
+          <CheckCircle size={64} className="text-green-600" />
         </div>
 
-        <h2 className="text-2xl font-semibold mb-4">Vendor added successfully!</h2>
-        <p className="text-gray-600 mb-8">
+        <h2 className="text-2xl font-semibold mb-4 text-foreground">Vendor added successfully!</h2>
+        <p className="text-muted-foreground mb-8">
           You can start sending payment requests to your vendor to receive
           money
         </p>

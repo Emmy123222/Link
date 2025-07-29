@@ -12,7 +12,7 @@ export const CollectionStatusCard: React.FC<CollectionStatusCardProps> = ({
   percentage,
   color = "text-green-600",
 }) => (
-  <div className="bg-white rounded-lg p-4 sm:p-6 shadow-sm aspect-square overflow-hidden">
+  <div className="bg-card rounded-lg p-4 sm:p-6 shadow-sm border aspect-square overflow-hidden">
     <h2 className="text-base sm:text-lg font-medium">{title}</h2>
     <div className="flex justify-center">
       <div className="relative w-4/5 h-4/5">

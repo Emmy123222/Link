@@ -13,8 +13,8 @@ import { useApp } from "@/providers/AppProvider"
 
 const bankDetailSchema = z.object({
   bank_account_name: z.string().min(1, { message: BusinessConfig.validation.bankAccount.name.required }),
-  bank_account_number: z.coerce.number().min(1, { message: BusinessConfig.validation.bankAccount.number.required }),
-  sort_code: z.coerce.number().min(1, { message: BusinessConfig.validation.bankAccount.sortCode.required }),
+  bank_account_number: z.string().min(1, { message: BusinessConfig.validation.bankAccount.number.required }),
+  sort_code: z.string().min(1, { message: BusinessConfig.validation.bankAccount.sortCode.required }),
 })
 
 type BankDetailFormValues = z.infer<typeof bankDetailSchema>
@@ -25,8 +25,8 @@ export default function BankDetailInput({ editable }: { editable: boolean }) {
 
   const defaultValues: BankDetailFormValues = useMemo(() => ({
     bank_account_name: currentBusiness?.bank_account_name || "",
-    bank_account_number: Number(currentBusiness?.bank_account_number) || 0,
-    sort_code: Number(currentBusiness?.sort_code) || 0,
+    bank_account_number: currentBusiness?.bank_account_number || "",
+    sort_code: currentBusiness?.sort_code || "",
   }), [currentBusiness, editable])
 
   const {
@@ -44,8 +44,8 @@ export default function BankDetailInput({ editable }: { editable: boolean }) {
   const onSubmit = async (data: BankDetailFormValues) => {
     const businessData = {
       bank_account_name: data.bank_account_name,
-      bank_account_number: data.bank_account_number.toString(),
-      sort_code: data.sort_code.toString(),
+      bank_account_number: data.bank_account_number,
+      sort_code: data.sort_code,
     }
     const updated = await updateBusiness({ businessId: currentBusiness!.id, updates: businessData })
     if (updated) {
@@ -57,7 +57,7 @@ export default function BankDetailInput({ editable }: { editable: boolean }) {
   }
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-6 max-w-lg">
+    <div className="bg-card rounded-lg border p-6 max-w-lg">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         {/* Bank Account Name */}
         <div>

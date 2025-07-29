@@ -17,7 +17,7 @@ function AddCustomerContent() {
   const currentProgressStep = currentStep === 6 ? 2 : 1;
 
   return (
-    <div className='p-3 w-full sm:w-7/8 mx-auto'>
+    <div className='p-3 w-full sm:w-7/8 mx-auto bg-background'>
       <ProgressBar currentStep={currentProgressStep} steps={["Customer details", "Finish"]} />
       <div className="flex flex-col md:flex-row max-w-6xl mx-auto">
         <div className="hidden md:w-1/2 md:flex justify-center items-center p-8">

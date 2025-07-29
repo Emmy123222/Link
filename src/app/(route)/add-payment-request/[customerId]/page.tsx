@@ -45,7 +45,7 @@ export default function AddPaymentRequestPage() {
   }
 
   return (
-    <div className="max-h-[calc(100vh-100px)] overflow-y-auto bg-[#f6fbf7]">
+    <div className="max-h-[calc(100vh-100px)] overflow-y-auto bg-background">
       <div className="max-w-7xl mx-auto p-6">
         <Link
           href="/payments-in"
