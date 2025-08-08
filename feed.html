@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VUNO - Feed</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="vuno.png" type="image/png" sizes="32x32">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        background: {
+                            light: '#F8FAFC',
+                        },
+                        surface: {
+                            light: '#FFFFFF',
+                        },
+                        text: {
+                            primary: {
+                                light: '#1E293B',
+                            },
+                            secondary: {
+                                light: '#64748B',
+                            }
+                        },
+                        border: {
+                            light: '#E2E8F0',
+                        }
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.3s ease-in-out forwards',
+                        'slide-in': 'slideIn 0.3s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideIn: {
+                            '0%': { transform: 'translateY(-20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .post-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .post-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        .action-btn {
+            transition: all 0.2s ease;
+        }
+        .action-btn:hover {
+            transform: translateY(-2px);
+        }
+        .action-btn:active {
+            transform: translateY(0);
+        }
+        .comment-input:focus {
+            box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.5);
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
+</head>
+<body class="h-full bg-background-light text-text-primary-light font-sans antialiased">
+    <!-- Mobile Sidebar Toggle 
+    <div class="lg:hidden fixed bottom-6 right-6 z-40">
+        <button id="sidebar-toggle" class="p-4 bg-primary-600 rounded-full shadow-xl text-white hover:bg-primary-700 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2">
+            <i class="fas fa-bars text-lg"></i>
+        </button>
+    </div>
+-->
+    <!-- Sidebar -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-30 w-72 transform -translate-x-full lg:translate-x-0 bg-surface-light shadow-xl transition-transform duration-300 ease-in-out border-r border-border-light">
+        <div class="flex flex-col h-full">
+            <!-- Logo -->
+            <div class="flex items-center justify-between px-6 py-5 border-b border-border-light">
+                <div class="flex items-center space-x-3">
+                    <img src="vuno.png" alt="Vuno Logo" class="h-16 w-14 rounded-lg">
+                    <span class="text-2xl font-display font-bold text-primary-600">VUNO</span>
+                </div>
+                <button id="close-sidebar" class="lg:hidden p-1.5 rounded-md text-text-secondary-light hover:bg-gray-100 transition-colors focus:outline-none">
+                    <i class="fas fa-times text-lg"></i>
+                </button>
+            </div>
+            
+            <!-- Navigation -->
+            <nav class="flex-1 overflow-y-auto px-3 py-5 space-y-1">
+                <a href="index.html" class="flex items-center p-3 rounded-xl hover:bg-gray-100 transition-colors text-text-primary-light">
+                    <i class="fas fa-house text-lg w-6 mr-3 text-primary-600"></i>
+                    <span class="font-medium">Home</span>
+                </a>
+                <a href="#" class="flex items-center p-3 rounded-xl bg-primary-50 text-primary-600 font-medium">
+                    <i class="fas fa-rss text-lg w-6 mr-3"></i>
+                    <span>Feeds</span>
+                </a>
+                <a href="message.html" class="flex items-center p-3 rounded-xl hover:bg-gray-100 transition-colors text-text-primary-light">
+                    <i class="fas fa-envelope text-lg w-6 mr-3 text-text-secondary-light"></i>
+                    <span>Messages</span>
+                    <span class="ml-auto px-2 py-1 text-xs font-bold rounded-full bg-primary-100 text-primary-600">3</span>
+                </a>
+                <a href="#" class="flex items-center p-3 rounded-xl hover:bg-gray-100 transition-colors text-text-primary-light">
+                    <i class="fas fa-users text-lg w-6 mr-3 text-text-secondary-light"></i>
+                    <span>Contacts</span>
+                </a>
+                <a href="#" class="flex items-center p-3 rounded-xl hover:bg-gray-100 transition-colors text-text-primary-light">
+                    <i class="fas fa-calendar text-lg w-6 mr-3 text-text-secondary-light"></i>
+                    <span>Calendar</span>
+                </a>
+                <a href="#" class="flex items-center p-3 rounded-xl hover:bg-gray-100 transition-colors text-text-primary-light">
+                    <i class="fas fa-folder text-lg w-6 mr-3 text-text-secondary-light"></i>
+                    <span>Files</span>
+                </a>
+                <a href="meeting.html" class="flex items-center p-3 rounded-xl hover:bg-gray-100 transition-colors text-text-primary-light">
+                    <i class="fas fa-video text-lg w-6 mr-3 text-text-secondary-light"></i>
+                    <span>Meetings</span>
+                </a>
+                
+                <div class="px-3 pt-6 pb-2">
+                    <p class="text-xs font-medium uppercase tracking-wider text-text-secondary-light">Workspace</p>
+                </div>
+                
+                <a href="#" class="flex items-center p-3 rounded-xl hover:bg-gray-100 transition-colors text-text-primary-light">
+                    <i class="fas fa-cog text-lg w-6 mr-3 text-text-secondary-light"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+            
+
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="lg:ml-72 min-h-screen flex flex-col">
+        <!-- Header -->
+        <header class="bg-surface-light shadow-sm sticky top-0 z-20 border-b border-border-light">
+            <!-- Mobile Header -->
+            <div class="md:hidden flex items-center justify-between px-5 py-4">
+                <div class="flex items-center">
+                    <button id="mobile-menu-toggle" class="mr-3 p-2 text-text-secondary-light hover:text-primary-500 transition-colors">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                    <img src="vuno.png" alt="Logo" class="h-11 w-11 mr-2">
+                    <span class="text-xl font-bold text-primary-600 font-display">VUNO</span>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <button id="mobile-search-toggle" class="p-2 text-text-secondary-light hover:text-primary-500 transition-colors">
+                        <i class="fas fa-search text-xl"></i>
+                    </button>
+                    <button class="p-2 relative text-text-secondary-light hover:text-primary-500 transition-colors">
+                        <i class="fas fa-bell text-xl"></i>
+                        <span class="absolute top-1.5 right-1.5 w-3 h-3 bg-red-500 rounded-full border-2 border-white"></span>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Desktop Header -->
+            <div class="hidden md:flex w-full px-6 py-4 items-center justify-between">
+                <!-- Search Bar -->
+                <div class="flex-1 max-w-2xl mx-8">
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <i class="fas fa-search text-text-secondary-light"></i>
+                        </div>
+                        <input type="text" class="block w-full pl-12 pr-4 py-2.5 border border-border-light rounded-xl bg-background-light focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent placeholder-text-secondary-light" placeholder="Search feeds, people, or teams...">
+                    </div>
+                </div>
+                
+                <!-- Right Actions -->
+                <div class="flex items-center space-x-5">
+                    <button class="flex items-center space-x-2 px-4 py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-xl transition-colors shadow-sm">
+                        <i class="fas fa-plus"></i>
+                        <span class="font-medium">Create</span>
+                    </button>
+                    
+                    <button class="p-2.5 relative text-text-secondary-light hover:text-primary-500 transition-colors rounded-full hover:bg-gray-100">
+                        <i class="fas fa-bell text-xl"></i>
+                        <span class="absolute top-1.5 right-1.5 w-3 h-3 bg-red-500 rounded-full border-2 border-white"></span>
+                    </button>
+                    
+                    <button class="p-2.5 text-text-secondary-light hover:text-primary-500 transition-colors rounded-full hover:bg-gray-100">
+                        <i class="fas fa-envelope text-xl"></i>
+                    </button>
+                    
+                    <div class="relative ml-2">
+                        <button class="flex items-center focus:outline-none group">
+                            <img class="w-10 h-10 rounded-full border-2 border-white shadow-sm" src=".jpg" alt="User profile">
+                            <i class="fas fa-chevron-down ml-2 text-text-secondary-light group-hover:text-primary-500 transition-colors"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Mobile Search Panel -->
+            <div id="mobile-search" class="md:hidden absolute top-full left-0 right-0 bg-surface-light px-5 py-3 shadow-md hidden border-b border-border-light">
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-search text-text-secondary-light"></i>
+                    </div>
+                    <input type="text" class="block w-full pl-10 pr-3 py-2.5 border border-border-light rounded-xl bg-background-light focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent placeholder-text-secondary-light" placeholder="Search...">
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 w-full px-4 py-6 sm:px-6 pb-20 lg:pb-6">
+            <div class="max-w-3xl mx-auto space-y-6">
+<!-- Create Post Card - Clean Version -->
+<div class="bg-surface-light rounded-2xl shadow-sm overflow-hidden post-card border border-border-light">
+    <div class="p-5">
+        <textarea class="w-full p-4 border border-border-light rounded-xl bg-background-light focus:outline-none focus:ring-2 focus:ring-primary-500 comment-input" rows="4" placeholder="Share your thoughts..."></textarea>
+        
+        <div class="mt-4 flex items-center justify-between">
+            <div class="flex space-x-2">
+                <button class="p-2 text-blue-500 hover:bg-blue-50 rounded-full transition-colors action-btn">
+                    <i class="fas fa-camera text-lg"></i>
+                </button>
+                <button class="p-2 text-red-500 hover:bg-red-50 rounded-full transition-colors action-btn">
+                    <i class="fas fa-video text-lg"></i>
+                </button>
+                <button class="p-2 text-green-500 hover:bg-green-50 rounded-full transition-colors action-btn">
+                    <i class="fas fa-file text-lg"></i>
+                </button>
+                <button class="p-2 text-purple-500 hover:bg-purple-50 rounded-full transition-colors action-btn">
+                    <i class="fas fa-paperclip text-lg"></i>
+                </button>
+            </div>
+            
+            <button class="px-5 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-xl transition-colors font-medium shadow-sm action-btn">
+                Post
+            </button>
+        </div>
+    </div>
+</div>
+                <!-- Feed Filters -->
+                <div class="bg-surface-light rounded-2xl shadow-sm overflow-hidden border border-border-light">
+                    <div class="p-3 flex overflow-x-auto scrollbar-hide space-x-2">
+                        <button class="px-4 py-2 bg-primary-600 text-white rounded-full text-sm font-medium whitespace-nowrap">All Updates</button>
+                        <button class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full text-sm font-medium whitespace-nowrap">Following</button>
+                        <button class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full text-sm font-medium whitespace-nowrap">Team</button>
+                        <button class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full text-sm font-medium whitespace-nowrap">Announcements</button>
+                        <button class="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-full text-sm font-medium whitespace-nowrap">Events</button>
+                    </div>
+                </div>
+
+                <!-- Feed Items -->
+                <div class="space-y-6">
+                    <!-- Feed Item 1 -->
+                    <div class="bg-surface-light rounded-2xl shadow-sm overflow-hidden post-card border border-border-light">
+                        <div class="p-5">
+                            <div class="flex items-start justify-between">
+                                <div class="flex items-start space-x-3">
+                                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" class="w-11 h-11 rounded-full border-2 border-white shadow-sm">
+                                    <div>
+                                        <h3 class="font-medium">Michael Chen</h3>
+                                        <p class="text-sm text-text-secondary-light">Product Manager • 2 hours ago</p>
+                                    </div>
+                                </div>
+                                <button class="text-text-secondary-light hover:text-primary-500 transition-colors">
+                                    <i class="fas fa-ellipsis-h"></i>
+                                </button>
+                            </div>
+                            <div class="mt-4">
+                                <p class="text-text-primary-light">Just shared the Q3 product roadmap with the team. We've got some exciting features coming up! Let me know your thoughts in the comments.</p>
+                            </div>
+                            <div class="mt-4">
+                                <img src="https://images.unsplash.com/photo-1579389083078-4e7018379f7e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80" alt="Roadmap" class="w-full h-auto rounded-lg">
+                            </div>
+                            <div class="mt-4 flex items-center justify-between text-text-secondary-light text-sm">
+                                <div class="flex items-center space-x-4">
+                                    <span><i class="fas fa-thumbs-up mr-1.5"></i> 24</span>
+                                    <span><i class="fas fa-comment mr-1.5"></i> 8</span>
+                                    <span><i class="fas fa-share mr-1.5"></i> 3</span>
+                                </div>
+                                <span>12 shares</span>
+                            </div>
+                            <div class="mt-3 pt-3 border-t border-border-light flex space-x-2">
+                                <button class="flex-1 py-2.5 rounded-xl hover:bg-gray-100 transition-colors flex items-center justify-center action-btn">
+                                    <i class="far fa-thumbs-up mr-2"></i> Like
+                                </button>
+                                <button class="flex-1 py-2.5 rounded-xl hover:bg-gray-100 transition-colors flex items-center justify-center action-btn">
+                                    <i class="far fa-comment mr-2"></i> Comment
+                                </button>
+                                <button class="flex-1 py-2.5 rounded-xl hover:bg-gray-100 transition-colors flex items-center justify-center action-btn">
+                                    <i class="fas fa-share mr-2"></i> Share
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Comments Section -->
+                        <div class="bg-gray-50 p-5 border-t border-border-light">
+                            <div class="flex items-start space-x-3">
+                                <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="User" class="w-9 h-9 rounded-full border-2 border-white shadow-sm">
+                                <div class="flex-1">
+                                    <div class="bg-white rounded-xl p-3.5 shadow-xs">
+                                        <h4 class="font-medium text-sm">Emma Rodriguez</h4>
+                                        <p class="text-sm mt-1 text-text-primary-light">This looks great Michael! The timeline seems realistic and the features are well prioritized.</p>
+                                        <div class="mt-2 flex items-center text-xs text-text-secondary-light">
+                                            <span class="mr-3">1 hour ago</span>
+                                            <button class="hover:underline">Like</button>
+                                            <span class="mx-1">•</span>
+                                            <button class="hover:underline">Reply</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-3 flex items-start space-x-3">
+                                <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User" class="w-9 h-9 rounded-full border-2 border-white shadow-sm">
+                                <div class="flex-1">
+                                    <input type="text" class="w-full p-3 border border-border-light rounded-xl bg-background-light focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm" placeholder="Write a comment...">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Feed Item 2 -->
+                    <div class="bg-surface-light rounded-2xl shadow-sm overflow-hidden post-card border border-border-light">
+                        <div class="p-5">
+                            <div class="flex items-start justify-between">
+                                <div class="flex items-start space-x-3">
+                                    <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="User" class="w-11 h-11 rounded-full border-2 border-white shadow-sm">
+                                    <div>
+                                        <h3 class="font-medium">Emma Rodriguez</h3>
+                                        <p class="text-sm text-text-secondary-light">Design Lead • 5 hours ago</p>
+                                    </div>
+                                </div>
+                                <button class="text-text-secondary-light hover:text-primary-500 transition-colors">
+                                    <i class="fas fa-ellipsis-h"></i>
+                                </button>
+                            </div>
+                            <div class="mt-4">
+                                <p class="text-text-primary-light">Check out the new branding concepts for our upcoming product launch! We've gone through several iterations and would love your feedback.</p>
+                            </div>
+                            <div class="mt-4 grid grid-cols-2 gap-3">
+                                <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Design 1" class="w-full h-48 object-cover rounded-lg">
+                                <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80" alt="Design 2" class="w-full h-48 object-cover rounded-lg">
+                            </div>
+                            <div class="mt-4 flex items-center justify-between text-text-secondary-light text-sm">
+                                <div class="flex items-center space-x-4">
+                                    <span><i class="fas fa-thumbs-up mr-1.5"></i> 42</span>
+                                    <span><i class="fas fa-comment mr-1.5"></i> 15</span>
+                                    <span><i class="fas fa-share mr-1.5"></i> 7</span>
+                                </div>
+                                <span>24 shares</span>
+                            </div>
+                            <div class="mt-3 pt-3 border-t border-border-light flex space-x-2">
+                                <button class="flex-1 py-2.5 rounded-xl hover:bg-gray-100 transition-colors flex items-center justify-center action-btn">
+                                    <i class="far fa-thumbs-up mr-2"></i> Like
+                                </button>
+                                <button class="flex-1 py-2.5 rounded-xl hover:bg-gray-100 transition-colors flex items-center justify-center action-btn">
+                                    <i class="far fa-comment mr-2"></i> Comment
+                                </button>
+                                <button class="flex-1 py-2.5 rounded-xl hover:bg-gray-100 transition-colors flex items-center justify-center action-btn">
+                                    <i class="fas fa-share mr-2"></i> Share
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Feed Item 3 -->
+                    <div class="bg-surface-light rounded-2xl shadow-sm overflow-hidden post-card border border-border-light">
+                        <div class="p-5">
+                            <div class="flex items-start justify-between">
+                                <div class="flex items-start space-x-3">
+                                    <div class="w-11 h-11 rounded-full bg-blue-100 flex items-center justify-center shadow-sm">
+                                        <i class="fas fa-bullhorn text-blue-500 text-xl"></i>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-medium">Company Announcement</h3>
+                                        <p class="text-sm text-text-secondary-light">Official • Yesterday</p>
+                                    </div>
+                                </div>
+                                <button class="text-text-secondary-light hover:text-primary-500 transition-colors">
+                                    <i class="fas fa-ellipsis-h"></i>
+                                </button>
+                            </div>
+                            <div class="mt-4">
+                                <p class="text-text-primary-light">We're excited to announce our upcoming team retreat in Bali this November! This will be a great opportunity for team bonding and strategic planning. More details to follow in the coming weeks.</p>
+                            </div>
+                            <div class="mt-4">
+                                <div class="bg-blue-50 rounded-xl p-4 border border-blue-100">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-calendar-alt text-blue-500 mr-3 text-xl"></i>
+                                        <div>
+                                            <h4 class="font-medium">Team Retreat 2023</h4>
+                                            <p class="text-sm text-text-secondary-light">November 15-18, 2023 • Bali, Indonesia</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-4 flex items-center justify-between text-text-secondary-light text-sm">
+                                <div class="flex items-center space-x-4">
+                                    <span><i class="fas fa-thumbs-up mr-1.5"></i> 68</span>
+                                    <span><i class="fas fa-comment mr-1.5"></i> 23</span>
+                                    <span><i class="fas fa-share mr-1.5"></i> 12</span>
+                                </div>
+                                <span>45 shares</span>
+                            </div>
+                            <div class="mt-3 pt-3 border-t border-border-light flex space-x-2">
+                                <button class="flex-1 py-2.5 rounded-xl hover:bg-gray-100 transition-colors flex items-center justify-center action-btn">
+                                    <i class="far fa-thumbs-up mr-2"></i> Like
+                                </button>
+                                <button class="flex-1 py-2.5 rounded-xl hover:bg-gray-100 transition-colors flex items-center justify-center action-btn">
+                                    <i class="far fa-comment mr-2"></i> Comment
+                                </button>
+                                <button class="flex-1 py-2.5 rounded-xl hover:bg-gray-100 transition-colors flex items-center justify-center action-btn">
+                                    <i class="fas fa-share mr-2"></i> Share
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // DOM Elements
+    const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebar-toggle');
+    const closeSidebar = document.getElementById('close-sidebar');
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const mobileSearchToggle = document.getElementById('mobile-search-toggle');
+    const mobileSearch = document.getElementById('mobile-search');
+    
+    // Sidebar Functions
+    function toggleSidebar() {
+      if (sidebar) sidebar.classList.toggle('-translate-x-full');
+      if (mobileSearch && !mobileSearch.classList.contains('hidden')) {
+        mobileSearch.classList.add('hidden');
+      }
+    }
+    
+    function toggleMobileSearch() {
+      if (mobileSearch) mobileSearch.classList.toggle('hidden');
+      if (sidebar && !sidebar.classList.contains('-translate-x-full')) {
+        sidebar.classList.add('-translate-x-full');
+      }
+    }
+    
+    // Event Listeners
+    function setupEventListeners() {
+      if (sidebarToggle) sidebarToggle.addEventListener('click', toggleSidebar);
+      if (closeSidebar) closeSidebar.addEventListener('click', toggleSidebar);
+      if (mobileMenuToggle) mobileMenuToggle.addEventListener('click', toggleSidebar);
+      if (mobileSearchToggle) mobileSearchToggle.addEventListener('click', toggleMobileSearch);
+      
+      document.addEventListener('click', (e) => {
+        if (window.innerWidth < 1024 && sidebar) {
+          const isSidebarClick = sidebar.contains(e.target) ||
+            e.target === sidebarToggle ||
+            e.target === mobileMenuToggle;
+          
+          if (!isSidebarClick && !sidebar.classList.contains('-translate-x-full')) {
+            sidebar.classList.add('-translate-x-full');
+          }
+        }
+      });
+      
+      window.addEventListener('resize', () => {
+        if (window.innerWidth >= 1024 && sidebar) {
+          sidebar.classList.remove('-translate-x-full');
+        }
+      });
+    }
+    
+    // Initialize
+    setupEventListeners();
+  });
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VUNO - Modern Team Collaboration</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- Tailwind Custom Config -->
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        screens: {
+          sm: '640px',
+          md: '768px',
+          lg: '1024px',
+          xl: '1280px',
+          '2xl': '1536px',
+        },
+        extend: {
+          fontFamily: {
+            sans: ['"Inter Variable"', 'Inter', 'system-ui', 'sans-serif'],
+            display: ['"Geist Variable"', '"Geist"', 'Inter', 'system-ui', 'sans-serif'],
+            mono: ['"Geist Mono Variable"', '"Geist Mono"', 'monospace'],
+          },
+          colors: {
+            primary: {
+              50: '#f0f9ff',
+              100: '#e0f2fe',
+              200: '#bae6fd',
+              300: '#7dd3fc',
+              400: '#38bdf8',
+              500: '#0ea5e9',
+              600: '#0284c7',
+              700: '#0369a1',
+              800: '#075985',
+              900: '#0c4a6e',
+            },
+            background: {
+              light: '#ffffff',
+              dark: '#0a0a0a',
+            },
+            surface: {
+              light: '#f8fafc',
+              dark: '#1a1a1a',
+            },
+            text: {
+              primary: {
+                light: '#18181b',
+                dark: '#fafafa',
+              },
+              secondary: {
+                light: '#52525b',
+                dark: '#a1a1aa',
+              }
+            },
+            border: {
+              light: '#e4e4e7',
+              dark: '#3f3f46',
+            }
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.3s ease-in-out forwards',
+            'slide-in': 'slideIn 0.3s ease-out forwards',
+            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+            slideIn: {
+              '0%': { transform: 'translateY(-20px)', opacity: '0' },
+              '100%': { transform: 'translateY(0)', opacity: '1' },
+            },
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Custom Styles -->
+  <style>
+    @import url('https://cdn.jsdelivr.net/npm/@fontsource-variable/inter@5.0.3/index.min.css');
+    @import url('https://cdn.jsdelivr.net/npm/@fontsource-variable/geist-sans@1.1.1/index.min.css');
+    @import url('https://cdn.jsdelivr.net/npm/@fontsource-variable/geist-mono@1.1.1/index.min.css');
+
+    body {
+      @apply font-sans text-text-primary-light bg-background-light dark:text-text-primary-dark dark:bg-background-dark;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    .active-scale {
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
+    .active-scale:active {
+      transform: scale(0.97);
+    }
+
+    .transition-smooth {
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .border-light {
+      @apply border border-border-light dark:border-border-dark;
+    }
+
+    .message-in {
+      border-radius: 18px 18px 18px 4px;
+      @apply bg-surface-light text-text-primary-light;
+    }
+    .dark .message-in {
+      @apply bg-surface-dark text-text-primary-dark;
+    }
+
+    .message-out {
+      border-radius: 18px 18px 4px 18px;
+      @apply bg-primary-600 text-white;
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      @apply bg-transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      @apply bg-border-light dark:bg-border-dark rounded-full;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      @apply bg-primary-400 dark:bg-primary-600;
+    }
+
+    @media (min-width: 1024px) {
+      .main-content {
+        margin-left: 20rem;
+      }
+      .mobile-nav {
+        display: none;
+      }
+    }
+
+    .text-display {
+      @apply font-display tracking-tight;
+    }
+
+    .text-mono {
+      @apply font-mono;
+    }
+
+    .text-secondary {
+      @apply text-text-secondary-light dark:text-text-secondary-dark;
+    }
+
+    .surface {
+      @apply bg-surface-light dark:bg-surface-dark;
+    }
+
+    .focus-ring {
+      @apply focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-surface-light dark:focus:ring-offset-surface-dark;
+    }
+
+    .theme-toggle {
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .theme-toggle .sun {
+      transform: rotate(0deg);
+      opacity: 1;
+    }
+
+    .theme-toggle .moon {
+      transform: rotate(-90deg);
+      opacity: 0;
+    }
+
+    .dark .theme-toggle .sun {
+      transform: rotate(90deg);
+      opacity: 0;
+    }
+
+    .dark .theme-toggle .moon {
+      transform: rotate(0deg);
+      opacity: 1;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen">
+<!-- Mobile Menu Button -->
+<div class="fixed top-4 left-4 z-50">
+  <button class="p-2 rounded-md bg-surface dark:bg-surface-dark border-light hover:bg-primary-50 dark:hover:bg-surface-dark/80 transition-smooth">
+    <img src="https://img.icons8.com/ios/50/menu--v1.png" alt="menu" class="w-6 h-6 dark:invert" />
+  </button>
+</div>
+
+<!-- Mobile Navigation Modal -->
+<div class="absolute top-16 left-4 p-4 bg-white dark:bg-gray-900 rounded-lg shadow-lg w-60 space-y-4 border-light hidden mobile-nav">
+  <a href="#" class="flex items-center gap-2 p-2 rounded-md hover:bg-primary-50 dark:hover:bg-surface-dark/80 transition-smooth">
+    <img src="feed.png" alt="feeds icon" class="w-5 h-5 dark:invert" />
+    <span>Feeds</span>
+  </a>
+  <a href="#" class="flex items-center gap-2 p-2 rounded-md hover:bg-primary-50 dark:hover:bg-surface-dark/80 transition-smooth">
+    <img src="https://img.icons8.com/ios/50/contacts.png" alt="contact icon" class="w-5 h-5 dark:invert" />
+    <span>Contact</span>
+  </a>
+  <a href="#" class="flex items-center gap-2 p-2 rounded-md hover:bg-primary-50 dark:hover:bg-surface-dark/80 transition-smooth">
+    <img src="https://img.icons8.com/ios/50/speech-bubble-with-dots.png" alt="message icon" class="w-5 h-5 dark:invert" />
+    <span>Message</span>
+  </a>
+</div>
+
+  <!-- Main Body -->
+  <main class="flex flex-col items-center justify-center text-center mt-24 space-y-6 px-4">
+    <div class="w-full max-w-md">
+      <img src="home.jpg" alt="cartoon of people having a meeting" class="w-full rounded-lg shadow-lg" />
+    </div>
+<div class="space-y-4 w-full max-w-md">
+  <!-- Create Meeting Button -->
+  <a href="meeting.html" class="block w-full py-3.5 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white rounded-xl font-medium active-scale transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 focus:ring-2 focus:ring-primary-400 focus:ring-offset-2 focus:ring-offset-surface-light dark:focus:ring-offset-surface-dark">
+    <div class="flex items-center justify-center gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+      </svg>
+      <span>Create a Meeting</span>
+    </div>
+  </a>
+  
+  <!-- Join Meeting Button -->
+  <a href="join.html" class="block w-full py-3.5 bg-gradient-to-r from-primary-400 to-primary-500 hover:from-primary-500 hover:to-primary-600 text-white rounded-xl font-medium active-scale transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 focus:ring-2 focus:ring-primary-400 focus:ring-offset-2 focus:ring-offset-surface-light dark:focus:ring-offset-surface-dark">
+    <div class="flex items-center justify-center gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+      </svg>
+      <span>Join a Meeting</span>
+    </div>
+  </a>
+  
+ <!-- Recent Messages Button -->
+<a href="message.html" class="flex items-center w-full p-5 bg-white dark:bg-gray-800 rounded-xl border-light hover:bg-primary-50/80 dark:hover:bg-gray-700/90 transition-all duration-300 shadow-sm hover:shadow-md group overflow-hidden relative">
+  <!-- Gradient accent -->
+  <div class="absolute left-0 top-0 h-full w-1.5 bg-gradient-to-b from-primary-400 to-primary-600"></div>
+  
+  <!-- Content -->
+  <div class="flex items-center w-full pl-4">
+    <!-- Animated icon container -->
+    <div class="relative p-2.5 rounded-lg bg-primary-50/30 dark:bg-gray-700/50 group-hover:bg-primary-100/40 dark:group-hover:bg-gray-600/50 transition-colors duration-300 mr-4">
+      <img src="feed.png" alt="messages" class="w-6 h-6 dark:invert group-hover:animate-float" />
+    </div>
+    
+    <!-- Text and badge -->
+    <div class="flex-1 text-left">
+      <div class="font-medium text-gray-800 dark:text-gray-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-200">Messages</div>
+      <div class="text-sm text-gray-500 dark:text-gray-400">Check your conversations</div>
+    </div>
+    
+    <!-- Notification badge and arrow -->
+    <div class="flex items-center">
+      <span class="flex items-center justify-center h-5 w-5 rounded-full bg-primary-500 text-white text-xs font-bold mr-3 animate-pulse">3</span>
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-300 dark:text-gray-500 group-hover:text-primary-500 dark:group-hover:text-primary-400 transition-colors duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
+    </div>
+  </div>
+</a>
+
+<!-- Hot News Button -->
+<a href="feed.html" class="flex items-center w-full p-5 bg-white dark:bg-gray-800 rounded-xl border-light hover:bg-primary-50/80 dark:hover:bg-gray-700/90 transition-all duration-300 shadow-sm hover:shadow-md group overflow-hidden relative mt-4">
+  <!-- Gradient accent -->
+  <div class="absolute left-0 top-0 h-full w-1.5 bg-gradient-to-b from-amber-400 to-amber-600"></div>
+  
+  <!-- Content -->
+  <div class="flex items-center w-full pl-4">
+    <!-- Animated icon container -->
+    <div class="relative p-2.5 rounded-lg bg-amber-50/30 dark:bg-gray-700/50 group-hover:bg-amber-100/40 dark:group-hover:bg-gray-600/50 transition-colors duration-300 mr-4">
+      <img src="new.png" alt="hot news" class="w-6 h-6 dark:invert group-hover:animate-pulse" />
+    </div>
+    
+    <!-- Text and badge -->
+    <div class="flex-1 text-left">
+      <div class="font-medium text-gray-800 dark:text-gray-100 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors duration-200">Hot News</div>
+      <div class="text-sm text-gray-500 dark:text-gray-400">Trending updates</div>
+    </div>
+    
+    <!-- Fire badge and arrow -->
+    <div class="flex items-center">
+      <span class="flex items-center justify-center h-5 w-5 rounded-full bg-amber-500 text-white text-xs font-bold mr-3">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+        </svg>
+      </span>
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-300 dark:text-gray-500 group-hover:text-amber-500 dark:group-hover:text-amber-400 transition-colors duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+      </svg>
+    </div>
+  </div>
+</a>
+
+<!-- Custom animation for floating effect -->
+<style>
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+  }
+  .animate-float {
+    animation: float 1.5s ease-in-out infinite;
+  }
+</style>
+</div>
+    
+  </main>
+
+  <script>
+    // Mobile menu toggle functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const menuButton = document.querySelector('.fixed button');
+      const mobileNav = document.querySelector('.mobile-nav');
+      
+      menuButton.addEventListener('click', function() {
+        mobileNav.classList.toggle('hidden');
+      });
+    });
+  </script>
+</body>
+</html>

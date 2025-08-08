@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VUNO - Video Call</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  
+  <style>
+    .video-container {
+      background-image: radial-gradient(circle at center, #1a1a1a 0%, #0a0a0a 100%);
+    }
+    .control-btn {
+      transition: all 0.2s ease;
+    }
+    .control-btn:active {
+      transform: scale(0.95);
+    }
+    .control-btn.active {
+      @apply bg-primary-600 text-white; 
+    }
+  </style>
+</head>
+<body class="h-full bg-background-dark text-white">
+  <div class="flex flex-col h-full">
+    <!-- Video Area -->
+    <div class="video-container flex-1 relative flex items-center justify-center">
+      <!-- Participant Video (Placeholder) -->
+      <div class="absolute inset-0 flex items-center justify-center">
+        <div class="w-32 h-32 rounded-full bg-surface-dark flex items-center justify-center">
+          <i class="fas fa-user text-4xl text-text-secondary-dark"></i>
+        </div>
+      </div>
+      
+      <!-- Your Video Preview -->
+      <div class="absolute bottom-4 right-4 w-24 h-32 rounded-lg bg-surface-dark overflow-hidden border-2 border-primary-500">
+        <div class="w-full h-full flex items-center justify-center">
+          <i class="fas fa-user text-xl"></i>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Controls -->
+    <div class="bg-surface-light dark:bg-surface-dark py-4 px-6 flex justify-center items-center space-x-6">
+      <!-- Microphone Button -->
+      <button class="control-btn w-12 h-12 rounded-full bg-white dark:bg-surface-dark flex items-center justify-center text-gray-800 dark:text-white border border-gray-200 dark:border-gray-700">
+        <i class="fas fa-microphone text-xl"></i>
+      </button>
+      
+      <!-- Speaker Button -->
+      <button class="control-btn w-12 h-12 rounded-full bg-white dark:bg-surface-dark flex items-center justify-center text-gray-800 dark:text-white border border-gray-200 dark:border-gray-700">
+        <i class="fas fa-volume-up text-xl"></i>
+      </button>
+      
+      <!-- Video Button -->
+      <button class="control-btn w-12 h-12 rounded-full bg-white dark:bg-surface-dark flex items-center justify-center text-gray-800 dark:text-white border border-gray-200 dark:border-gray-700">
+        <i class="fas fa-video text-xl"></i>
+      </button>
+      
+      <!-- More Options -->
+      <div class="relative">
+        <button class="control-btn w-12 h-12 rounded-full bg-white dark:bg-surface-dark flex items-center justify-center text-gray-800 dark:text-white border border-gray-200 dark:border-gray-700">
+          <i class="fas fa-ellipsis-h text-xl"></i>
+        </button>
+        
+        <!-- Modal (Hidden by default) -->
+        <div class="hidden absolute bottom-16 left-1/2 transform -translate-x-1/2 bg-white dark:bg-surface-dark rounded-lg shadow-lg p-3 space-y-3 w-48 border border-gray-200 dark:border-gray-700">
+          <button class="w-full flex items-center space-x-3 px-3 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-800 dark:text-white">
+            <i class="fas fa-map-marker-alt text-gray-600 dark:text-gray-400"></i>
+            <span>Location</span>
+          </button>
+          <button class="w-full flex items-center space-x-3 px-3 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-800 dark:text-white">
+            <i class="fas fa-comment text-gray-600 dark:text-gray-400"></i>
+            <span>Message</span>
+          </button>
+        </div>
+      </div>
+      
+      <!-- End Call Button -->
+      <button class="control-btn w-14 h-14 rounded-full bg-red-600 flex items-center justify-center text-white">
+        <i class="fas fa-phone text-xl"></i>
+      </button>
+    </div>
+      
+
+  </div>
+
+  <script>
+    // Toggle buttons
+    document.querySelectorAll('.control-btn:not(.bg-red-600)').forEach(btn => {
+      btn.addEventListener('click', () => {
+        btn.classList.toggle('active');
+        
+        // Update icons based on state
+        const icon = btn.querySelector('i');
+        if (btn.classList.contains('active')) {
+          if (icon.classList.contains('fa-microphone')) {
+            icon.classList.replace('fa-microphone', 'fa-microphone-slash');
+          } else if (icon.classList.contains('fa-volume-up')) {
+            icon.classList.replace('fa-volume-up', 'fa-volume-mute');
+          } else if (icon.classList.contains('fa-video')) {
+            icon.classList.replace('fa-video', 'fa-video-slash');
+          }
+        } else {
+          if (icon.classList.contains('fa-microphone-slash')) {
+            icon.classList.replace('fa-microphone-slash', 'fa-microphone');
+          } else if (icon.classList.contains('fa-volume-mute')) {
+            icon.classList.replace('fa-volume-mute', 'fa-volume-up');
+          } else if (icon.classList.contains('fa-video-slash')) {
+            icon.classList.replace('fa-video-slash', 'fa-video');
+          }
+        }
+      });
+    });
+    
+    // Toggle more options
+    const moreBtn = document.querySelector('.fa-ellipsis-h').closest('button');
+    const modal = document.querySelector('.hidden');
+    
+    moreBtn.addEventListener('click', () => {
+      modal.classList.toggle('hidden');
+    });
+    
+    // Close modal when clicking elsewhere
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.relative')) {
+        modal.classList.add('hidden');
+      }
+    });
+  </script>
+</body>
+</html>

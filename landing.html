@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vuno - Video Meetings, Chat & Reels for Teams</title>
+    <meta name="description" content="Vuno brings together crystal-clear video meetings, fun chat features, and engaging reels in one powerful collaboration platform.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="vuno.png" type="image/png" sizes="32x32">
+    <script src="https://cdn.tailwindcss.com"></script>
+  
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        },
+                        secondary: {
+                            light: '#FF5E5E',
+                        },
+                        accent: {
+                            light: '#2ED573',
+                        },
+                        background: {
+                            light: '#F8FAFC',
+                        },
+                        surface: {
+                            light: '#FFFFFF',
+                        },
+                        text: {
+                            light: '#1E293B',
+                        },
+                    },
+                    animation: {
+                        'gradient-pulse': 'gradientPulse 15s ease infinite',
+                        'fade-in': 'fadeIn 0.5s ease-in-out forwards',
+                        'slide-in': 'slideIn 0.3s ease-out forwards',
+                        'slide-in-right': 'slideInRight 0.3s ease-out forwards',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 3s ease-in-out infinite',
+                        'logo-pulse': 'logoPulse 2s ease-in-out infinite alternate',
+                    },
+                    keyframes: {
+                        gradientPulse: {
+                            '0%, 100%': { 'background-position': '0% 50%' },
+                            '50%': { 'background-position': '100% 50%' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideIn: {
+                            '0%': { transform: 'translateY(-20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        slideInRight: {
+                            '0%': { transform: 'translateX(100%)', opacity: '0' },
+                            '100%': { transform: 'translateX(0)', opacity: '1' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        logoPulse: {
+                            '0%': { transform: 'scale(1)', opacity: '0.8' },
+                            '100%': { transform: 'scale(1.05)', opacity: '1' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Loading Screen Styles */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #F8FAFC;
+            z-index: 9999;
+            flex-direction: column;
+        }
+        
+        .loading-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .loading-logo {
+            width: 200px;
+            height: 200px;
+            animation: logoPulse 2s ease-in-out infinite alternate;
+        }
+        
+        .loading-text {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            color: #0ea5e9;
+            margin-top: 40px;
+            letter-spacing: 1px;
+        }
+        
+        .loading-subtext {
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            color: #64748B;
+            margin-top: 12px;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Main Content Styles */
+        .hero-gradient {
+            background: linear-gradient(135deg, #0EA5E9 0%, #2ED573 50%, #818CF8 100%);
+            background-size: 200% 200%;
+            animation: gradientPulse 15s ease infinite;
+        }
+        
+        .feature-card {
+            transition: all 0.3s ease;
+            transform: translateY(0);
+            border: 1px solid #E2E8F0;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.1), 0 10px 10px -5px rgba(15, 23, 42, 0.04);
+            border-color: rgba(56, 189, 248, 0.3);
+        }
+        
+        .nav-link {
+            position: relative;
+        }
+        
+        .nav-link:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: #38bdf8;
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover:after {
+            width: 100%;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(90deg, #38bdf8, #2ED573);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .wave-animation {
+            animation: wave 1.5s ease-in-out infinite;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #F1F5F9;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #38bdf8;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="min-h-full bg-background-light text-text-light font-sans transition-colors duration-300 scroll-smooth">
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-container">
+            <img src="vuno.png" alt="VUNO Logo" class="loading-logo" width="80" height="80">
+        </div>
+        <span class="loading-text">VUNO</span>
+        <span class="loading-subtext">Loading your collaboration space</span>
+    </div>
+
+    <!-- Main Content -->
+    <div id="main-content" class="hidden">
+        <!-- Navigation -->
+        <nav class="px-6 py-4 md:px-12 lg:px-24 flex justify-between items-center sticky top-0 z-50 bg-surface-light bg-opacity-95 backdrop-blur-sm border-b border-slate-100">
+            <!-- Logo -->
+            <div class="logo-container flex items-center space-x-2">
+                <img src="vuno.png" alt="VUNO Logo" class="logo w-14 h-14 wave-animation">
+                <span class="logo-text font-display font-bold text-xl gradient-text">VUNO</span>
+            </div>
+
+            <!-- Desktop Navigation -->
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#features" class="nav-link font-medium text-slate-700 hover:text-primary-600 transition-colors">Features</a>
+                <a href="#pricing" class="nav-link font-medium text-slate-700 hover:text-primary-600 transition-colors">Pricing</a>
+                <a href="#about" class="nav-link font-medium text-slate-700 hover:text-primary-600 transition-colors">About</a>
+                <a href="#contact" class="nav-link font-medium text-slate-700 hover:text-primary-600 transition-colors">Contact</a>
+                <a href="signin.html" class="font-medium px-4 py-2 rounded-lg hover:bg-slate-100 transition-colors">Sign in</a>
+                <a href="signup.html" class="font-medium bg-primary-600 text-white px-6 py-2 rounded-lg hover:bg-primary-700 transition-colors shadow-md hover:shadow-lg">Get Started</a>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <button id="mobile-menu-button" class="md:hidden text-slate-600">
+                <img src="menu.png" alt="Menu" class="w-6 h-6">
+            </button>
+        </nav>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden fixed inset-0 bg-surface-light z-40 pt-20 px-6">
+            <div class="flex flex-col space-y-6">
+                <a href="#features" class="font-medium text-lg text-slate-700 hover:text-primary-600 transition-colors">Features</a>
+                <a href="#pricing" class="font-medium text-lg text-slate-700 hover:text-primary-600 transition-colors">Pricing</a>
+                <a href="#about" class="font-medium text-lg text-slate-700 hover:text-primary-600 transition-colors">About</a>
+                <a href="#contact" class="font-medium text-lg text-slate-700 hover:text-primary-600 transition-colors">Contact</a>
+                <div class="pt-4 border-t border-slate-200">
+                    <a href="signin.html" class="block w-full text-center font-medium px-4 py-3 rounded-lg bg-slate-100 hover:bg-slate-200 transition-colors mb-3">Sign in</a>
+                    <a href="signup.html" class="block w-full text-center font-medium px-4 py-3 rounded-lg bg-primary-600 text-white hover:bg-primary-700 transition-colors shadow-md">Get Started</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hero Section -->
+        <section class="hero-section px-6 py-16 md:py-24 md:px-12 lg:px-24">
+            <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="space-y-8 text-center lg:text-left">
+                    <h1 class="font-display font-bold text-4xl sm:text-5xl md:text-6xl leading-tight">
+                        <span class="gradient-text">Team Collaboration</span>
+                        <br>Reimagined
+                    </h1>
+                    <p class="text-lg md:text-xl text-slate-600 max-w-2xl">
+                        Vuno brings together crystal-clear video meetings, fun chat features, and engaging reels in one powerful collaboration platform designed for modern teams.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                        <a href="signup.html" class="font-medium bg-primary-600 text-white px-6 py-3 rounded-lg hover:bg-primary-700 transition-colors shadow-md hover:shadow-lg text-center">
+                            Get Started - It's Free
+                        </a>
+                        <a href="#features" class="font-medium border border-slate-300 text-slate-700 px-6 py-3 rounded-lg hover:bg-slate-100 transition-colors text-center">
+                            Explore Features
+                        </a>
+                    </div>
+                    <div class="flex items-center justify-center lg:justify-start space-x-2 text-sm text-slate-500">
+                        <img src="credit-card.png" alt="Checkmark" class="w-4 h-4">
+                        <span>No credit card required</span>
+                    </div>
+                </div>
+                <div class="relative">
+                    <div class="relative z-10 rounded-2xl overflow-hidden shadow-2xl border-4 border-white">
+                        <img src="ui.png" alt="Vuno app interface" class="w-full h-auto">
+                    </div>
+                    <div class="absolute -bottom-6 -left-6 w-32 h-32 bg-green-200 rounded-full opacity-20 blur-xl"></div>
+                    <div class="absolute -top-6 -right-6 w-40 h-40 bg-blue-200 rounded-full opacity-20 blur-xl"></div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Features Section -->
+        <section id="features" class="px-6 py-16 md:py-24 md:px-12 lg:px-24 bg-slate-50">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center max-w-3xl mx-auto mb-16">
+                    <h2 class="font-display font-bold text-3xl md:text-4xl mb-4">Powerful Features for <span class="gradient-text">Seamless Collaboration</span></h2>
+                    <p class="text-slate-600">
+                        Vuno combines all the tools your team needs to communicate, collaborate, and create together in one intuitive platform.
+                    </p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Feature 1 -->
+                    <div class="feature-card bg-surface-light p-8 rounded-xl shadow-sm hover:shadow-md transition-all">
+                        <div class="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center mb-6">
+                            <img src="conversation.png" alt="Video" class="w-6 h-6">
+                        </div>
+                        <h3 class="font-display font-bold text-xl mb-3">HD Video Meetings</h3>
+                        <p class="text-slate-600">
+                            Crystal-clear video and audio with advanced noise cancellation and background blur for professional meetings.
+                        </p>
+                    </div>
+                    
+                    <!-- Feature 2 -->
+                    <div class="feature-card bg-surface-light p-8 rounded-xl shadow-sm hover:shadow-md transition-all">
+                        <div class="w-12 h-12 rounded-lg bg-green-100 flex items-center justify-center mb-6">
+                            <img src="collaborative.png" alt="Chat" class="w-6 h-6">
+                        </div>
+                        <h3 class="font-display font-bold text-xl mb-3">Team Chat</h3>
+                        <p class="text-slate-600">
+                            Real-time messaging with threads, reactions, and file sharing to keep conversations organized.
+                        </p>
+                    </div>
+                    
+                    <!-- Feature 3 -->
+                    <div class="feature-card bg-surface-light p-8 rounded-xl shadow-sm hover:shadow-md transition-all">
+                        <div class="w-12 h-12 rounded-lg bg-red-100 flex items-center justify-center mb-6">
+                            <img src="reel.png" alt="Reels" class="w-6 h-6">
+                        </div>
+                        <h3 class="font-display font-bold text-xl mb-3">Video Reels</h3>
+                        <p class="text-slate-600">
+                            Create and share short video updates with your team to keep everyone in the loop.
+                        </p>
+                    </div>
+                    
+                    <!-- Feature 4 -->
+                    <div class="feature-card bg-surface-light p-8 rounded-xl shadow-sm hover:shadow-md transition-all">
+                        <div class="w-12 h-12 rounded-lg bg-purple-100 flex items-center justify-center mb-6">
+                            <img src="shield.png" alt="Security" class="w-6 h-6">
+                        </div>
+                        <h3 class="font-display font-bold text-xl mb-3">End-to-End Encryption</h3>
+                        <p class="text-slate-600">
+                            Enterprise-grade security to protect your conversations and data privacy.
+                        </p>
+                    </div>
+                    
+                    <!-- Feature 5 -->
+                    <div class="feature-card bg-surface-light p-8 rounded-xl shadow-sm hover:shadow-md transition-all">
+                        <div class="w-12 h-12 rounded-lg bg-yellow-100 flex items-center justify-center mb-6">
+                            <img src="recording.png" alt="Recording" class="w-6 h-6">
+                        </div>
+                        <h3 class="font-display font-bold text-xl mb-3">Screen Recording</h3>
+                        <p class="text-slate-600">
+                            Record and share your screen with teammates for async collaboration.
+                        </p>
+                    </div>
+                    
+                    <!-- Feature 6 -->
+                    <div class="feature-card bg-surface-light p-8 rounded-xl shadow-sm hover:shadow-md transition-all">
+                        <div class="w-12 h-12 rounded-lg bg-pink-100 flex items-center justify-center mb-6">
+                            <img src="workspace(2).png" alt="Workspace" class="w-6 h-6">
+                        </div>
+                        <h3 class="font-display font-bold text-xl mb-3">Workspaces</h3>
+                        <p class="text-slate-600">
+                            Organize your team into dedicated spaces for projects, departments, or topics.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonial Section -->
+        <section class="px-6 py-16 md:py-24 md:px-12 lg:px-24 bg-surface-light">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center max-w-3xl mx-auto mb-16">
+                    <h2 class="font-display font-bold text-3xl md:text-4xl mb-4">Loved by <span class="gradient-text">Teams Worldwide</span></h2>
+                    <p class="text-slate-600">
+                        Don't just take our word for it. Here's what our users say about Vuno.
+                    </p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Testimonial 1 -->
+                    <div class="bg-slate-50 p-8 rounded-xl shadow-sm">
+                        <div class="flex items-center mb-6">
+                            <div class="flex items-center space-x-2">
+                                <img src="star-icon.png" alt="Star" class="w-5 h-5">
+                                <span class="font-bold text-slate-800">5.0</span>
+                            </div>
+                        </div>
+                        <p class="text-slate-600 mb-6 italic">
+                            "Vuno has transformed how our remote team collaborates. The video quality is exceptional and the chat features keep us connected throughout the day."
+                        </p>
+                        <div class="flex items-center">
+                            <img src="testimonial1.jpg" alt="Sarah Johnson" class="w-10 h-10 rounded-full mr-4">
+                            <div>
+                                <h4 class="font-bold text-slate-800">Sarah Johnson</h4>
+                                <p class="text-sm text-slate-500">Product Manager, Shopify</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Testimonial 2 -->
+                    <div class="bg-slate-50 p-8 rounded-xl shadow-sm">
+                        <div class="flex items-center mb-6">
+                            <div class="flex items-center space-x-2">
+                                <img src="star-icon.png" alt="Star" class="w-5 h-5">
+                                <span class="font-bold text-slate-800">4.9</span>
+                            </div>
+                        </div>
+                        <p class="text-slate-600 mb-6 italic">
+                            "The video reels feature has been a game-changer for our async standups. Team members can watch updates when it suits them, saving hours of meeting time."
+                        </p>
+                        <div class="flex items-center">
+                            <img src="testimonial2.jpg" alt="Michael Chen" class="w-10 h-10 rounded-full mr-4">
+                            <div>
+                                <h4 class="font-bold text-slate-800">Michael Chen</h4>
+                                <p class="text-sm text-slate-500">CTO, TechStart</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Testimonial 3 -->
+                    <div class="bg-slate-50 p-8 rounded-xl shadow-sm">
+                        <div class="flex items-center mb-6">
+                            <div class="flex items-center space-x-2">
+                                <img src="star-icon.png" alt="Star" class="w-5 h-5">
+                                <span class="font-bold text-slate-800">5.0</span>
+                            </div>
+                        </div>
+                        <p class="text-slate-600 mb-6 italic">
+                            "We switched from three different tools to Vuno and haven't looked back. The all-in-one solution has simplified our workflow and reduced costs significantly."
+                        </p>
+                        <div class="flex items-center">
+                            <img src="testimonial3.jpg" alt="Emma Rodriguez" class="w-10 h-10 rounded-full mr-4">
+                            <div>
+                                <h4 class="font-bold text-slate-800">Emma Rodriguez</h4>
+                                <p class="text-sm text-slate-500">Head of Remote, Global Inc.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pricing Section -->
+        <section id="pricing" class="px-6 py-16 md:py-24 md:px-12 lg:px-24 bg-slate-50">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center max-w-3xl mx-auto mb-16">
+                    <h2 class="font-display font-bold text-3xl md:text-4xl mb-4">Simple, Transparent <span class="gradient-text">Pricing</span></h2>
+                    <p class="text-slate-600">
+                        Choose the plan that fits your team's needs. No hidden fees, no surprises.
+                    </p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                    <!-- Free Plan -->
+                    <div class="bg-surface-light p-8 rounded-xl shadow-sm border-2 border-slate-200">
+                        <h3 class="font-display font-bold text-2xl mb-2">Free</h3>
+                        <p class="text-slate-600 mb-6">Perfect for small teams getting started</p>
+                        <div class="mb-6">
+                            <span class="font-display font-bold text-4xl">$0</span>
+                            <span class="text-slate-500">/month</span>
+                        </div>
+                        <ul class="space-y-3 mb-8">
+                            <li class="flex items-center">
+                                <img src="participant.png" alt="Checkmark" class="w-5 h-5 mr-2">
+                                <span class="text-slate-600">Up to 10 participants per meeting</span>
+                            </li>
+                            <li class="flex items-center">
+                                <img src="time.png" alt="Checkmark" class="w-5 h-5 mr-2">
+                                <span class="text-slate-600">40 minute group meetings</span>
+                            </li>
+                            <li class="flex items-center">
+                                <img src="unlimit.png" alt="Checkmark" class="w-5 h-5 mr-2">
+                                <span class="text-slate-600">Unlimited 1:1 meetings</span>
+                            </li>
+                            <li class="flex items-center">
+                                <img src="chat.png" alt="Checkmark" class="w-5 h-5 mr-2">
+                                <span class="text-slate-600">Basic chat features</span>
+                            </li>
+                        </ul>
+                        <a href="#" class="block w-full text-center font-medium px-6 py-3 rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-100 transition-colors">
+                            Get Started
+                        </a>
+                    </div>
+                    
+                    <!-- Pro Plan -->
+                    <div class="bg-surface-light p-8 rounded-xl shadow-lg border-2 border-primary-500 relative">
+                        <div class="absolute top-0 right-0 bg-primary-600 text-white text-xs font-bold px-3 py-1 rounded-bl-lg rounded-tr-lg">POPULAR</div>
+                        <h3 class="font-display font-bold text-2xl mb-2">Pro</h3>
+                        <p class="text-slate-600 mb-6">For growing teams that need more</p>
+                        <div class="mb-6">
+                            <span class="font-display font-bold text-4xl">$12</span>
+                            <span class="text-slate-500">/user/month</span>
+                        </div>
+                        <ul class="space-y-3 mb-8">
+                            <li class="flex items-center">
+                                <img src="free.png" alt="Checkmark" class="w-5 h-5 mr-2">
+                                <span class="text-slate-600">Everything in Free, plus:</span>
+                            </li>
+                            <li class="flex items-center">
+                                <img src="participant.png" alt="Checkmark" class="w-5 h-5 mr-2">
+                                <span class="text-slate-600">Up to 100 participants</span>
+                            </li>
+                            <li class="flex items-center">
+                                <img src="time.png" alt="Checkmark" class="w-5 h-5 mr-2">
+                                <span class="text-slate-600">24 hour meeting duration</span>
+                            </li>
+                            <li class="flex items-center">
+                                <img src="chat.png" alt="Checkmark" class="w-5 h-5 mr-2">
+                                <span class="text-slate-600">Advanced chat features</span>
+                            </li>
+                            <li class="flex items-center">
+                                <img src="edit.png" alt="Checkmark" class="w-5 h-5 mr-2">
+                                <span class="text-slate-600">Video reels with editing</span>
+                            </li>
+                        </ul>
+                        <a href="#" class="block w-full text-center font-medium px-6 py-3 rounded-lg bg-primary-600 text-white hover:bg-primary-700 transition-colors shadow-md">
+                            Upgrade Now
+                        </a>
+                    </div>
+                    
+                    <!-- Enterprise Plan -->
+                    <div class="bg-surface-light p-8 rounded-xl shadow-sm border-2 border-slate-200">
+                        <h3 class="font-display font-bold text-2xl mb-2">Enterprise</h3>
+                        <p class="text-slate-600 mb-6">For large organizations</p>
+                        <div class="mb-6">
+                            <span class="font-display font-bold text-4xl">Custom</span>
+                        </div>
+                        <ul class="space-y-3 mb-8">
+                            <li class="flex items-center">
+                                <img src="plus.png" alt="Checkmark" class="w-5 h-5 mr-2">
+                                <span class="text-slate-600">Everything in Pro, plus:</span>
+                            </li>
+                            <li class="flex items-center">
+                                <img src="participant.png" alt="Checkmark" class="w-5 h-5 mr-2">
+                                <span class="text-slate-600">Unlimited participants</span>
+                            </li>
+                            <li class="flex items-center">
+                                <img src="unlimit.png" alt="Checkmark" class="w-5 h-5 mr-2">
+                                <span class="text-slate-600">Unlimited meeting duration</span>
+                            </li>
+                            <li class="flex items-center">
+                                <img src="customer.png" alt="Checkmark" class="w-5 h-5 mr-2">
+                                <span class="text-slate-600">Dedicated customer success</span>
+                            </li>
+                            <li class="flex items-center">
+                                <img src="security.png" alt="Checkmark" class="w-5 h-5 mr-2">
+                                <span class="text-slate-600">Advanced security & compliance</span>
+                            </li>
+                        </ul>
+                        <a href="#" class="block w-full text-center font-medium px-6 py-3 rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-100 transition-colors">
+                            Contact Sales
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="mt-12 text-center text-sm text-slate-500">
+                    <p>All plans come with a 14-day free trial. No credit card required.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="px-6 py-16 md:py-24 md:px-12 lg:px-24 bg-primary-600 text-white">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="font-display font-bold text-3xl md:text-4xl mb-6">Ready to Transform Your Team Collaboration?</h2>
+                <p class="text-lg text-blue-100 mb-8 max-w-3xl mx-auto">
+                    Join thousands of teams who are already using Vuno to communicate better and work smarter.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="#" class="font-medium bg-white text-primary-600 px-8 py-3 rounded-lg hover:bg-opacity-90 transition-colors shadow-md hover:shadow-lg text-center">
+                        Get Started for Free
+                    </a>
+                    <a href="#pricing" class="font-medium border border-white text-white px-8 py-3 rounded-lg hover:bg-white hover:bg-opacity-10 transition-colors text-center">
+                        Compare Plans
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="px-6 py-12 md:px-12 lg:px-24 bg-surface-light border-t border-slate-200">
+            <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
+                <!-- Column 1 -->
+                <div>
+                    <div class="flex items-center space-x-2 mb-6">
+                        <img src="vuno.png" alt="VUNO Logo" class="logo w-8 h-8">
+                        <span class="logo-text font-display font-bold text-xl gradient-text">VUNO</span>
+                    </div>
+                    <p class="text-slate-600 mb-6">
+                        The all-in-one collaboration platform for modern teams.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-slate-500 hover:text-primary-600 transition-colors">
+                            <img src="twitter-icon.png" alt="Twitter" class="w-5 h-5">
+                        </a>
+                        <a href="#" class="text-slate-500 hover:text-primary-600 transition-colors">
+                            <img src="instagram-icon.png" alt="Instagram" class="w-5 h-5">
+                        </a>
+                        <a href="#" class="text-slate-500 hover:text-primary-600 transition-colors">
+                            <img src="linkedin-icon.png" alt="LinkedIn" class="w-5 h-5">
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Column 2 -->
+                <div>
+                    <h3 class="font-display font-bold text-lg mb-6">Product</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-slate-600 hover:text-primary-600 transition-colors">Features</a></li>
+                        <li><a href="#" class="text-slate-600 hover:text-primary-600 transition-colors">Pricing</a></li>
+                        <li><a href="#" class="text-slate-600 hover:text-primary-600 transition-colors">Integrations</a></li>
+                        <li><a href="#" class="text-slate-600 hover:text-primary-600 transition-colors">Changelog</a></li>
+                        <li><a href="#" class="text-slate-600 hover:text-primary-600 transition-colors">Roadmap</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Column 3 -->
+                <div>
+                    <h3 class="font-display font-bold text-lg mb-6">Company</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-slate-600 hover:text-primary-600 transition-colors">About Us</a></li>
+                        <li><a href="#" class="text-slate-600 hover:text-primary-600 transition-colors">Careers</a></li>
+                        <li><a href="#" class="text-slate-600 hover:text-primary-600 transition-colors">Blog</a></li>
+                        <li><a href="#" class="text-slate-600 hover:text-primary-600 transition-colors">Press</a></li>
+                        <li><a href="#" class="text-slate-600 hover:text-primary-600 transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <!-- Column 4 -->
+                <div>
+                    <h3 class="font-display font-bold text-lg mb-6">Resources</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-slate-600 hover:text-primary-600 transition-colors">Help Center</a></li>
+                        <li><a href="#" class="text-slate-600 hover:text-primary-600 transition-colors">Community</a></li>
+                        <li><a href="#" class="text-slate-600 hover:text-primary-600 transition-colors">Tutorials</a></li>
+                        <li><a href="#" class="text-slate-600 hover:text-primary-600 transition-colors">Webinars</a></li>
+                                             <li><a href="#" class="text-slate-600 hover:text-primary-600 transition-colors">API Docs</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="max-w-7xl mx-auto pt-12 mt-12 border-t border-slate-200">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <p class="text-sm text-slate-500 mb-4 md:mb-0">
+                        © 2023 Vuno Technologies, Inc. All rights reserved.
+                    </p>
+                    <div class="flex space-x-6">
+                        <a href="#" class="text-sm text-slate-500 hover:text-primary-600 transition-colors">Privacy Policy</a>
+                        <a href="#" class="text-sm text-slate-500 hover:text-primary-600 transition-colors">Terms of Service</a>
+                        <a href="#" class="text-sm text-slate-500 hover:text-primary-600 transition-colors">Cookie Policy</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // Loading screen transition
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.getElementById('loading-screen').style.opacity = '0';
+                document.getElementById('loading-screen').style.pointerEvents = 'none';
+                document.getElementById('main-content').classList.remove('hidden');
+                document.getElementById('main-content').classList.add('block');
+                
+                setTimeout(function() {
+                    document.getElementById('loading-screen').style.display = 'none';
+                }, 500);
+            }, 1500);
+        });
+
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+            menu.classList.toggle('block');
+        });
+
+        // Close mobile menu when clicking on a link
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                document.getElementById('mobile-menu').classList.add('hidden');
+            });
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Animation on scroll
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-fade-in');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.feature-card, .hero-section, section').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
