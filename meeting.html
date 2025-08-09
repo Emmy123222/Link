@@ -118,7 +118,7 @@
       @apply bg-surface-light text-text-primary-light;
     }
     .dark .message-in {
-      @apply bg-surface-dark text-text-primary-dark;
+      @apply bg-surface-dark text-text-primary-dark; 
     }
 
     .message-out {
@@ -227,24 +227,23 @@
        </button>
 
        <!-- Modal (hidden by default) -->
-       <div class="modal hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
-         <div class="bg-surface-light dark:bg-surface-dark rounded-xl p-6 max-w-md w-full shadow-xl animate-fade-in">
-           <h1 class="text-xl font-bold mb-2">Here is your joining info</h1>
-           <p class="text-text-secondary-light dark:text-text-secondary-dark mb-4">You can share this with people who want to join your meeting</p>
-           <div class="flex items-center space-x-2 mb-6 p-3 bg-surface-light dark:bg-surface-dark rounded-lg border-light">
-             <p class="text-sm truncate flex-1">https://vuno.app/join/meeting-id</p>
-             <button class="text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300">
-               <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
-               </svg>
-             </button>
-           </div>
-           <button class="w-full py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors">
-             Close
-           </button>
-         </div>
-       </div>
-
+<div class="modal hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
+  <div class="bg-surface-light dark:bg-surface-dark rounded-xl p-6 max-w-md w-full shadow-xl animate-fade-in">
+    <h1 class="text-xl font-bold mb-2 text-text-primary-light dark:text-text-primary-dark">Here is your joining info</h1>
+    <p class="text-base text-text-secondary-light dark:text-text-secondary-dark mb-4">You can share this with people who want to join your meeting</p>
+    <div class="flex items-center justify-between mb-6 p-3 bg-surface-light dark:bg-surface-dark rounded-lg border border-border-light dark:border-border-dark">
+      <p class="text-sm font-medium text-text-primary-light dark:text-text-primary-dark truncate flex-1 pr-2">https://vuno.app/join/meeting-id</p>
+      <button id="copy-button" class="text-primary-600 dark:text-primary-400 hover:text-primary-800 dark:hover:text-primary-300 focus:outline-none">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+        </svg>
+      </button>
+    </div>
+    <button id="close-modal" class="w-full py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors font-medium">
+      Close
+    </button>
+  </div>
+</div>
        <!-- Start meeting button -->
        <button class="w-full flex items-center justify-between px-6 py-4 bg-surface-light dark:bg-surface-dark rounded-xl border-light shadow-sm hover:shadow-md transition-all active-scale focus-ring">
          <div class="flex items-center space-x-4">
@@ -296,6 +295,64 @@
    document.querySelector('.modal button').addEventListener('click', () => {
      document.querySelector('.modal').classList.add('hidden');
    });
+document.addEventListener('DOMContentLoaded', function() {
+  // Get elements
+  const modal = document.querySelector('.modal');
+  const copyButton = document.getElementById('copy-button');
+  const closeButton = document.getElementById('close-modal');
+  const meetingLink = document.querySelector('.flex.items-center.justify-between p'); // The link text element
+
+  // Copy functionality
+  copyButton.addEventListener('click', function() {
+    // Get the text to copy
+    const textToCopy = meetingLink.textContent;
+    
+    // Use the Clipboard API to copy text
+    navigator.clipboard.writeText(textToCopy)
+      .then(() => {
+        // Change icon temporarily to show success
+        const originalIcon = copyButton.innerHTML;
+        copyButton.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+        `;
+        
+        // Revert back after 2 seconds
+        setTimeout(() => {
+          copyButton.innerHTML = originalIcon;
+        }, 2000);
+      })
+      .catch(err => {
+        console.error('Failed to copy text: ', err);
+        // Fallback for browsers that don't support Clipboard API
+        const textArea = document.createElement('textarea');
+        textArea.value = textToCopy;
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+          document.execCommand('copy');
+          // Show success feedback
+          alert('Link copied to clipboard!');
+        } catch (err) {
+          alert('Failed to copy link');
+        }
+        document.body.removeChild(textArea);
+      });
+  });
+
+  // Close modal functionality
+  closeButton.addEventListener('click', function() {
+    modal.classList.add('hidden');
+  });
+
+  // Optional: Close modal when clicking outside the content
+  modal.addEventListener('click', function(e) {
+    if (e.target === modal) {
+      modal.classList.add('hidden');
+    }
+  });
+});   
  </script>
 </body>
 </html>
