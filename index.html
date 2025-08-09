@@ -203,6 +203,63 @@
   </button>
 </div>
 
+
+<!-- Desktop Sidebar (only shows on lg screens and up) -->
+<div class="hidden lg:block fixed top-0 left-0 h-full w-64 bg-surface-light dark:bg-surface-dark border-r border-border-light dark:border-border-dark z-40">
+  <div class="p-6 flex flex-col h-full">
+    <!-- Logo/Brand -->
+    <div class="mb-8">
+      <h1 class="text-2xl font-bold text-primary-600 dark:text-primary-400">VUNO</h1>
+      <p class="text-sm text-secondary mt-1">Modern Team Collaboration</p>
+    </div>
+    
+    <!-- Navigation Links -->
+    <nav class="flex-1 space-y-2">
+      <a href="#" class="flex items-center gap-3 p-3 rounded-lg hover:bg-primary-50 dark:hover:bg-surface-dark/80 transition-smooth text-primary-600 dark:text-primary-400 font-medium">
+        <img src="feed.png" alt="feeds icon" class="w-5 h-5 dark:invert" />
+        <span>Feeds</span>
+      </a>
+      <a href="#" class="flex items-center gap-3 p-3 rounded-lg hover:bg-primary-50 dark:hover:bg-surface-dark/80 transition-smooth text-text-primary-light dark:text-text-primary-dark">
+        <img src="https://img.icons8.com/ios/50/contacts.png" alt="contact icon" class="w-5 h-5 dark:invert" />
+        <span>Contact</span>
+      </a>
+      <a href="#" class="flex items-center gap-3 p-3 rounded-lg hover:bg-primary-50 dark:hover:bg-surface-dark/80 transition-smooth text-text-primary-light dark:text-text-primary-dark">
+        <img src="https://img.icons8.com/ios/50/speech-bubble-with-dots.png" alt="message icon" class="w-5 h-5 dark:invert" />
+        <span>Message</span>
+      </a>
+    </nav>
+    
+    <!-- User Profile/Footer -->
+    <div class="mt-auto pt-4 border-t border-border-light dark:border-border-dark">
+      <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-primary-50 dark:hover:bg-surface-dark/80 transition-smooth cursor-pointer">
+        <div class="w-8 h-8 rounded-full bg-primary-100 dark:bg-primary-900 flex items-center justify-center">
+          <span class="text-sm font-medium text-primary-600 dark:text-primary-300">U</span>
+        </div>
+        <div>
+          <p class="text-sm font-medium">User Name</p>
+          <p class="text-xs text-secondary">Free Plan</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // This ensures the main content is properly offset when sidebar is present
+  document.addEventListener('DOMContentLoaded', function() {
+    if (window.innerWidth >= 1024) {
+      document.querySelector('main').classList.add('main-content');
+    }
+    
+    window.addEventListener('resize', function() {
+      if (window.innerWidth >= 1024) {
+        document.querySelector('main').classList.add('main-content');
+      } else {
+        document.querySelector('main').classList.remove('main-content');
+      }
+    });
+  });
+</script>
 <!-- Mobile Navigation Modal -->
 <div class="absolute top-16 left-4 p-4 bg-white dark:bg-gray-900 rounded-lg shadow-lg w-60 space-y-4 border-light hidden mobile-nav">
   <a href="#" class="flex items-center gap-2 p-2 rounded-md hover:bg-primary-50 dark:hover:bg-surface-dark/80 transition-smooth">
