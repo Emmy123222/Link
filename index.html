@@ -192,200 +192,316 @@
       transform: rotate(0deg);
       opacity: 1;
     }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+    .animate-float {
+      animation: float 1.5s ease-in-out infinite;
+    }
   </style>
 </head>
 
 <body class="min-h-screen">
-<!-- Mobile Menu Button -->
-<div class="fixed top-4 left-4 z-50">
-  <button class="p-2 rounded-md bg-surface dark:bg-surface-dark border-light hover:bg-primary-50 dark:hover:bg-surface-dark/80 transition-smooth">
+  <!-- Mobile Menu Button -->
+<div class="fixed top-4 left-4 z-50 lg:hidden">
+  <button id="mobileMenuButton" class="p-2 rounded-md bg-surface dark:bg-surface-dark border-light hover:bg-primary-50 dark:hover:bg-surface-dark/80 transition-smooth">
     <img src="https://img.icons8.com/ios/50/menu--v1.png" alt="menu" class="w-6 h-6 dark:invert" />
   </button>
 </div>
 
-
-<!-- Desktop Sidebar (only shows on lg screens and up) -->
-<div class="hidden lg:block fixed top-0 left-0 h-full w-64 bg-surface-light dark:bg-surface-dark border-r border-border-light dark:border-border-dark z-40">
-  <div class="p-6 flex flex-col h-full">
-    <!-- Logo/Brand -->
-    <div class="mb-8">
-      <h1 class="text-2xl font-bold text-primary-600 dark:text-primary-400">VUNO</h1>
-      <p class="text-sm text-secondary mt-1">Modern Team Collaboration</p>
-    </div>
-    
-    <!-- Navigation Links -->
-    <nav class="flex-1 space-y-2">
-      <a href="#" class="flex items-center gap-3 p-3 rounded-lg hover:bg-primary-50 dark:hover:bg-surface-dark/80 transition-smooth text-primary-600 dark:text-primary-400 font-medium">
-        <img src="feed.png" alt="feeds icon" class="w-5 h-5 dark:invert" />
-        <span>Feeds</span>
-      </a>
-      <a href="#" class="flex items-center gap-3 p-3 rounded-lg hover:bg-primary-50 dark:hover:bg-surface-dark/80 transition-smooth text-text-primary-light dark:text-text-primary-dark">
-        <img src="https://img.icons8.com/ios/50/contacts.png" alt="contact icon" class="w-5 h-5 dark:invert" />
-        <span>Contact</span>
-      </a>
-      <a href="#" class="flex items-center gap-3 p-3 rounded-lg hover:bg-primary-50 dark:hover:bg-surface-dark/80 transition-smooth text-text-primary-light dark:text-text-primary-dark">
-        <img src="https://img.icons8.com/ios/50/speech-bubble-with-dots.png" alt="message icon" class="w-5 h-5 dark:invert" />
-        <span>Message</span>
-      </a>
-    </nav>
-    
-    <!-- User Profile/Footer -->
-    <div class="mt-auto pt-4 border-t border-border-light dark:border-border-dark">
-      <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-primary-50 dark:hover:bg-surface-dark/80 transition-smooth cursor-pointer">
-        <div class="w-8 h-8 rounded-full bg-primary-100 dark:bg-primary-900 flex items-center justify-center">
-          <span class="text-sm font-medium text-primary-600 dark:text-primary-300">U</span>
+  <!-- Desktop Sidebar -->
+  <div class="hidden lg:block fixed top-0 left-0 h-full w-64 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 shadow-lg z-40 transition-all duration-300">
+    <div class="p-6 flex flex-col h-full">
+      <!-- Logo/Brand -->
+      <div class="mb-10 flex items-center gap-3">
+        <div class="relative">
+          <img src="vuno.png" alt="VUNO Logo" class="w-18 h-16" />
+          <div class="absolute -top-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white dark:border-gray-900"></div>
         </div>
         <div>
-          <p class="text-sm font-medium">User Name</p>
-          <p class="text-xs text-secondary">Free Plan</p>
+          <h1 class="text-2xl font-bold bg-gradient-to-r from-primary-600 to-primary-500 bg-clip-text text-transparent">VUNO</h1>
+          <p class="text-xs text-gray-500 dark:text-gray-400">Video platform</p>
+        </div>
+      </div>
+      
+      <!-- Navigation Links -->
+      <nav class="flex-1 space-y-1">
+        <a href="#" class="flex items-center gap-3 p-3 rounded-xl bg-primary-50 dark:bg-primary-900/30 text-primary-600 dark:text-primary-300 font-medium border border-primary-100 dark:border-primary-700/50">
+          <div class="p-2 rounded-lg bg-primary-100 dark:bg-primary-800">
+            <img src="feed.png" alt="feeds icon" class="w-5 h-5 dark:invert" />
+          </div>
+          <span>Feeds</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200 text-gray-700 dark:text-gray-300">
+          <div class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800">
+            <img src="https://img.icons8.com/ios/50/contacts.png" alt="contact icon" class="w-5 h-5 dark:invert opacity-70" />
+          </div>
+          <span>Contacts</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200 text-gray-700 dark:text-gray-300">
+          <div class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800">
+            <img src="https://img.icons8.com/ios/50/speech-bubble-with-dots.png" alt="message icon" class="w-5 h-5 dark:invert opacity-70" />
+          </div>
+          <span>Messages</span>
+          <span class="ml-auto flex items-center justify-center h-5 w-5 rounded-full bg-primary-500 text-white text-xs font-bold">3</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200 text-gray-700 dark:text-gray-300">
+          <div class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 dark:text-gray-300 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+            </svg>
+          </div>
+          <span>Notifications</span>
+          <span class="ml-auto flex items-center justify-center h-5 w-5 rounded-full bg-amber-500 text-white text-xs font-bold">7</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200 text-gray-700 dark:text-gray-300">
+          <div class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 dark:text-gray-300 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+          </div>
+          <span>Settings</span>
+        </a>
+      </nav>
+      
+      <!-- Upgrade Banner -->
+      <div class="my-6 p-4 rounded-xl bg-gradient-to-r from-primary-500 to-primary-600 text-white">
+        <div class="flex items-start gap-2">
+          <div class="p-1.5 rounded-md bg-white/20">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </div>
+          <div class="flex-1">
+            <p class="text-sm font-medium">Upgrade to Pro</p>
+            <p class="text-xs opacity-90">Get access to all features</p>
+          </div>
+        </div>
+        <button class="w-full mt-3 py-1.5 text-xs font-medium bg-white text-primary-600 rounded-lg hover:bg-gray-100 transition-colors duration-200">
+          Upgrade Now
+        </button>
+      </div>
+      
+      <!-- User Profile/Footer -->
+      <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
+        <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200 cursor-pointer">
+          <div class="relative">
+           <div class="w-10 h-10 rounded-full bg-gradient-to-r from-primary-500 to-primary-600 flex items-center justify-center overflow-hidden">
+  <!-- Profile image with fallback to initial -->
+  <img id="profileImage" 
+       class="w-10 h-10 rounded-full object-cover hidden" 
+       src="/default-avatar.png" 
+       alt="User profile"
+       onerror="this.style.display='none'; document.getElementById('profileInitial').style.display='flex';">
+  <span id="profileInitial" class="text-sm font-medium text-white flex items-center justify-center">U</span>
+</div>
+            <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-400 rounded-full border-2 border-white dark:border-gray-900"></div>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p id="profileName" class="text-sm font-medium text-gray-900 dark:text-white truncate">User Name</p>
+            <p id="profilePlan" class="text-xs text-gray-500 dark:text-gray-400">Free Plan</p>
+          </div>
+          
         </div>
       </div>
     </div>
   </div>
-</div>
 
-<script>
-  // This ensures the main content is properly offset when sidebar is present
-  document.addEventListener('DOMContentLoaded', function() {
-    if (window.innerWidth >= 1024) {
-      document.querySelector('main').classList.add('main-content');
-    }
-    
-    window.addEventListener('resize', function() {
-      if (window.innerWidth >= 1024) {
-        document.querySelector('main').classList.add('main-content');
-      } else {
-        document.querySelector('main').classList.remove('main-content');
-      }
-    });
-  });
-</script>
-<!-- Mobile Navigation Modal -->
-<div class="absolute top-16 left-4 p-4 bg-white dark:bg-gray-900 rounded-lg shadow-lg w-60 space-y-4 border-light hidden mobile-nav">
-  <a href="#" class="flex items-center gap-2 p-2 rounded-md hover:bg-primary-50 dark:hover:bg-surface-dark/80 transition-smooth">
-    <img src="feed.png" alt="feeds icon" class="w-5 h-5 dark:invert" />
-    <span>Feeds</span>
-  </a>
-  <a href="#" class="flex items-center gap-2 p-2 rounded-md hover:bg-primary-50 dark:hover:bg-surface-dark/80 transition-smooth">
-    <img src="https://img.icons8.com/ios/50/contacts.png" alt="contact icon" class="w-5 h-5 dark:invert" />
-    <span>Contact</span>
-  </a>
-  <a href="#" class="flex items-center gap-2 p-2 rounded-md hover:bg-primary-50 dark:hover:bg-surface-dark/80 transition-smooth">
-    <img src="https://img.icons8.com/ios/50/speech-bubble-with-dots.png" alt="message icon" class="w-5 h-5 dark:invert" />
-    <span>Message</span>
-  </a>
-</div>
-
-  <!-- Main Body -->
-  <main class="flex flex-col items-center justify-center text-center mt-24 space-y-6 px-4">
-    <div class="w-full max-w-md">
-      <img src="home.jpg" alt="cartoon of people having a meeting" class="w-full rounded-lg shadow-lg" />
-    </div>
-<div class="space-y-4 w-full max-w-md">
-  <!-- Create Meeting Button -->
-  <a href="meeting.html" class="block w-full py-3.5 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white rounded-xl font-medium active-scale transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 focus:ring-2 focus:ring-primary-400 focus:ring-offset-2 focus:ring-offset-surface-light dark:focus:ring-offset-surface-dark">
-    <div class="flex items-center justify-center gap-2">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-      </svg>
-      <span>Create a Meeting</span>
-    </div>
-  </a>
-  
-  <!-- Join Meeting Button -->
-  <a href="join.html" class="block w-full py-3.5 bg-gradient-to-r from-primary-400 to-primary-500 hover:from-primary-500 hover:to-primary-600 text-white rounded-xl font-medium active-scale transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 focus:ring-2 focus:ring-primary-400 focus:ring-offset-2 focus:ring-offset-surface-light dark:focus:ring-offset-surface-dark">
-    <div class="flex items-center justify-center gap-2">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-      </svg>
-      <span>Join a Meeting</span>
-    </div>
-  </a>
-  
- <!-- Recent Messages Button -->
-<a href="message.html" class="flex items-center w-full p-5 bg-white dark:bg-gray-800 rounded-xl border-light hover:bg-primary-50/80 dark:hover:bg-gray-700/90 transition-all duration-300 shadow-sm hover:shadow-md group overflow-hidden relative">
-  <!-- Gradient accent -->
-  <div class="absolute left-0 top-0 h-full w-1.5 bg-gradient-to-b from-primary-400 to-primary-600"></div>
-  
-  <!-- Content -->
-  <div class="flex items-center w-full pl-4">
-    <!-- Animated icon container -->
-    <div class="relative p-2.5 rounded-lg bg-primary-50/30 dark:bg-gray-700/50 group-hover:bg-primary-100/40 dark:group-hover:bg-gray-600/50 transition-colors duration-300 mr-4">
-      <img src="feed.png" alt="messages" class="w-6 h-6 dark:invert group-hover:animate-float" />
-    </div>
-    
-    <!-- Text and badge -->
-    <div class="flex-1 text-left">
-      <div class="font-medium text-gray-800 dark:text-gray-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-200">Messages</div>
-      <div class="text-sm text-gray-500 dark:text-gray-400">Check your conversations</div>
-    </div>
-    
-    <!-- Notification badge and arrow -->
-    <div class="flex items-center">
-      <span class="flex items-center justify-center h-5 w-5 rounded-full bg-primary-500 text-white text-xs font-bold mr-3 animate-pulse">3</span>
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-300 dark:text-gray-500 group-hover:text-primary-500 dark:group-hover:text-primary-400 transition-colors duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-      </svg>
-    </div>
+  <!-- Mobile Navigation Modal -->
+  <div id="mobileNav" class="absolute top-16 left-4 p-4 bg-white dark:bg-gray-900 rounded-lg shadow-lg w-60 space-y-4 border-light hidden z-50">
+    <a href="#" class="flex items-center gap-2 p-2 rounded-md hover:bg-primary-50 dark:hover:bg-surface-dark/80 transition-smooth">
+      <img src="feed.png" alt="feeds icon" class="w-5 h-5 dark:invert" />
+      <span>Feeds</span>
+    </a>
+    <a href="#" class="flex items-center gap-2 p-2 rounded-md hover:bg-primary-50 dark:hover:bg-surface-dark/80 transition-smooth">
+      <img src="https://img.icons8.com/ios/50/contacts.png" alt="contact icon" class="w-5 h-5 dark:invert" />
+      <span>Contact</span>
+    </a>
+    <a href="#" class="flex items-center gap-2 p-2 rounded-md hover:bg-primary-50 dark:hover:bg-surface-dark/80 transition-smooth">
+      <img src="https://img.icons8.com/ios/50/speech-bubble-with-dots.png" alt="message icon" class="w-5 h-5 dark:invert" />
+      <span>Message</span>
+    </a>
   </div>
-</a>
 
-<!-- Hot News Button -->
-<a href="feed.html" class="flex items-center w-full p-5 bg-white dark:bg-gray-800 rounded-xl border-light hover:bg-primary-50/80 dark:hover:bg-gray-700/90 transition-all duration-300 shadow-sm hover:shadow-md group overflow-hidden relative mt-4">
-  <!-- Gradient accent -->
-  <div class="absolute left-0 top-0 h-full w-1.5 bg-gradient-to-b from-amber-400 to-amber-600"></div>
-  
-  <!-- Content -->
-  <div class="flex items-center w-full pl-4">
-    <!-- Animated icon container -->
-    <div class="relative p-2.5 rounded-lg bg-amber-50/30 dark:bg-gray-700/50 group-hover:bg-amber-100/40 dark:group-hover:bg-gray-600/50 transition-colors duration-300 mr-4">
-      <img src="new.png" alt="hot news" class="w-6 h-6 dark:invert group-hover:animate-pulse" />
+  <!-- Main Content -->
+  <main class="min-h-screen flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8 lg:ml-64">
+    <!-- Hero Content Container -->
+    <div class="flex flex-col lg:flex-row items-center justify-between w-full max-w-6xl gap-12 lg:gap-16">
+      
+      <!-- Text Content -->
+      <div class="flex flex-col text-center lg:text-left lg:w-1/2 space-y-8">
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white leading-tight">
+          Connect & <span class="text-primary-600 dark:text-primary-400">Collaborate</span>
+        </h1>
+        
+        <p class="text-lg sm:text-xl text-gray-600 dark:text-gray-300 max-w-lg mx-auto lg:mx-0">
+          Premium video meetings, messaging, and updates in one unified platform designed for productivity.
+        </p>
+        
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+          <a href="meeting.html" class="px-6 py-3.5 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white font-medium rounded-lg transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+            Create Meeting
+          </a>
+          
+          <a href="join.html" class="px-6 py-3.5 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 font-medium rounded-lg transition-all duration-300 shadow-sm hover:shadow-md flex items-center justify-center gap-2 hover:bg-gray-50 dark:hover:bg-gray-700">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+            Join Meeting
+          </a>
+        </div>
+      </div>
+      
+      <!-- Hero Image -->
+      <div class="lg:w-1/2 relative">
+        <div class="absolute inset-0 bg-gradient-to-tr from-primary-400/20 via-primary-200/10 to-transparent rounded-2xl blur-2xl -z-10"></div>
+        <img src="home.jpg" alt="Professionals collaborating in a meeting" class="w-full h-auto max-w-md mx-auto lg:max-w-full rounded-xl shadow-2xl border border-gray-100 dark:border-gray-700 transform hover:scale-[1.02] transition duration-500">
+      </div>
     </div>
     
-    <!-- Text and badge -->
-    <div class="flex-1 text-left">
-      <div class="font-medium text-gray-800 dark:text-gray-100 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors duration-200">Hot News</div>
-      <div class="text-sm text-gray-500 dark:text-gray-400">Trending updates</div>
+    <!-- Feature Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-3xl mt-16 lg:mt-24">
+      <!-- Messages Card -->
+      <a href="message.html" class="group relative overflow-hidden bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1">
+        <div class="absolute left-0 top-0 h-full w-1.5 bg-gradient-to-b from-primary-400 to-primary-600"></div>
+        <div class="flex items-center">
+          <div class="flex-shrink-0 p-2.5 rounded-lg bg-primary-50 dark:bg-gray-700 group-hover:bg-primary-100 dark:group-hover:bg-gray-600 transition-colors duration-300 mr-4">
+            <img src="feed.png" alt="messages" class="w-6 h-6 dark:invert">
+          </div>
+          <div class="flex-1 min-w-0">
+            <h3 class="font-medium text-gray-800 dark:text-gray-100 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors duration-200 truncate">Messages</h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400 truncate">Check your conversations</p>
+          </div>
+          <div class="flex items-center">
+            <span class="flex items-center justify-center h-5 w-5 rounded-full bg-primary-500 text-white text-xs font-bold mr-3 animate-pulse">3</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-300 dark:text-gray-500 group-hover:text-primary-500 dark:group-hover:text-primary-400 transition-colors duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
+        </div>
+      </a>
+      
+      <!-- Hot News Card -->
+      <a href="feed.html" class="group relative overflow-hidden bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-1">
+        <div class="absolute left-0 top-0 h-full w-1.5 bg-gradient-to-b from-amber-400 to-amber-600"></div>
+        <div class="flex items-center">
+          <div class="flex-shrink-0 p-2.5 rounded-lg bg-amber-50 dark:bg-gray-700 group-hover:bg-amber-100 dark:group-hover:bg-gray-600 transition-colors duration-300 mr-4">
+            <img src="new.png" alt="hot news" class="w-6 h-6 dark:invert">
+          </div>
+          <div class="flex-1 min-w-0">
+            <h3 class="font-medium text-gray-800 dark:text-gray-100 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors duration-200 truncate">Hot News</h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400 truncate">Trending updates</p>
+          </div>
+          <div class="flex items-center">
+            <span class="flex items-center justify-center h-5 w-5 rounded-full bg-amber-500 text-white text-xs font-bold mr-3">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+              </svg>
+            </span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-300 dark:text-gray-500 group-hover:text-amber-500 dark:group-hover:text-amber-400 transition-colors duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </div>
+        </div>
+      </a>
     </div>
-    
-    <!-- Fire badge and arrow -->
-    <div class="flex items-center">
-      <span class="flex items-center justify-center h-5 w-5 rounded-full bg-amber-500 text-white text-xs font-bold mr-3">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-        </svg>
-      </span>
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-300 dark:text-gray-500 group-hover:text-amber-500 dark:group-hover:text-amber-400 transition-colors duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-      </svg>
-    </div>
-  </div>
-</a>
-
-<!-- Custom animation for floating effect -->
-<style>
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-4px); }
-  }
-  .animate-float {
-    animation: float 1.5s ease-in-out infinite;
-  }
-</style>
-</div>
-    
   </main>
 
   <script>
+
+    document.addEventListener("DOMContentLoaded", () => {
+  fetch("https://vuno-1.onrender.com/profile/", {
+    method: "GET",
+    headers: {
+      "Authorization": "Bearer " + localStorage.getItem("access_token"), // JWT token from login
+      "Content-Type": "application/json"
+    }
+  })
+  .then(res => {
+    if (!res.ok) {
+      throw new Error("Failed to load profile");
+    }
+    return res.json();
+  })
+  .then(data => {
+    // Set profile image
+    const profileImage = document.getElementById("profileImage");
+    if (data.photo) {
+      profileImage.src = data.photo; // backend full URL
+    } else {
+      profileImage.src = "/default-avatar.png"; // fallback
+    }
+
+    // Set username if available (you might only get profile info here)
+    const profileName = document.getElementById("profileName");
+    profileName.textContent = data.bio ? data.bio : "User";
+  })
+  .catch(err => {
+    console.error("Error fetching profile:", err);
+  });
+});
+
+
     // Mobile menu toggle functionality
     document.addEventListener('DOMContentLoaded', function() {
-      const menuButton = document.querySelector('.fixed button');
-      const mobileNav = document.querySelector('.mobile-nav');
+      const menuButton = document.getElementById('mobileMenuButton');
+      const mobileNav = document.getElementById('mobileNav');
       
       menuButton.addEventListener('click', function() {
         mobileNav.classList.toggle('hidden');
       });
+      
+      // Close mobile nav when clicking outside
+      document.addEventListener('click', function(event) {
+        if (!menuButton.contains(event.target) && !mobileNav.contains(event.target)) {
+          mobileNav.classList.add('hidden');
+        }
+      });
     });
   </script>
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const sidebar = document.querySelector(".lg\\:block"); // Sidebar element
+    const navLinks = sidebar.querySelectorAll("nav a");
+    const upgradeBtn = sidebar.querySelector("button");
+    const userProfile = sidebar.querySelector(".cursor-pointer");
+
+    // ✅ Highlight active link
+    navLinks.forEach(link => {
+      link.addEventListener("click", (e) => {
+        e.preventDefault();
+        navLinks.forEach(l => l.classList.remove(
+          "bg-primary-50", "dark:bg-primary-900/30", "text-primary-600", "dark:text-primary-300", "font-medium", "border", "border-primary-100", "dark:border-primary-700/50"
+        ));
+        link.classList.add(
+          "bg-primary-50", "dark:bg-primary-900/30", "text-primary-600", "dark:text-primary-300", "font-medium", "border", "border-primary-100", "dark:border-primary-700/50"
+        );
+      });
+    });
+
+    // ✅ Upgrade button
+    upgradeBtn.addEventListener("click", () => {
+      alert("🚀 Upgrade feature coming soon!");
+    });
+
+  
+
+    // ✅ Mobile toggle (optional)
+    const mobileToggle = document.querySelector("#sidebarToggle"); 
+    if (mobileToggle) {
+      mobileToggle.addEventListener("click", () => {
+        sidebar.classList.toggle("hidden");
+      });
+    }
+  });
+</script>
+
 </body>
 </html>
