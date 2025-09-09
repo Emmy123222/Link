@@ -41,7 +41,7 @@ document.querySelector("form").addEventListener("submit", async function(e) {
 
         if (response.ok) {
             alert("✅ Account created successfully! Please log in.");
-            window.location.href = "/signin.html"; // redirect to login
+            window.location.href = "signin.html"; // redirect to login
         } else {
             console.error("Signup error:", data);
             alert(data.message || "❌ Signup failed. Please check your details.");
