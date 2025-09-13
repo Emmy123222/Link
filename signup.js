@@ -1,54 +1,62 @@
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("signupForm");
 
-document.querySelector("form").addEventListener("submit", async function(e) {
+  if (!form) {
+    console.error("❌ signupForm not found in HTML.");
+    return;
+  }
+
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const first_name = document.getElementById("first-name").value.trim();
-    const last_name = document.getElementById("last-name").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value.trim();
-    const confirmPassword = document.getElementById("confirm-password").value.trim();
-    const terms = document.getElementById("terms").checked;
+    // Grab inputs safely (try camelCase or kebab-case IDs depending on HTML)
+    const firstNameInput = document.getElementById("first-name") || document.getElementById("firstName");
+    const lastNameInput = document.getElementById("last-name") || document.getElementById("lastName");
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+    const confirmPasswordInput = document.getElementById("confirm-password") || document.getElementById("confirmPassword");
 
-    if (!terms) {
-        alert("You must agree to the Terms of Service and Privacy Policy.");
-        return;
+    if (!firstNameInput || !lastNameInput || !emailInput || !passwordInput || !confirmPasswordInput) {
+      console.error("❌ One or more input fields not found. Check your HTML IDs.");
+      return;
     }
 
-    if (password !== confirmPassword) {
-        alert("Passwords do not match.");
-        return;
-    }
+    const payload = {
+      first_name: firstNameInput.value.trim(),
+      last_name: lastNameInput.value.trim(),
+      email: emailInput.value.trim(),
+      password: passwordInput.value,
+      confirm_password: confirmPasswordInput.value,
+    };
 
-    // Auto-generate username from email if not collected
-    const username = email.split("@")[0];
+    console.log("Form values:", payload);
 
     try {
-        const response = await fetch("https://vuno-1.onrender.com/register/", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                email,
-                password,
-                first_name,
-                last_name,
-                username
-            }),
-        });
+      const response = await fetch("http://127.0.0.1:8000/register/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
 
-        const data = await response.json();
+      console.log("Raw response:", response);
 
-        if (response.ok) {
-            alert("✅ Account created successfully! Please log in.");
-            window.location.href = "signin.html"; // redirect to login
-        } else {
-            console.error("Signup error:", data);
-            alert(data.message || "❌ Signup failed. Please check your details.");
+        const data = await response.json().catch(() => null);
+
+            if (response.ok) {
+                console.log("✅ Registration success:", data);
+                alert("✅ Account created successfully!");
+                // ✅ Redirect after success
+                window.location.href = "signin.html";
+            } else {
+                console.error("❌ Server returned error:", data);
+                const errorMsg = data
+                    ? Object.entries(data).map(([k, v]) => `${k}: ${v.join(", ")}`).join("\n")
+                    : response.statusText;
+                alert(`❌ Error: ${errorMsg}`);
+            }
+        } catch (error) {
+            console.error("❌ Fetch error:", error);
+            alert(`⚠️ Network error: ${error.message}`);
         }
-    } catch (error) {
-        console.error("Error:", error);
-        alert("⚠️ Something went wrong. Try again later.");
-    }
+    });
 });
- 

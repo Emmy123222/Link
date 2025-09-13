@@ -1,69 +1,81 @@
-// 🔹 Handle Sign-in Form Submit
-document.getElementById("signin-form").addEventListener("submit", async function (e) {
-    e.preventDefault();
+// 🔹 Wait for DOM to load
+document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("signin-form");
+    if (!form) return console.error("❌ Form 'signin-form' not found");
 
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value.trim();
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
 
-    try {
-        const response = await fetch("https://vuno-1.onrender.com/login/", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ email, password }) // ✅ send email, not username
-        });
+        // 🔹 Get input values safely
+        const email = document.getElementById("email")?.value.trim();
+        const password = document.getElementById("password")?.value.trim();
 
-        const data = await response.json();
-        console.log("Login response:", data);
-
-        if (response.ok) {
-            // ✅ Save tokens consistently
-            localStorage.setItem("authToken", data.access);
-            localStorage.setItem("refreshToken", data.refresh);
-
-            alert("Login successful! 🎉");
-
-            // Redirect to profile/dashboard
-            window.location.href = "index.html";
-        } else {
-            alert(data.message || "Login failed. Please check your credentials.");
+        if (!email || !password) {
+            alert("⚠️ Please enter both email and password.");
+            return;
         }
-    } catch (error) {
-        console.error("Error:", error);
-        alert("Something went wrong. Try again later.");
-    }
+
+        try {
+            // 🔹 POST to dj-rest-auth login endpoint
+            const response = await fetch("http://127.0.0.1:8000/login/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
+                },
+                body: JSON.stringify({ email, password })
+            });
+
+            const data = await response.json().catch(() => null);
+            console.log("Login response:", data);
+
+            if (response.ok) {
+                // 🔹 Save JWT tokens
+                localStorage.setItem("authToken", data.access_token || data.access);
+                localStorage.setItem("refreshToken", data.refresh_token || data.refresh);
+
+                alert("✅ Login successful!");
+
+                // 🔹 Redirect to dashboard or index page
+                window.location.href = "index.html";
+            } else {
+                // Handle common errors
+                const message = data?.non_field_errors?.[0] || data?.detail || "Login failed. Check your credentials.";
+                alert(`❌ ${message}`);
+            }
+        } catch (error) {
+            console.error("❌ Fetch error:", error);
+            alert("⚠️ Network error. Try again later.");
+        }
+    });
 });
 
-// 🔹 Fetch Profile (Authenticated)
+// 🔹 Optional: fetch user profile if logged in
 async function getProfile() {
     const token = localStorage.getItem("authToken");
-
-    if (!token) {
-        console.error("No token found! Please login first.");
-        return;
-    }
+    if (!token) return console.error("❌ No auth token found");
 
     try {
-        const res = await fetch("https://vuno-1.onrender.com/profile/", {
+        const res = await fetch("http://127.0.0.1:8000/profile/", {
             method: "GET",
             headers: {
-                "Authorization": `Bearer ${token}`, // ✅ JWT auth header
+                "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json"
             }
         });
 
         if (!res.ok) {
             console.error("Profile fetch failed:", res.status);
-            if (res.status === 403) {
-                alert("Unauthorized! Please log in again.");
-            }
-        } else {
-            const profile = await res.json();
-            console.log("Profile:", profile);
-
-            // Example: show username/email on page
-            document.getElementById("user-email").innerText = profile.email;
-            document.getElementById("user-username").innerText = profile.username;
+            if (res.status === 401 || res.status === 403) alert("Unauthorized! Please log in again.");
+            return;
         }
+
+        const profile = await res.json();
+        console.log("Profile:", profile);
+
+        // Example: update DOM
+        document.getElementById("user-email").innerText = profile.email;
+        document.getElementById("user-username").innerText = profile.username;
     } catch (error) {
         console.error("Error fetching profile:", error);
     }

@@ -291,11 +291,12 @@
           <div class="relative">
            <div class="w-10 h-10 rounded-full bg-gradient-to-r from-primary-500 to-primary-600 flex items-center justify-center overflow-hidden">
   <!-- Profile image with fallback to initial -->
-  <img id="profileImage" 
-       class="w-10 h-10 rounded-full object-cover hidden" 
-       src="/default-avatar.png" 
-       alt="User profile"
-       onerror="this.style.display='none'; document.getElementById('profileInitial').style.display='flex';">
+   <img id="profileImage" 
+         class="w-10 h-10 rounded-full object-cover hidden" 
+         src="" 
+         alt="User profile"
+         onerror="this.style.display='none'; document.getElementById('profileInitial').style.display='flex';">
+
   <span id="profileInitial" class="text-sm font-medium text-white flex items-center justify-center">U</span>
 </div>
             <div class="absolute bottom-0 right-0 w-3 h-3 bg-green-400 rounded-full border-2 border-white dark:border-gray-900"></div>
@@ -414,94 +415,9 @@
     </div>
   </main>
 
-  <script>
-
-    document.addEventListener("DOMContentLoaded", () => {
-  fetch("https://vuno-1.onrender.com/profile/", {
-    method: "GET",
-    headers: {
-      "Authorization": "Bearer " + localStorage.getItem("access_token"), // JWT token from login
-      "Content-Type": "application/json"
-    }
-  })
-  .then(res => {
-    if (!res.ok) {
-      throw new Error("Failed to load profile");
-    }
-    return res.json();
-  })
-  .then(data => {
-    // Set profile image
-    const profileImage = document.getElementById("profileImage");
-    if (data.photo) {
-      profileImage.src = data.photo; // backend full URL
-    } else {
-      profileImage.src = "/default-avatar.png"; // fallback
-    }
-
-    // Set username if available (you might only get profile info here)
-    const profileName = document.getElementById("profileName");
-    profileName.textContent = data.bio ? data.bio : "User";
-  })
-  .catch(err => {
-    console.error("Error fetching profile:", err);
-  });
-});
 
 
-    // Mobile menu toggle functionality
-    document.addEventListener('DOMContentLoaded', function() {
-      const menuButton = document.getElementById('mobileMenuButton');
-      const mobileNav = document.getElementById('mobileNav');
-      
-      menuButton.addEventListener('click', function() {
-        mobileNav.classList.toggle('hidden');
-      });
-      
-      // Close mobile nav when clicking outside
-      document.addEventListener('click', function(event) {
-        if (!menuButton.contains(event.target) && !mobileNav.contains(event.target)) {
-          mobileNav.classList.add('hidden');
-        }
-      });
-    });
-  </script>
-  <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const sidebar = document.querySelector(".lg\\:block"); // Sidebar element
-    const navLinks = sidebar.querySelectorAll("nav a");
-    const upgradeBtn = sidebar.querySelector("button");
-    const userProfile = sidebar.querySelector(".cursor-pointer");
-
-    // ✅ Highlight active link
-    navLinks.forEach(link => {
-      link.addEventListener("click", (e) => {
-        e.preventDefault();
-        navLinks.forEach(l => l.classList.remove(
-          "bg-primary-50", "dark:bg-primary-900/30", "text-primary-600", "dark:text-primary-300", "font-medium", "border", "border-primary-100", "dark:border-primary-700/50"
-        ));
-        link.classList.add(
-          "bg-primary-50", "dark:bg-primary-900/30", "text-primary-600", "dark:text-primary-300", "font-medium", "border", "border-primary-100", "dark:border-primary-700/50"
-        );
-      });
-    });
-
-    // ✅ Upgrade button
-    upgradeBtn.addEventListener("click", () => {
-      alert("🚀 Upgrade feature coming soon!");
-    });
-
-  
-
-    // ✅ Mobile toggle (optional)
-    const mobileToggle = document.querySelector("#sidebarToggle"); 
-    if (mobileToggle) {
-      mobileToggle.addEventListener("click", () => {
-        sidebar.classList.toggle("hidden");
-      });
-    }
-  });
-</script>
+  <script>src='index.js'</script>
 
 </body>
 </html>
