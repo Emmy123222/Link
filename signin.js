@@ -6,7 +6,6 @@ document.addEventListener("DOMContentLoaded", () => {
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
 
-        // 🔹 Get input values safely
         const email = document.getElementById("email")?.value.trim();
         const password = document.getElementById("password")?.value.trim();
 
@@ -16,8 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         try {
-            // 🔹 POST to dj-rest-auth login endpoint
-            const response = await fetch("http://127.0.0.1:8000/login/", {
+            const response = await fetch("https://vuno-1.onrender.com/login/", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -30,16 +28,16 @@ document.addEventListener("DOMContentLoaded", () => {
             console.log("Login response:", data);
 
             if (response.ok) {
-                // 🔹 Save JWT tokens
-                localStorage.setItem("authToken", data.access_token || data.access);
-                localStorage.setItem("refreshToken", data.refresh_token || data.refresh);
+                // 🔹 Save JWT tokens consistently
+                localStorage.setItem("access_token", data.access || data.access_token);
+                localStorage.setItem("refresh_token", data.refresh || data.refresh_token);
 
                 alert("✅ Login successful!");
 
-                // 🔹 Redirect to dashboard or index page
-                window.location.href = "index.html";
+                // 🔹 Redirect (choose ONE)
+                window.location.href = "index.html"; 
+                // or use: window.location.href = "index.html";
             } else {
-                // Handle common errors
                 const message = data?.non_field_errors?.[0] || data?.detail || "Login failed. Check your credentials.";
                 alert(`❌ ${message}`);
             }
@@ -50,14 +48,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-// 🔹 Optional: fetch user profile if logged in
+// 🔹 Optional: fetch user profile
 async function getProfile() {
-    const token = localStorage.getItem("authToken");
-    if (!token) return console.error("❌ No auth token found");
+    const token = localStorage.getItem("access_token");
+    if (!token) return console.error("❌ No access token found");
 
     try {
-        const res = await fetch("http://127.0.0.1:8000/profile/", {
-            method: "GET",
+        const res = await fetch("https://vuno-1.onrender.com/profile/", {
             headers: {
                 "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json"
@@ -66,16 +63,23 @@ async function getProfile() {
 
         if (!res.ok) {
             console.error("Profile fetch failed:", res.status);
-            if (res.status === 401 || res.status === 403) alert("Unauthorized! Please log in again.");
+            if (res.status === 401 || res.status === 403) {
+                alert("Unauthorized! Please log in again.");
+                localStorage.clear();
+                window.location.href = "login.html";
+            }
             return;
         }
 
         const profile = await res.json();
         console.log("Profile:", profile);
 
-        // Example: update DOM
-        document.getElementById("user-email").innerText = profile.email;
-        document.getElementById("user-username").innerText = profile.username;
+        // Update DOM if those elements exist
+        const emailElem = document.getElementById("user-email");
+        const usernameElem = document.getElementById("user-username");
+
+        if (emailElem) emailElem.innerText = profile.email;
+        if (usernameElem) usernameElem.innerText = profile.username;
     } catch (error) {
         console.error("Error fetching profile:", error);
     }

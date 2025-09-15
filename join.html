@@ -185,24 +185,64 @@
   </div>
 </div>
 
-  <script>
-    const joinBtn = document.getElementById('joinBtn');
-    const meetingIdInput = document.getElementById('meetingIdInput');
+<script>
+  const joinBtn = document.getElementById('joinBtn');
+  const meetingIdInput = document.getElementById('meetingIdInput');
 
-    meetingIdInput.addEventListener('input', (e) => {
-      if (e.target.value.trim().length > 0) {
-        joinBtn.disabled = false;
-      } else {
-        joinBtn.disabled = true;
-      }
-    });
+  // Enable/disable button
+  meetingIdInput.addEventListener('input', (e) => {
+    joinBtn.disabled = e.target.value.trim().length === 0;
+  });
 
-    joinBtn.addEventListener('click', () => {
-      if (meetingIdInput.value.trim().length > 0) {
-        // Here you would typically handle the join meeting logic
-        alert(`Joining meeting with ID: ${meetingIdInput.value}`);
+  joinBtn.addEventListener('click', async () => {
+    let meetingId = meetingIdInput.value.trim();
+    if (!meetingId) return;
+
+    // ✅ Handle full link or raw UUID
+    try {
+      if (meetingId.startsWith("http")) {
+        const url = new URL(meetingId);
+        meetingId = url.searchParams.get("meeting");
+        if (!meetingId) throw new Error("Invalid meeting link");
       }
-    });
-  </script>
+    } catch (err) {
+      alert("❌ Invalid meeting link or ID");
+      return;
+    }
+
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      alert("⚠️ You must log in first.");
+      window.location.href = "signin.html";
+      return;
+    }
+
+    try {
+      const res = await fetch(`https://vuno-1.onrender.com/call/meetings/${meetingId}/join/`, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.detail || "Failed to join meeting");
+      }
+
+      const data = await res.json();
+      console.log("✅ Joined meeting:", data);
+
+      // Redirect after successful join
+      window.location.href = `contact.html?meeting=${meetingId}`;
+    } catch (error) {
+      console.error("❌ Error:", error);
+      alert("❌ Could not join meeting. " + error.message);
+    }
+  });
+</script>
+
+
 </body>
 </html>
