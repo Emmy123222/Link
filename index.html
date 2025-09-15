@@ -422,20 +422,16 @@
 document.addEventListener("DOMContentLoaded", async () => {
   const BASE_URL = "https://vuno-1.onrender.com";
 
-  // 🔑 Load tokens from localStorage
+  // 🔑 Load tokens
   let accessToken = localStorage.getItem("authToken");
   let refreshToken = localStorage.getItem("refreshToken");
 
-  // 🔹 Redirect if both tokens are missing
-  if (!accessToken && !refreshToken) {
-    console.warn("⚠️ No tokens found. Redirecting to login...");
-    window.location.href = "signin.html";
-    return;
-  }
+  // 🚫 Prevent redirect loop (don’t redirect if already on signin page)
+  const onSigninPage = window.location.pathname.includes("signin.html");
 
   // 🔹 Refresh access token
   async function refreshAccessToken() {
-    if (!refreshToken) return false; // No refresh token
+    if (!refreshToken) return false;
 
     try {
       const response = await fetch(`${BASE_URL}/token/refresh/`, {
@@ -457,7 +453,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  // 🔹 Fetch helper with automatic token refresh
+  // 🔹 Fetch with auto-refresh
   async function fetchWithAuth(url, options = {}) {
     options.headers = {
       ...options.headers,
@@ -467,27 +463,37 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     let response = await fetch(url, options);
 
-    // If token expired, try refreshing
     if (response.status === 401) {
-      console.warn("⚠️ Access token expired. Attempting to refresh...");
+      console.warn("⚠️ Access token expired. Attempting refresh...");
       const refreshed = await refreshAccessToken();
 
       if (refreshed) {
-        // Retry the request with new token
         options.headers["Authorization"] = `Bearer ${accessToken}`;
         response = await fetch(url, options);
       } else {
-        // Refresh failed, redirect to login
-        console.warn("❌ Authentication failed. Redirecting to login...");
-        localStorage.removeItem("authToken");
-        localStorage.removeItem("refreshToken");
-        window.location.href = "signin.html";
+        if (!onSigninPage) {
+          console.warn("❌ Redirecting to login...");
+          localStorage.removeItem("authToken");
+          localStorage.removeItem("refreshToken");
+          window.location.href = "signin.html";
+        }
         return;
       }
     }
 
     return response;
   }
+
+  // 🚀 Startup logic
+  if (!accessToken && !refreshToken) {
+    if (!onSigninPage) {
+      console.warn("⚠️ No tokens found. Redirecting to login...");
+      window.location.href = "signin.html";
+    }
+    return;
+  }
+
+
 
 
 

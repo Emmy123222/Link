@@ -1,4 +1,3 @@
-// 🔹 Wait for DOM to load
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("signin-form");
     if (!form) return console.error("❌ Form 'signin-form' not found");
@@ -15,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         try {
-            const response = await fetch("https://vuno-1.onrender.com/login/", {
+            const response = await fetch("http://127.0.0.1:8000/login/", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -27,16 +26,15 @@ document.addEventListener("DOMContentLoaded", () => {
             const data = await response.json().catch(() => null);
             console.log("Login response:", data);
 
-            if (response.ok) {
-                // 🔹 Save JWT tokens consistently
-                localStorage.setItem("access_token", data.access || data.access_token);
-                localStorage.setItem("refresh_token", data.refresh || data.refresh_token);
+            if (response.ok && data.access && data.refresh) {
+                // ✅ Save with consistent key names
+                localStorage.setItem("authToken", data.access);
+                localStorage.setItem("refreshToken", data.refresh);
 
                 alert("✅ Login successful!");
 
-                // 🔹 Redirect (choose ONE)
-                window.location.href = "index.html"; 
-                // or use: window.location.href = "index.html";
+                // ✅ Redirect AFTER saving
+                window.location.href = "index.html";
             } else {
                 const message = data?.non_field_errors?.[0] || data?.detail || "Login failed. Check your credentials.";
                 alert(`❌ ${message}`);
@@ -50,11 +48,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // 🔹 Optional: fetch user profile
 async function getProfile() {
-    const token = localStorage.getItem("access_token");
+    const token = localStorage.getItem("authToken");
     if (!token) return console.error("❌ No access token found");
 
     try {
-        const res = await fetch("https://vuno-1.onrender.com/profile/", {
+        const res = await fetch("http://127.0.0.1:8000/profile/", {
             headers: {
                 "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json"
@@ -66,7 +64,7 @@ async function getProfile() {
             if (res.status === 401 || res.status === 403) {
                 alert("Unauthorized! Please log in again.");
                 localStorage.clear();
-                window.location.href = "login.html";
+                window.location.href = "signin.html"; // ✅ match actual page name
             }
             return;
         }
@@ -74,7 +72,7 @@ async function getProfile() {
         const profile = await res.json();
         console.log("Profile:", profile);
 
-        // Update DOM if those elements exist
+        // Update DOM if available
         const emailElem = document.getElementById("user-email");
         const usernameElem = document.getElementById("user-username");
 
