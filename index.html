@@ -418,6 +418,7 @@
 
 
   <script>
+
 document.addEventListener("DOMContentLoaded", async () => {
   const BASE_URL = "https://vuno-1.onrender.com";
 
@@ -425,14 +426,17 @@ document.addEventListener("DOMContentLoaded", async () => {
   let accessToken = localStorage.getItem("authToken");
   let refreshToken = localStorage.getItem("refreshToken");
 
-  if (!accessToken || !refreshToken) {
+  // 🔹 Redirect if both tokens are missing
+  if (!accessToken && !refreshToken) {
     console.warn("⚠️ No tokens found. Redirecting to login...");
     window.location.href = "signin.html";
     return;
   }
 
-  // 🔄 Function to refresh token
+  // 🔹 Refresh access token
   async function refreshAccessToken() {
+    if (!refreshToken) return false; // No refresh token
+
     try {
       const response = await fetch(`${BASE_URL}/token/refresh/`, {
         method: "POST",
@@ -445,18 +449,15 @@ document.addEventListener("DOMContentLoaded", async () => {
       const data = await response.json();
       accessToken = data.access;
       localStorage.setItem("authToken", accessToken);
-      console.log("🔄 Token refreshed!");
+      console.log("🔄 Access token refreshed!");
       return true;
     } catch (err) {
-      console.error("❌ Refresh failed:", err);
-      localStorage.removeItem("authToken");
-      localStorage.removeItem("refreshToken");
-      window.location.href = "signin.html";
+      console.error("❌ Token refresh failed:", err);
       return false;
     }
   }
 
-  // 🔄 Fetch with auto-refresh retry
+  // 🔹 Fetch helper with automatic token refresh
   async function fetchWithAuth(url, options = {}) {
     options.headers = {
       ...options.headers,
@@ -466,17 +467,29 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     let response = await fetch(url, options);
 
-    // If token expired, try refresh once
-    if (response.status === 401 && refreshToken) {
+    // If token expired, try refreshing
+    if (response.status === 401) {
+      console.warn("⚠️ Access token expired. Attempting to refresh...");
       const refreshed = await refreshAccessToken();
+
       if (refreshed) {
+        // Retry the request with new token
         options.headers["Authorization"] = `Bearer ${accessToken}`;
         response = await fetch(url, options);
+      } else {
+        // Refresh failed, redirect to login
+        console.warn("❌ Authentication failed. Redirecting to login...");
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("refreshToken");
+        window.location.href = "signin.html";
+        return;
       }
     }
 
     return response;
   }
+
+
 
   // ===============================
   // 🔹 Fetch Profile
