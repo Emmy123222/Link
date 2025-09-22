@@ -279,8 +279,9 @@
       document.querySelector('.call-status .w-3').classList.add('bg-green-500');
 
       // 🔹 Setup signaling
-      const meetingId = new URLSearchParams(window.location.search).get("meeting");
-      ws = new WebSocket(`ws://vuno-1.onrender.com/ws/call/${meetingId}/`);
+const meetingId = new URLSearchParams(window.location.search).get("meeting");
+const protocol = window.location.protocol === "https:" ? "wss://" : "ws://";
+ws = new WebSocket(`${protocol}${window.location.host}/ws/call/${meetingId}/`);
 
       // 🔹 Create PeerConnection
       pc = new RTCPeerConnection();
