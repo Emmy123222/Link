@@ -9,7 +9,6 @@ document.addEventListener("DOMContentLoaded", () => {
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    // Grab inputs safely (try camelCase or kebab-case IDs depending on HTML)
     const firstNameInput = document.getElementById("first-name") || document.getElementById("firstName");
     const lastNameInput = document.getElementById("last-name") || document.getElementById("lastName");
     const emailInput = document.getElementById("email");
@@ -29,34 +28,29 @@ document.addEventListener("DOMContentLoaded", () => {
       confirm_password: confirmPasswordInput.value,
     };
 
-    console.log("Form values:", payload);
-
     try {
-      const response = await fetch("http://127.0.0.1:8000/register/", {
+      const response = await fetch("http://vuno-1.onrender.com/register/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
 
-      console.log("Raw response:", response);
+      const data = await response.json().catch(() => null);
 
-        const data = await response.json().catch(() => null);
-
-            if (response.ok) {
-                console.log("✅ Registration success:", data);
-                alert("✅ Account created successfully!");
-                // ✅ Redirect after success
-                window.location.href = "signin.html";
-            } else {
-                console.error("❌ Server returned error:", data);
-                const errorMsg = data
-                    ? Object.entries(data).map(([k, v]) => `${k}: ${v.join(", ")}`).join("\n")
-                    : response.statusText;
-                alert(`❌ Error: ${errorMsg}`);
-            }
-        } catch (error) {
-            console.error("❌ Fetch error:", error);
-            alert(`⚠️ Network error: ${error.message}`);
-        }
-    });
+      if (response.ok) {
+        console.log("✅ Registration success:", data);
+        alert("✅ Account created successfully! Please sign in.");
+        window.location.href = "signin.html"; // redirect to signin
+      } else {
+        console.error("❌ Server returned error:", data);
+        const errorMsg = data
+          ? Object.entries(data).map(([k, v]) => `${k}: ${v.join(", ")}`).join("\n")
+          : response.statusText;
+        alert(`❌ Error: ${errorMsg}`);
+      }
+    } catch (error) {
+      console.error("❌ Fetch error:", error);
+      alert(`⚠️ Network error: ${error.message}`);
+    }
+  });
 });

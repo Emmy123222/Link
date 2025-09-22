@@ -256,7 +256,7 @@
           <span>Notifications</span>
           <span class="ml-auto flex items-center justify-center h-5 w-5 rounded-full bg-amber-500 text-white text-xs font-bold">7</span>
         </a>
-        <a href="#" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200 text-gray-700 dark:text-gray-300">
+        <a href="setting.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200 text-gray-700 dark:text-gray-300">
           <div class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 dark:text-gray-300 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
@@ -413,6 +413,187 @@
         </div>
       </a>
     </div>
+
+  </main>
+
+
+
+  <script>
+
+document.addEventListener("DOMContentLoaded", async () => {
+  const BASE_URL = "https://vuno-1.onrender.com/";
+
+  // 🔑 Load tokens
+  let accessToken = localStorage.getItem("authToken");
+  let refreshToken = localStorage.getItem("refreshToken");
+
+  // 🚫 Prevent redirect loop (don’t redirect if already on signin page)
+  const onSigninPage = window.location.pathname.includes("signin.html");
+
+  // 🔹 Refresh access token
+  async function refreshAccessToken() {
+    if (!refreshToken) return false;
+
+    try {
+      const response = await fetch(`${BASE_URL}/token/refresh/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ refresh: refreshToken })
+      });
+
+      if (!response.ok) throw new Error("Failed to refresh token");
+
+      const data = await response.json();
+      accessToken = data.access;
+      localStorage.setItem("authToken", accessToken);
+      console.log("🔄 Access token refreshed!");
+      return true;
+    } catch (err) {
+      console.error("❌ Token refresh failed:", err);
+      return false;
+    }
+  }
+
+  // 🔹 Fetch with auto-refresh
+  async function fetchWithAuth(url, options = {}) {
+    options.headers = {
+      ...options.headers,
+      "Authorization": `Bearer ${accessToken}`,
+      "Content-Type": "application/json"
+    };
+
+    let response = await fetch(url, options);
+
+    if (response.status === 401) {
+      console.warn("⚠️ Access token expired. Attempting refresh...");
+      const refreshed = await refreshAccessToken();
+
+      if (refreshed) {
+        options.headers["Authorization"] = `Bearer ${accessToken}`;
+        response = await fetch(url, options);
+      } else {
+        if (!onSigninPage) {
+          console.warn("❌ Redirecting to login...");
+          localStorage.removeItem("authToken");
+          localStorage.removeItem("refreshToken");
+          window.location.href = "signin.html";
+        }
+        return;
+      }
+    }
+
+    return response;
+  }
+
+  // 🚀 Startup logic
+  if (!accessToken && !refreshToken) {
+    if (!onSigninPage) {
+      console.warn("⚠️ No tokens found. Redirecting to login...");
+      window.location.href = "signin.html";
+    }
+    return;
+  }
+
+
+
+
+
+  // ===============================
+  // 🔹 Fetch Profile
+  // ===============================
+  try {
+    const response = await fetchWithAuth(`${BASE_URL}/profile/`);
+    if (!response.ok) throw new Error("Failed to fetch profile");
+
+    const data = await response.json();
+    console.log("✅ Profile loaded:", data);
+
+    // Full Name
+    const fullName = data.first_name || data.last_name
+      ? `${data.first_name || ""} ${data.last_name || ""}`.trim()
+      : data.username;
+
+    const profileName = document.getElementById("profileName");
+    if (profileName) profileName.textContent = fullName;
+
+    const profilePlan = document.getElementById("profilePlan");
+    if (profilePlan) profilePlan.textContent = "Free Plan";
+
+    const profileImage = document.getElementById("profileImage");
+    const profileInitial = document.getElementById("profileInitial");
+
+    if (data.profile && (data.profile.photo || data.profile.image)) {
+      profileImage.src = data.profile.photo || data.profile.image;
+      profileImage.style.display = "block";
+      profileInitial.style.display = "none";
+    } else {
+      profileImage.style.display = "none";
+      profileInitial.style.display = "flex";
+      profileInitial.textContent = fullName.charAt(0).toUpperCase();
+    }
+  } catch (err) {
+    console.error("❌ Error loading profile:", err);
+  }
+
+  // ===============================
+  // 🔹 MOBILE NAV TOGGLE
+  // ===============================
+  const menuButton = document.getElementById("mobileMenuButton");
+  const mobileNav = document.getElementById("mobileNav");
+
+  if (menuButton && mobileNav) {
+    menuButton.addEventListener("click", () => {
+      mobileNav.classList.toggle("hidden");
+    });
+
+    document.addEventListener("click", (event) => {
+      if (!menuButton.contains(event.target) && !mobileNav.contains(event.target)) {
+        mobileNav.classList.add("hidden");
+      }
+    });
+  }
+
+  // ===============================
+  // 🔹 SIDEBAR INTERACTIONS
+  // ===============================
+  const sidebar = document.querySelector(".lg\\:block");
+  if (sidebar) {
+    const navLinks = sidebar.querySelectorAll("nav a");
+    const upgradeBtn = sidebar.querySelector("button");
+
+    navLinks.forEach(link => {
+      link.addEventListener("click", (e) => {
+        e.preventDefault();
+        navLinks.forEach(l => l.classList.remove(
+          "bg-primary-50", "dark:bg-primary-900/30", "text-primary-600", "dark:text-primary-300",
+          "font-medium", "border", "border-primary-100", "dark:border-primary-700/50"
+        ));
+        link.classList.add(
+          "bg-primary-50", "dark:bg-primary-900/30", "text-primary-600", "dark:text-primary-300",
+          "font-medium", "border", "border-primary-100", "dark:border-primary-700/50"
+        );
+      });
+    });
+
+    if (upgradeBtn) {
+      upgradeBtn.addEventListener("click", () => {
+        alert("🚀 Upgrade feature coming soon!");
+      });
+    }
+
+    const mobileToggle = document.querySelector("#sidebarToggle");
+    if (mobileToggle) {
+      mobileToggle.addEventListener("click", () => {
+        sidebar.classList.toggle("hidden");
+      });
+    }
+  }
+});
+
+</script>
+
+</body>
+</html>
   </main>
 
 

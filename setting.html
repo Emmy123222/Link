@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VUNO - Settings</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- Tailwind Custom Config -->
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        screens: {
+          sm: '640px',
+          md: '768px',
+          lg: '1024px',
+          xl: '1280px',
+          '2xl': '1536px',
+        },
+        extend: {
+          fontFamily: {
+            sans: ['"Inter Variable"', 'Inter', 'system-ui', 'sans-serif'],
+            display: ['"Geist Variable"', '"Geist"', 'Inter', 'system-ui', 'sans-serif'],
+            mono: ['"Geist Mono Variable"', '"Geist Mono"', 'monospace'],
+          },
+          colors: {
+            primary: {
+              50: '#f0f9ff',
+              100: '#e0f2fe',
+              200: '#bae6fd',
+              300: '#7dd3fc',
+              400: '#38bdf8',
+              500: '#0ea5e9',
+              600: '#0284c7',
+              700: '#0369a1',
+              800: '#075985',
+              900: '#0c4a6e',
+            },
+            background: {
+              light: '#ffffff',
+              dark: '#0a0a0a',
+            },
+            surface: {
+              light: '#f8fafc',
+              dark: '#1a1a1a',
+            },
+            text: {
+              primary: {
+                light: '#18181b',
+                dark: '#fafafa',
+              },
+              secondary: {
+                light: '#52525b',
+                dark: '#a1a1aa',
+              }
+            },
+            border: {
+              light: '#e4e4e7',
+              dark: '#3f3f46',
+            }
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.3s ease-in-out forwards',
+            'slide-in': 'slideIn 0.3s ease-out forwards',
+            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+            slideIn: {
+              '0%': { transform: 'translateY(-20px)', opacity: '0' },
+              '100%': { transform: 'translateY(0)', opacity: '1' },
+            },
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Custom Styles -->
+  <style>
+    @import url('https://cdn.jsdelivr.net/npm/@fontsource-variable/inter@5.0.3/index.min.css');
+    @import url('https://cdn.jsdelivr.net/npm/@fontsource-variable/geist-sans@1.1.1/index.min.css');
+    @import url('https://cdn.jsdelivr.net/npm/@fontsource-variable/geist-mono@1.1.1/index.min.css');
+
+    body {
+      @apply font-sans text-text-primary-light bg-background-light dark:text-text-primary-dark dark:bg-background-dark;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    .active-scale {
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
+    .active-scale:active {
+      transform: scale(0.97);
+    }
+
+    .transition-smooth {
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .border-light {
+      @apply border border-border-light dark:border-border-dark;
+    }
+
+    .message-in {
+      border-radius: 18px 18px 18px 4px;
+      @apply bg-surface-light text-text-primary-light;
+    }
+    .dark .message-in {
+      @apply bg-surface-dark text-text-primary-dark;
+    }
+
+    .message-out {
+      border-radius: 18px 18px 4px 18px;
+      @apply bg-primary-600 text-white;
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      @apply bg-transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      @apply bg-border-light dark:bg-border-dark rounded-full;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      @apply bg-primary-400 dark:bg-primary-600;
+    }
+
+    @media (min-width: 1024px) {
+      .main-content {
+        margin-left: 20rem;
+      }
+      .mobile-nav {
+        display: none;
+      }
+    }
+
+    .text-display {
+      @apply font-display tracking-tight;
+    }
+
+    .text-mono {
+      @apply font-mono;
+    }
+
+    .text-secondary {
+      @apply text-text-secondary-light dark:text-text-secondary-dark;
+    }
+
+    .surface {
+      @apply bg-surface-light dark:bg-surface-dark;
+    }
+
+    .focus-ring {
+      @apply focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-surface-light dark:focus:ring-offset-surface-dark;
+    }
+
+    .theme-toggle {
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .theme-toggle .sun {
+      transform: rotate(0deg);
+      opacity: 1;
+    }
+
+    .theme-toggle .moon {
+      transform: rotate(-90deg);
+      opacity: 0;
+    }
+
+    .dark .theme-toggle .sun {
+      transform: rotate(90deg);
+      opacity: 0;
+    }
+
+    .dark .theme-toggle .moon {
+      transform: rotate(0deg);
+      opacity: 1;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+    .animate-float {
+      animation: float 1.5s ease-in-out infinite;
+    }
+    
+    .settings-section {
+      @apply p-6 rounded-xl surface border-light transition-smooth;
+    }
+    
+    .settings-section-title {
+      @apply text-lg font-semibold mb-4 text-primary-600 dark:text-primary-400 flex items-center gap-2;
+    }
+    
+    .input-field {
+      @apply w-full px-4 py-3 rounded-lg border-light bg-white dark:bg-gray-800 
+             text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-primary-500 
+             focus:border-transparent transition-smooth;
+    }
+    
+    .input-label {
+      @apply block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2;
+    }
+    
+    .btn-primary {
+      @apply px-5 py-2.5 rounded-lg bg-primary-600 text-white font-medium 
+             hover:bg-primary-700 active:scale-95 transition-smooth 
+             focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+    }
+    
+    .btn-secondary {
+      @apply px-5 py-2.5 rounded-lg border-light text-gray-700 dark:text-gray-200 
+             font-medium hover:bg-gray-100 dark:hover:bg-gray-700 active:scale-95 
+             transition-smooth focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2;
+    }
+    
+    .file-upload {
+      @apply block w-full text-sm text-gray-500 
+             file:mr-4 file:py-2 file:px-4
+             file:rounded-full file:border-0
+             file:text-sm file:font-medium
+             file:bg-primary-50 file:text-primary-700
+             hover:file:bg-primary-100 dark:file:bg-primary-900/30 
+             dark:file:text-primary-300 dark:hover:file:bg-primary-900/50
+             transition-smooth cursor-pointer;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen surface py-8">
+  <div class="max-w-4xl mx-auto px-4">
+    <!-- Header -->
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
+        <i class="fas fa-cog text-primary-500"></i>
+        Account Settings
+      </h1>
+      <p class="text-secondary mt-2">Manage your account information and preferences</p>
+    </div>
+
+    <form id="settings-form" class="space-y-6">
+      <!-- Profile Section -->
+      <div class="settings-section">
+        <h2 class="settings-section-title">
+          <i class="fas fa-user-circle"></i>
+          Profile Information
+        </h2>
+        
+        <div class="flex flex-col md:flex-row gap-6 items-start mb-6">
+          <div class="flex flex-col items-center">
+            <img id="profile-photo-preview" 
+                 src="https://via.placeholder.com/120" 
+                 alt="Profile Photo" 
+                 class="w-28 h-28 rounded-full object-cover border-2 border-primary-200 dark:border-primary-800 shadow-sm">
+            <label for="photo" class="mt-4 text-sm text-primary-600 dark:text-primary-400 font-medium cursor-pointer hover:underline">
+              <i class="fas fa-camera mr-1"></i>Change photo
+            </label>
+            <input type="file" id="photo" name="photo" class="hidden" accept="image/*" />
+          </div>
+          
+          <div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label for="username" class="input-label">Username</label>
+              <input type="text" id="username" name="username" 
+                     class="input-field" placeholder="Enter your username">
+            </div>
+            <div>
+              <label for="email" class="input-label">Email Address</label>
+              <input type="email" id="email" name="email" disabled
+                     class="input-field bg-gray-100 dark:bg-gray-700 cursor-not-allowed" 
+                     placeholder="your.email@example.com">
+              <p class="text-xs text-secondary mt-1">Email cannot be changed</p>
+            </div>
+            <div>
+              <label for="first_name" class="input-label">First Name</label>
+              <input type="text" id="first_name" name="first_name"
+                     class="input-field" placeholder="Your first name">
+            </div>
+            <div>
+              <label for="last_name" class="input-label">Last Name</label>
+              <input type="text" id="last_name" name="last_name"
+                     class="input-field" placeholder="Your last name">
+            </div>
+          </div>
+        </div>
+        
+        <div class="mb-4">
+          <label for="bio" class="input-label">Bio</label>
+          <textarea id="bio" name="bio" rows="3"
+                    class="input-field" placeholder="Tell us a little about yourself"></textarea>
+          <p class="text-xs text-secondary mt-1">Max 150 characters</p>
+        </div>
+      </div>
+
+      <!-- Personal Details Section -->
+      <div class="settings-section">
+        <h2 class="settings-section-title">
+          <i class="fas fa-address-card"></i>
+          Personal Details
+        </h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label for="location" class="input-label">
+              <i class="fas fa-map-marker-alt mr-1 text-primary-500"></i>
+              Location
+            </label>
+            <input type="text" id="location" name="location"
+                   class="input-field" placeholder="Your location">
+          </div>
+          <div>
+            <label for="birth_date" class="input-label">
+              <i class="fas fa-birthday-cake mr-1 text-primary-500"></i>
+              Birth Date
+            </label>
+            <input type="date" id="birth_date" name="birth_date"
+                   class="input-field">
+          </div>
+        </div>
+      </div>
+
+      <!-- Preferences Section -->
+      <div class="settings-section">
+        <h2 class="settings-section-title">
+          <i class="fas fa-palette"></i>
+          Preferences
+        </h2>
+        
+        <div class="space-y-4">
+          <div class="flex items-center justify-between py-2">
+            <div>
+              <h3 class="font-medium text-gray-800 dark:text-gray-200">Dark Mode</h3>
+              <p class="text-sm text-secondary">Switch between light and dark themes</p>
+            </div>
+            <label for="dark-mode-toggle" class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" id="dark-mode-toggle" class="sr-only">
+              <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600"></div>
+            </label>
+          </div>
+          
+          <div class="flex items-center justify-between py-2">
+            <div>
+              <h3 class="font-medium text-gray-800 dark:text-gray-200">Email Notifications</h3>
+              <p class="text-sm text-secondary">Receive updates about your account</p>
+            </div>
+            <label for="email-notifications-toggle" class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" id="email-notifications-toggle" class="sr-only" checked>
+              <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary-600"></div>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex flex-col sm:flex-row justify-end gap-3 pt-4">
+        <button type="reset" class="btn-secondary order-2 sm:order-1">
+          Cancel Changes
+        </button>
+        <button type="submit" class="btn-primary order-1 sm:order-2">
+          <i class="fas fa-save mr-2"></i>Save Changes
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    // Show preview of uploaded photo
+    document.getElementById("photo")?.addEventListener("change", function(event) {
+      const file = event.target.files[0];
+      if (file) {
+        document.getElementById("profile-photo-preview").src = URL.createObjectURL(file);
+      }
+    });
+    
+    // Dark mode toggle functionality
+    const darkModeToggle = document.getElementById('dark-mode-toggle');
+    const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
+    
+    // Check if dark mode is enabled
+    if (document.documentElement.classList.contains('dark')) {
+      darkModeToggle.checked = true;
+    }
+    
+    darkModeToggle.addEventListener('change', function() {
+      if (this.checked) {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+      }
+    });
+    
+    // Form validation
+    document.getElementById('settings-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      // Simple validation example
+      const username = document.getElementById('username').value;
+      if (username.length < 3) {
+        alert('Username must be at least 3 characters long');
+        return;
+      }
+      
+      // Simulate successful save
+      const submitBtn = this.querySelector('button[type="submit"]');
+      const originalText = submitBtn.innerHTML;
+      submitBtn.innerHTML = '<i class="fas fa-check mr-2"></i>Saved!';
+      submitBtn.classList.add('bg-green-600', 'hover:bg-green-700');
+      
+      setTimeout(() => {
+        submitBtn.innerHTML = originalText;
+        submitBtn.classList.remove('bg-green-600', 'hover:bg-green-700');
+      }, 2000);
+    });
+  </script>
+</body>
+</html>
