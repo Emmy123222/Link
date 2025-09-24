@@ -205,20 +205,42 @@
 
 <body class="min-h-screen">
 <!-- Mobile Menu Button -->
-<div class="fixed top-4 left-4 z-50 lg:hidden">
+<div class="fixed top-4 right-4 z-50 lg:hidden">
   <button id="mobileMenuButton" class="p-2 rounded-md bg-surface dark:bg-surface-dark border-light hover:bg-primary-50 dark:hover:bg-surface-dark/80 transition-smooth">
     <img src="https://img.icons8.com/ios/50/menu--v1.png" alt="menu" class="w-6 h-6 dark:invert" />
   </button>
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+  const menuButton = document.getElementById("mobileMenuButton");
+  const mobileMenu = document.getElementById("mobileMenu"); // the menu container
+
+  if (!menuButton || !mobileMenu) {
+    console.error("❌ mobileMenuButton or mobileMenu not found.");
+    return;
+  }
+
+  menuButton.addEventListener("click", () => {
+    // Toggle menu visibility
+    mobileMenu.classList.toggle("hidden");
+
+    // Add smooth animation (optional)
+    if (!mobileMenu.classList.contains("hidden")) {
+      mobileMenu.classList.add("animate-fadeIn");
+      setTimeout(() => mobileMenu.classList.remove("animate-fadeIn"), 300);
+    }
+  });
+});
+</script>
 </div>
 
 <!-- Mobile Container (Hidden on Desktop) -->
 <div id="mobile-container" class="lg:hidden">
   <div class="min-h-screen flex flex-col items-center justify-center px-4 pt-20 pb-8">
-    <!-- Logo -->
-   <div class="fixed top-4 right-4 z-40 lg:hidden text-center flex items-center gap-1">
-      <h1 class="text-primary-600 dark:text-primary-400 text-2xl font-bold mb-2">VUNO</h1>
-      <img src="vuno.png" alt="VUNO Logo" class="w-21 h-12 mx-auto ">
-    </div>
+ <!-- Logo -->
+<div class="fixed top-4 left-4 z-40 lg:hidden text-center flex items-center gap-0">
+  <h1 class="text-primary-600 dark:text-primary-400 text-2xl font-bold">VUNO</h1>
+  <img src="vuno.png" alt="VUNO Logo" class="w-16 h-16 -mt-1">
+</div>
 
     <!-- Hero Image -->
     <div class="w-full max-w-md mb-8 relative">
@@ -400,7 +422,7 @@
 </div>
 
 <!-- Mobile Navigation Modal -->
-<div id="mobileNav" class="absolute top-16 left-4 p-4 bg-white dark:bg-gray-900 rounded-lg shadow-lg w-60 space-y-4 border-light hidden z-50">
+<div id="mobileNav" class="absolute top-16 right-4 p-4 bg-white dark:bg-gray-900 rounded-lg shadow-lg w-60 space-y-4 border-light hidden z-50">
   <a href="#" class="flex items-center gap-2 p-2 rounded-md hover:bg-primary-50 dark:hover:bg-surface-dark/80 transition-smooth">
     <img src="feed.png" alt="feeds icon" class="w-5 h-5 dark:invert" />
     <span>Feeds</span>
