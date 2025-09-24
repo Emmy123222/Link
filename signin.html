@@ -505,52 +505,105 @@
     </script>
     <script>
 document.addEventListener("DOMContentLoaded", () => {
-    const form = document.getElementById("signin-form");
-    if (!form) return console.error("❌ Form 'signin-form' not found");
+  const form = document.getElementById("signin-form");
+  if (!form) return console.error("❌ Form 'signin-form' not found");
 
-    form.addEventListener("submit", async (e) => {
-        e.preventDefault();
+  // 🔔 Notification function
+  function showNotification(message, subText = "", type = "success") {
+    const colors = {
+      success: "bg-green-500",
+      error: "bg-red-500",
+      warning: "bg-yellow-500",
+      info: "bg-blue-500"
+    };
 
-        const email = document.getElementById("email")?.value.trim();
-        const password = document.getElementById("password")?.value.trim();
+    const notification = document.createElement("div");
+    notification.innerHTML = `
+      <div class="fixed top-4 right-4 z-50 animate-in slide-in-from-right duration-300">
+        <div class="${colors[type]} text-white px-6 py-4 rounded-lg shadow-lg flex items-center gap-3 max-w-sm">
+          <div class="flex-shrink-0">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                d="${type === "success" ? "M5 13l4 4L19 7" : 
+                    type === "error" ? "M6 18L18 6M6 6l12 12" :
+                    type === "warning" ? "M12 9v2m0 4h.01M12 5a7 7 0 100 14 7 7 0 000-14z" :
+                    "M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20 10 10 0 000-20z"}">
+              </path>
+            </svg>
+          </div>
+          <div class="flex-1">
+            <p class="font-medium">${message}</p>
+            ${subText ? `<p class="text-sm opacity-90">${subText}</p>` : ""}
+          </div>
+          <button class="flex-shrink-0 opacity-70 hover:opacity-100">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    `;
 
-        if (!email || !password) {
-            alert("⚠️ Please enter both email and password.");
-            return;
-        }
-
-        try {
-            const response = await fetch("https://vuno-1.onrender.com/login/", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Accept": "application/json"
-                },
-                body: JSON.stringify({ email, password })
-            });
-
-            const data = await response.json().catch(() => null);
-            console.log("Login response:", data);
-
-            if (response.ok && data.access && data.refresh) {
-                // ✅ Save with consistent key names
-                localStorage.setItem("authToken", data.access);
-                localStorage.setItem("refreshToken", data.refresh);
-
-                alert("✅ Login successful!");
-
-                // ✅ Redirect AFTER saving
-                window.location.href = "index.html";
-            } else {
-                const message = data?.non_field_errors?.[0] || data?.detail || "Login failed. Check your credentials.";
-                alert(`❌ ${message}`);
-            }
-        } catch (error) {
-            console.error("❌ Fetch error:", error);
-            alert("⚠️ Network error. Try again later.");
-        }
+    notification.querySelector("button").addEventListener("click", () => {
+      notification.remove();
     });
+
+    document.body.appendChild(notification);
+
+    setTimeout(() => {
+      if (notification.parentElement) notification.remove();
+    }, 4000);
+  }
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const email = document.getElementById("email")?.value.trim();
+    const password = document.getElementById("password")?.value.trim();
+
+    if (!email || !password) {
+      showNotification("Missing Fields", "Please enter both email and password.", "warning");
+      return;
+    }
+
+    try {
+      const response = await fetch("https://vuno-1.onrender.com/login/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await response.json().catch(() => null);
+      console.log("Login response:", data);
+
+      if (response.ok && data.access && data.refresh) {
+        localStorage.setItem("authToken", data.access);
+        localStorage.setItem("refreshToken", data.refresh);
+
+        showNotification("Login Successful!", "Welcome back!", "success");
+
+        // Small delay before redirect so user sees the toast
+        setTimeout(() => {
+          window.location.href = "index.html";
+        }, 1000);
+      } else {
+        const message = data?.non_field_errors?.[0] || data?.detail || "Login failed. Check your credentials.";
+        showNotification("Login Failed", message, "error");
+      }
+    } catch (error) {
+      console.error("❌ Fetch error:", error);
+      showNotification("Network Error", "Try again later.", "error");
+    }
+  });
 });
+
+
+
+
+
 
 // 🔹 Optional: fetch user profile
 async function getProfile() {
