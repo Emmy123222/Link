@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VUNO - MESSAGES</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- Tailwind Custom Config -->
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        screens: {
+          sm: '640px',
+          md: '768px',
+          lg: '1024px',
+          xl: '1280px',
+          '2xl': '1536px',
+        },
+        extend: {
+          fontFamily: {
+            sans: ['"Inter Variable"', 'Inter', 'system-ui', 'sans-serif'],
+            display: ['"Geist Variable"', '"Geist"', 'Inter', 'system-ui', 'sans-serif'],
+            mono: ['"Geist Mono Variable"', '"Geist Mono"', 'monospace'],
+          },
+          colors: {
+            primary: {
+              50: '#f0f9ff',
+              100: '#e0f2fe',
+              200: '#bae6fd',
+              300: '#7dd3fc',
+              400: '#38bdf8',
+              500: '#0ea5e9',
+              600: '#0284c7',
+              700: '#0369a1',
+              800: '#075985',
+              900: '#0c4a6e',
+            },
+            background: {
+              light: '#ffffff',
+              dark: '#0a0a0a',
+            },
+            surface: {
+              light: '#f8fafc',
+              dark: '#1a1a1a',
+            },
+            text: {
+              primary: {
+                light: '#18181b',
+                dark: '#fafafa',
+              },
+              secondary: {
+                light: '#52525b',
+                dark: '#a1a1aa',
+              }
+            },
+            border: {
+              light: '#e4e4e7',
+              dark: '#3f3f46',
+            }
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.3s ease-in-out forwards',
+            'slide-in': 'slideIn 0.3s ease-out forwards',
+            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+            slideIn: {
+              '0%': { transform: 'translateY(-20px)', opacity: '0' },
+              '100%': { transform: 'translateY(0)', opacity: '1' },
+            },
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Custom Styles -->
+  <style>
+    @import url('https://cdn.jsdelivr.net/npm/@fontsource-variable/inter@5.0.3/index.min.css');
+    @import url('https://cdn.jsdelivr.net/npm/@fontsource-variable/geist-sans@1.1.1/index.min.css');
+    @import url('https://cdn.jsdelivr.net/npm/@fontsource-variable/geist-mono@1.1.1/index.min.css');
+
+    body {
+      @apply font-sans text-text-primary-light bg-background-light dark:text-text-primary-dark dark:bg-background-dark;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    .active-scale {
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
+    .active-scale:active {
+      transform: scale(0.97);
+    }
+
+    .transition-smooth {
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .border-light {
+      @apply border border-border-light dark:border-border-dark;
+    }
+
+    .message-in {
+      border-radius: 18px 18px 18px 4px;
+      @apply bg-surface-light text-text-primary-light;
+    }
+    .dark .message-in {
+      @apply bg-surface-dark text-text-primary-dark;
+    }
+
+    .message-out {
+      border-radius: 18px 18px 4px 18px;
+      @apply bg-primary-600 text-white;
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      @apply bg-transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      @apply bg-border-light dark:bg-border-dark rounded-full;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      @apply bg-primary-400 dark:bg-primary-600;
+    }
+
+    @media (min-width: 1024px) {
+      .main-content {
+        margin-left: 20rem;
+      }
+      .mobile-nav {
+        display: none;
+      }
+    }
+
+    .text-display {
+      @apply font-display tracking-tight;
+    }
+
+    .text-mono {
+      @apply font-mono;
+    }
+
+    .text-secondary {
+      @apply text-text-secondary-light dark:text-text-secondary-dark;
+    }
+
+    .surface {
+      @apply bg-surface-light dark:bg-surface-dark;
+    }
+
+    .focus-ring {
+      @apply focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-surface-light dark:focus:ring-offset-surface-dark;
+    }
+
+    .theme-toggle {
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .theme-toggle .sun {
+      transform: rotate(0deg);
+      opacity: 1;
+    }
+
+    .theme-toggle .moon {
+      transform: rotate(-90deg);
+      opacity: 0;
+    }
+
+    .dark .theme-toggle .sun {
+      transform: rotate(90deg);
+      opacity: 0;
+    }
+
+    .dark .theme-toggle .moon {
+      transform: rotate(0deg);
+      opacity: 1;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+    .animate-float {
+      animation: float 1.5s ease-in-out infinite;
+    }
+    
+    .conversation-item.active {
+      @apply bg-primary-50 dark:bg-primary-900/20 border-r-2 border-r-primary-500;
+    }
+    
+    .placeholder-avatar {
+      @apply w-10 h-10 rounded-full bg-gradient-to-r from-primary-400 to-primary-600 flex items-center justify-center text-white font-medium;
+    }
+  </style>
+</head>
+<body class="h-full overflow-hidden">
+ 
+
+<div class="flex flex-col lg:flex-row h-screen bg-white dark:bg-gray-900">
+  <!-- Desktop Sidebar -->
+  <aside class="hidden lg:flex flex-col w-20 fixed h-full surface border-r border-light">
+    
+    <nav class="flex-1 p-4 space-y-4">
+      <a href="#" class="flex items-center justify-center p-3 rounded-xl surface hover:bg-primary-50 dark:hover:bg-primary-900/20 active-scale transition-smooth group">
+        <i class="fas fa-home text-secondary w-6 text-center group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors"></i>
+      </a>
+      <a href="#" class="flex items-center justify-center p-3 rounded-xl surface hover:bg-primary-50 dark:hover:bg-primary-900/20 active-scale transition-smooth group">
+        <i class="fas fa-newspaper text-secondary w-6 text-center group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors"></i>
+      </a>
+      <a href="#" class="flex items-center justify-center p-3 rounded-xl bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400 active-scale transition-smooth">
+        <i class="fas fa-comments w-6 text-center"></i>
+      </a>
+      <a href="#" class="flex items-center justify-center p-3 rounded-xl surface hover:bg-primary-50 dark:hover:bg-primary-900/20 active-scale transition-smooth group">
+        <i class="fas fa-user text-secondary w-6 text-center group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors"></i>
+      </a>
+    </nav>
+    
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content flex-1 flex flex-col h-full lg:ml-20">
+    <!-- Messages Header -->
+    <header class="surface border-b border-light p-4 lg:p-6 flex justify-between items-center">
+      <div>
+   <h2 class="text-display font-bold text-3xl bg-gradient-to-r from-sky-500 to-blue-600 bg-clip-text text-transparent drop-shadow-lg tracking-tight">
+  Vuno
+</h2>
+      </div>
+      
+      <div class="flex items-center space-x-3">
+        <div class="relative">
+          <input type="text" placeholder="Search messages..." class="pl-10 pr-4 py-2 rounded-full surface border border-light focus:ring-2 focus:ring-primary-200 focus:border-primary-400 transition-all w-64">
+          <i class="fas fa-search text-secondary absolute left-3 top-1/2 transform -translate-y-1/2"></i>
+        </div>
+      </div>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden">
+      <!-- Conversations List -->
+      <section class="w-full lg:w-96 border-r border-light surface overflow-y-auto">
+        <div class="p-4 lg:p-6">
+          <h3 class="font-medium text-secondary mb-4 text-sm uppercase tracking-wide">Recent Conversations</h3>
+          
+          <!-- Conversation Items -->
+          <div class="space-y-2">
+            <div class="conversation-item active p-4 rounded-xl cursor-pointer bg-primary-50 dark:bg-primary-900/20 border-l-4 border-primary-600 transition-all">
+              <div class="flex items-center space-x-4">
+                <div class="relative">
+                  <div class="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center text-white font-semibold text-sm shadow-lg">AJ</div>
+                  <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 border-2 border-white dark:border-gray-900 rounded-full"></div>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex justify-between items-center mb-1">
+                    <h4 class="font-semibold truncate text-gray-900 dark:text-white">Alex Johnson</h4>
+                    <span class="text-xs text-secondary">2h ago</span>
+                  </div>
+                  <p class="text-sm text-secondary truncate">Hey, are we still meeting tomorrow?</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="conversation-item p-4 rounded-xl cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-all border-l-4 border-transparent">
+              <div class="flex items-center space-x-4">
+                <div class="relative">
+                  <div class="w-12 h-12 rounded-full bg-gradient-to-r from-purple-500 to-purple-600 flex items-center justify-center text-white font-semibold text-sm shadow-lg">SM</div>
+                  <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-gray-300 border-2 border-white dark:border-gray-900 rounded-full"></div>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex justify-between items-center mb-1">
+                    <h4 class="font-semibold truncate text-gray-900 dark:text-white">Sam Martinez</h4>
+                    <span class="text-xs text-secondary">5h ago</span>
+                  </div>
+                  <p class="text-sm text-secondary truncate">I sent you the files you requested</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="conversation-item p-4 rounded-xl cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-all border-l-4 border-transparent">
+              <div class="flex items-center space-x-4">
+                <div class="relative">
+                  <div class="w-12 h-12 rounded-full bg-gradient-to-r from-green-500 to-green-600 flex items-center justify-center text-white font-semibold text-sm shadow-lg">TR</div>
+                  <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 border-2 border-white dark:border-gray-900 rounded-full"></div>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex justify-between items-center mb-1">
+                    <h4 class="font-semibold truncate text-gray-900 dark:text-white">Taylor Roberts</h4>
+                    <span class="text-xs text-secondary">Yesterday</span>
+                  </div>
+                  <p class="text-sm text-secondary truncate">Thanks for your help with the project!</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="conversation-item p-4 rounded-xl cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-all border-l-4 border-transparent">
+              <div class="flex items-center space-x-4">
+                <div class="relative">
+                  <div class="w-12 h-12 rounded-full bg-gradient-to-r from-yellow-500 to-yellow-600 flex items-center justify-center text-white font-semibold text-sm shadow-lg">JK</div>
+                  <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 border-2 border-white dark:border-gray-900 rounded-full"></div>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex justify-between items-center mb-1">
+                    <h4 class="font-semibold truncate text-gray-900 dark:text-white">Jordan Kim</h4>
+                    <span class="text-xs text-secondary">2 days ago</span>
+                  </div>
+                  <p class="text-sm text-secondary truncate">Let me know when you're available</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Chat Area -->
+      <section class="flex-1 hidden lg:flex flex-col">
+        <!-- Empty State -->
+        <div class="flex-1 flex flex-col items-center justify-center p-8 text-center">
+          <div class="w-64 h-64 mb-8 rounded-full bg-gradient-to-br from-primary-50 to-primary-100 dark:from-primary-900/10 dark:to-primary-800/10 flex items-center justify-center shadow-lg">
+            <i class="fas fa-comments text-6xl text-primary-400 animate-float"></i>
+          </div>
+          <h3 class="text-display font-semibold text-xl mb-2 text-gray-900 dark:text-white">Your messages live here</h3>
+          <p class="text-secondary max-w-md">Select a conversation or start a new one to see messages here. Stay connected with your community.</p>
+          <button class="mt-6 px-6 py-3 bg-primary-600 text-white rounded-full active-scale transition-smooth flex items-center shadow-lg hover:bg-primary-700">
+            <i class="fas fa-plus mr-2"></i>
+            New Message
+          </button>
+        </div>
+        
+        <!-- Chat Interface (Hidden by default) -->
+        <div class="hidden flex-1 flex-col">
+          <!-- Chat Header -->
+          <div class="surface border-b border-light p-4 lg:p-6 flex items-center space-x-4">
+            <div class="relative">
+              <div class="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center text-white font-semibold text-lg shadow-lg">AJ</div>
+              <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 border-2 border-white dark:border-gray-900 rounded-full"></div>
+            </div>
+            <div>
+              <h4 class="font-semibold text-gray-900 dark:text-white">Alex Johnson</h4>
+              <p class="text-xs text-secondary">Online</p>
+            </div>
+          </div>
+          
+          <!-- Messages -->
+          <div class="flex-1 overflow-y-auto p-4 lg:p-6 space-y-4">
+            <div class="flex justify-start">
+              <div class="message-in max-w-xs lg:max-w-md p-4 rounded-2xl rounded-tl-none bg-gray-100 dark:bg-gray-800 shadow-sm">
+                <p class="text-gray-900 dark:text-white">Hey, are we still meeting tomorrow?</p>
+                <span class="text-xs opacity-70 block mt-2 text-right">10:24 AM</span>
+              </div>
+            </div>
+            
+            <div class="flex justify-end">
+              <div class="message-out max-w-xs lg:max-w-md p-4 rounded-2xl rounded-tr-none bg-primary-600 text-white shadow-sm">
+                <p>Yes, definitely! 2 PM at the usual place?</p>
+                <span class="text-xs opacity-90 block mt-2 text-right">10:26 AM</span>
+              </div>
+            </div>
+            
+            <div class="flex justify-start">
+              <div class="message-in max-w-xs lg:max-w-md p-4 rounded-2xl rounded-tl-none bg-gray-100 dark:bg-gray-800 shadow-sm">
+                <p class="text-gray-900 dark:text-white">Perfect, see you then!</p>
+                <span class="text-xs opacity-70 block mt-2 text-right">10:27 AM</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Message Input -->
+          <div class="surface border-t border-light p-4 lg:p-6">
+            <div class="flex space-x-3">
+              <input type="text" placeholder="Type a message..." class="flex-1 px-6 py-3 rounded-full surface border border-light focus:ring-2 focus:ring-primary-200 focus:border-primary-400 transition-all">
+              <button class="w-12 h-12 rounded-full bg-primary-600 text-white flex items-center justify-center active-scale shadow-lg hover:bg-primary-700">
+                <i class="fas fa-paper-plane"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+
+
+
+
+  <!-- Mobile Bottom Navigation -->
+  <nav class="mobile-nav lg:hidden fixed bottom-0 left-0 right-0 surface border-t border-light flex justify-around p-2">
+    <a href="#" class="flex flex-col items-center p-2 text-secondary active-scale">
+      <i class="fas fa-home mb-1"></i>
+      <span class="text-xs">Home</span>
+    </a>
+    <a href="#" class="flex flex-col items-center p-2 text-secondary active-scale">
+      <i class="fas fa-newspaper mb-1"></i>
+      <span class="text-xs">Feed</span>
+    </a>
+    <a href="#" class="flex flex-col items-center p-2 text-primary-600 dark:text-primary-400 active-scale">
+      <i class="fas fa-comments mb-1"></i>
+      <span class="text-xs">Messages</span>
+    </a>
+    <a href="#" class="flex flex-col items-center p-2 text-secondary active-scale">
+      <i class="fas fa-user mb-1"></i>
+      <span class="text-xs">Profile</span>
+    </a>
+  </nav>
+
+ 
+ <script>
+document.addEventListener("DOMContentLoaded", async () => {
+  const BASE_URL = "http://127.0.0.1:8000"; // 🔹 Local dev server
+
+  // 🔑 Load tokens set by index.html
+  let accessToken = localStorage.getItem("authToken");
+  let refreshToken = localStorage.getItem("refreshToken");
+
+  // 🔹 Refresh access token (silent, no redirect)
+  async function refreshAccessToken() {
+    if (!refreshToken) return false;
+
+    try {
+      const response = await fetch(`${BASE_URL}/token/refresh/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ refresh: refreshToken })
+      });
+
+      if (!response.ok) throw new Error("Failed to refresh token");
+
+      const data = await response.json();
+      accessToken = data.access;
+      localStorage.setItem("authToken", accessToken);
+      console.log("🔄 Access token refreshed!");
+      return true;
+    } catch (err) {
+      console.error("❌ Token refresh failed:", err);
+      return false;
+    }
+  }
+
+  // 🔹 Fetch with auto-refresh (no redirect)
+  async function fetchWithAuth(url, options = {}) {
+    if (!accessToken) {
+      console.warn("⚠️ No access token available.");
+      return null;
+    }
+
+    options.headers = {
+      ...options.headers,
+      "Authorization": `Bearer ${accessToken}`,
+      "Content-Type": "application/json"
+    };
+
+    let response = await fetch(url, options);
+
+    if (response.status === 401) {
+      console.warn("⚠️ Access token expired. Attempting refresh...");
+      const refreshed = await refreshAccessToken();
+
+      if (refreshed) {
+        options.headers["Authorization"] = `Bearer ${accessToken}`;
+        response = await fetch(url, options);
+      } else {
+        console.error("❌ Could not refresh token. Data fetch stopped.");
+        return null;
+      }
+    }
+
+    return response;
+  }
+
+  // ===============================
+  // 🔹 Fetch Conversations
+  // ===============================
+  try {
+    const response = await fetchWithAuth(`${BASE_URL}/call/conversations/`);
+    if (!response || !response.ok) throw new Error("Failed to load conversations");
+
+    const conversations = await response.json();
+    console.log("✅ Conversations:", conversations);
+
+    // Example: render in conversation list
+    const container = document.querySelector(".space-y-2");
+    container.innerHTML = "";
+    conversations.forEach(conv => {
+      const item = document.createElement("div");
+      item.className =
+        "conversation-item p-4 rounded-xl cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-all border-l-4 border-transparent";
+      item.innerHTML = `
+        <div class="flex items-center space-x-4">
+          <div class="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center text-white font-semibold text-sm">
+            ${conv.title ? conv.title.charAt(0).toUpperCase() : "?"}
+          </div>
+          <div class="flex-1 min-w-0">
+            <h4 class="font-semibold truncate text-gray-900 dark:text-white">${conv.title || "Untitled"}</h4>
+            <p class="text-sm text-secondary truncate">${conv.last_message || "No messages yet"}</p>
+          </div>
+        </div>
+      `;
+      container.appendChild(item);
+    });
+  } catch (err) {
+    console.error("❌ Error loading conversations:", err);
+  }
+});
+</script>
+
+</body>
+</html>

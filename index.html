@@ -182,7 +182,7 @@
       transform: rotate(-90deg);
       opacity: 0;
     }
-
+ 
     .dark .theme-toggle .sun {
       transform: rotate(90deg);
       opacity: 0;
@@ -350,7 +350,7 @@
         </div>
         <span>Contacts</span>
       </a>
-      <a href="#" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200 text-gray-700 dark:text-gray-300">
+      <a href="message.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200 text-gray-700 dark:text-gray-300">
         <div class="p-2 rounded-lg bg-gray-100 dark:bg-gray-800">
           <img src="https://img.icons8.com/ios/50/speech-bubble-with-dots.png" alt="message icon" class="w-5 h-5 dark:invert opacity-70" />
         </div>
@@ -415,7 +415,7 @@
           <p id="profileName" class="text-sm font-medium text-gray-900 dark:text-white truncate">User Name</p>
           <p id="profilePlan" class="text-xs text-gray-500 dark:text-gray-400">Free Plan</p>
         </div>
-        
+         
       </div>
     </div>
   </div>
@@ -423,7 +423,7 @@
 
 <!-- Mobile Navigation Modal -->
 <div id="mobileNav" class="absolute top-16 right-4 p-4 bg-white dark:bg-gray-900 rounded-lg shadow-lg w-60 space-y-4 border-light hidden z-50">
-  <a href="#" class="flex items-center gap-2 p-2 rounded-md hover:bg-primary-50 dark:hover:bg-surface-dark/80 transition-smooth">
+  <a href="feed.html" class="flex items-center gap-2 p-2 rounded-md hover:bg-primary-50 dark:hover:bg-surface-dark/80 transition-smooth">
     <img src="feed.png" alt="feeds icon" class="w-5 h-5 dark:invert" />
     <span>Feeds</span>
   </a>
@@ -431,7 +431,7 @@
     <img src="https://img.icons8.com/ios/50/contacts.png" alt="contact icon" class="w-5 h-5 dark:invert" />
     <span>Contact</span>
   </a>
-  <a href="#" class="flex items-center gap-2 p-2 rounded-md hover:bg-primary-50 dark:hover:bg-surface-dark/80 transition-smooth">
+  <a href="message.html" class="flex items-center gap-2 p-2 rounded-md hover:bg-primary-50 dark:hover:bg-surface-dark/80 transition-smooth">
     <img src="https://img.icons8.com/ios/50/speech-bubble-with-dots.png" alt="message icon" class="w-5 h-5 dark:invert" />
     <span>Message</span>
   </a>
@@ -688,6 +688,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   } catch (err) {
     console.error("❌ Error loading profile:", err);
   }
+
+
+
+
+
 
   // ===============================
   // 🔹 MOBILE NAV TOGGLE

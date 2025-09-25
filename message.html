@@ -1,783 +1,728 @@
 <!DOCTYPE html>
 <html lang="en" class="h-full">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VUNO - Message</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
-    <link rel="icon" href="https://via.placeholder.com/32" type="image/png" sizes="32x32">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VUNO - MESSAGES</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <!-- Tailwind Custom Config -->
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        screens: {
+          sm: '640px',
+          md: '768px',
+          lg: '1024px',
+          xl: '1280px',
+          '2xl': '1536px',
+        },
+        extend: {
+          fontFamily: {
+            sans: ['"Inter Variable"', 'Inter', 'system-ui', 'sans-serif'],
+            display: ['"Geist Variable"', '"Geist"', 'Inter', 'system-ui', 'sans-serif'],
+            mono: ['"Geist Mono Variable"', '"Geist Mono"', 'monospace'],
+          },
+          colors: {
+            primary: {
+              50: '#f0f9ff',
+              100: '#e0f2fe',
+              200: '#bae6fd',
+              300: '#7dd3fc',
+              400: '#38bdf8',
+              500: '#0ea5e9',
+              600: '#0284c7',
+              700: '#0369a1',
+              800: '#075985',
+              900: '#0c4a6e',
+            },
+            background: {
+              light: '#ffffff',
+              dark: '#0a0a0a',
+            },
+            surface: {
+              light: '#f8fafc',
+              dark: '#1a1a1a',
+            },
+            text: {
+              primary: {
+                light: '#18181b',
+                dark: '#fafafa',
+              },
+              secondary: {
+                light: '#52525b',
+                dark: '#a1a1aa',
+              }
+            },
+            border: {
+              light: '#e4e4e7',
+              dark: '#3f3f46',
+            }
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.3s ease-in-out forwards',
+            'slide-in': 'slideIn 0.3s ease-out forwards',
+            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+            slideIn: {
+              '0%': { transform: 'translateY(-20px)', opacity: '0' },
+              '100%': { transform: 'translateY(0)', opacity: '1' },
+            },
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Custom Styles -->
+  <style>
+    @import url('https://cdn.jsdelivr.net/npm/@fontsource-variable/inter@5.0.3/index.min.css');
+    @import url('https://cdn.jsdelivr.net/npm/@fontsource-variable/geist-sans@1.1.1/index.min.css');
+    @import url('https://cdn.jsdelivr.net/npm/@fontsource-variable/geist-mono@1.1.1/index.min.css');
+
+    body {
+      @apply font-sans text-text-primary-light bg-background-light dark:text-text-primary-dark dark:bg-background-dark;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    .active-scale {
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
+    .active-scale:active {
+      transform: scale(0.97);
+    }
+
+    .transition-smooth {
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .border-light {
+      @apply border border-border-light dark:border-border-dark;
+    }
+
+    .message-in {
+      border-radius: 18px 18px 18px 4px;
+      @apply bg-surface-light text-text-primary-light;
+    }
+    .dark .message-in {
+      @apply bg-surface-dark text-text-primary-dark;
+    }
+
+    .message-out {
+      border-radius: 18px 18px 4px 18px;
+      @apply bg-primary-600 text-white;
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      @apply bg-transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      @apply bg-border-light dark:bg-border-dark rounded-full;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      @apply bg-primary-400 dark:bg-primary-600;
+    }
+
+    @media (min-width: 1024px) {
+      .main-content {
+        margin-left: 20rem;
+      }
+      .mobile-nav {
+        display: none;
+      }
+    }
+
+    .text-display {
+      @apply font-display tracking-tight;
+    }
+
+    .text-mono {
+      @apply font-mono;
+    }
+
+    .text-secondary {
+      @apply text-text-secondary-light dark:text-text-secondary-dark;
+    }
+
+    .surface {
+      @apply bg-surface-light dark:bg-surface-dark;
+    }
+
+    .focus-ring {
+      @apply focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 focus:ring-offset-surface-light dark:focus:ring-offset-surface-dark;
+    }
+
+    .theme-toggle {
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .theme-toggle .sun {
+      transform: rotate(0deg);
+      opacity: 1;
+    }
+
+    .theme-toggle .moon {
+      transform: rotate(-90deg);
+      opacity: 0;
+    }
+
+    .dark .theme-toggle .sun {
+      transform: rotate(90deg);
+      opacity: 0;
+    }
+
+    .dark .theme-toggle .moon {
+      transform: rotate(0deg);
+      opacity: 1;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+    .animate-float {
+      animation: float 1.5s ease-in-out infinite;
+    }
     
-    <!-- Tailwind Configuration -->
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        display: ['Plus Jakarta Sans', 'sans-serif'],
-                    },
-                    colors: {
-                        primary: {
-                            50: '#f0f9ff',
-                            100: '#e0f2fe',
-                            200: '#bae6fd',
-                            300: '#7dd3fc',
-                            400: '#38bdf8',
-                            500: '#0ea5e9',
-                            600: '#0284c7',
-                            700: '#0369a1',
-                            800: '#075985',
-                            900: '#0c4a6e',
-                        },
-                        secondary: {
-                            light: '#FF5E5E',
-                            dark: '#FF3D4A',
-                        },
-                        accent: {
-                            light: '#2ED573',
-                            dark: '#20BF6B',
-                        },
-                        background: {
-                            light: '#F8FAFC',
-                            dark: '#0F172A',
-                        },
-                        surface: {
-                            light: '#FFFFFF',
-                            dark: '#1E293B',
-                        },
-                        text: {
-                            light: '#1E293B',
-                            dark: '#F1F5F9',
-                        },
-                        dark: {
-                            800: '#1E293B',
-                            900: '#0F172A',
-                        }
-                    },
-                    animation: {
-                        'gradient-pulse': 'gradientPulse 15s ease infinite',
-                        'fade-in': 'fadeIn 0.5s ease-in-out forwards',
-                        'slide-in': 'slideIn 0.3s ease-out forwards',
-                        'slide-in-right': 'slideInRight 0.3s ease-out forwards',
-                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                        'float': 'float 3s ease-in-out infinite',
-                        'rocket-launch': 'rocketLaunch 1.5s cubic-bezier(0.25, 1, 0.5, 1) forwards',
-                        'stars-pulse': 'starsPulse 2s ease-in-out infinite alternate',
-                        'wave': 'wave 1.5s ease-in-out infinite',
-                        'particle-float': 'particleFloat 4s ease-in-out infinite',
-                        'logo-pulse': 'logoPulse 2s ease-in-out infinite alternate',
-                    },
-                    keyframes: {
-                        gradientPulse: {
-                            '0%, 100%': { 'background-position': '0% 50%' },
-                            '50%': { 'background-position': '100% 50%' },
-                        },
-                        fadeIn: {
-                            '0%': { opacity: '0' },
-                            '100%': { opacity: '1' },
-                        },
-                        slideIn: {
-                            '0%': { transform: 'translateY(-20px)', opacity: '0' },
-                            '100%': { transform: 'translateY(0)', opacity: '1' },
-                        },
-                        slideInRight: {
-                            '0%': { transform: 'translateX(100%)', opacity: '0' },
-                            '100%': { transform: 'translateX(0)', opacity: '1' },
-                        },
-                        float: {
-                            '0%, 100%': { transform: 'translateY(0)' },
-                            '50%': { transform: 'translateY(-10px)' },
-                        },
-                        rocketLaunch: {
-                            '0%': { transform: 'translateY(0) scale(1)', opacity: '1' },
-                            '50%': { transform: 'translateY(-50px) scale(1.2)', opacity: '1' },
-                            '100%': { transform: 'translateY(-100vh) scale(0.5)', opacity: '0' },
-                        },
-                        starsPulse: {
-                            '0%': { opacity: '0.3' },
-                            '100%': { opacity: '1' },
-                        },
-                        wave: {
-                            '0%, 100%': { transform: 'translateY(0) rotate(0deg)' },
-                            '25%': { transform: 'translateY(-5px) rotate(2deg)' },
-                            '50%': { transform: 'translateY(0) rotate(0deg)' },
-                            '75%': { transform: 'translateY(-3px) rotate(-2deg)' },
-                        },
-                        particleFloat: {
-                            '0%': { transform: 'translateY(0) translateX(0)', opacity: '0' },
-                            '10%': { opacity: '1' },
-                            '90%': { opacity: '1' },
-                            '100%': { transform: 'translateY(-100px) translateX(20px)', opacity: '0' },
-                        },
-                        logoPulse: {
-                            '0%': { transform: 'scale(1)', opacity: '0.8' },
-                            '100%': { transform: 'scale(1.05)', opacity: '1' },
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
-        }
-        
-        .dark ::-webkit-scrollbar-thumb {
-            background: #475569;
-        }
-        
-        /* Smooth transitions for dark mode */
-        html {
-            scroll-behavior: smooth;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-        
-        /* Custom animations */
-        @keyframes ping {
-            75%, 100% {
-                transform: scale(2);
-                opacity: 0;
-            }
-        }
-        
-        .animate-ping-slow {
-            animation: ping 3s cubic-bezier(0, 0, 0.2, 1) infinite;
-        }
-        
-        /* Message bubble styling */
-        .message-received .message-bubble {
-            border-top-left-radius: 0;
-        }
-        
-        .message-sent .message-bubble {
-            border-top-right-radius: 0;
-        }
-        
-        /* Responsive tweaks */
-        @media (max-width: 768px) {
-            .conversation-list {
-                width: 100%;
-            }
-            
-            .chat-area {
-                display: none;
-            }
-            
-            .chat-area.active {
-                display: flex;
-            }
-        }
-        
-        /* Custom focus styles */
-        .focus-primary:focus {
-            box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.5);
-        }
-        
-        /* Custom transitions */
-        .transition-all-slow {
-            transition: all 0.5s ease;
-        }
-        
-        /* Custom tooltip styles */
-        [data-tooltip] {
-            position: relative;
-        }
-        
-        [data-tooltip]:hover::after {
-            content: attr(data-tooltip);
-            position: absolute;
-            bottom: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #1e293b;
-            color: white;
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.25rem;
-            font-size: 0.75rem;
-            white-space: nowrap;
-            z-index: 10;
-        }
-        
-        .dark [data-tooltip]:hover::after {
-            background: #f8fafc;
-            color: #1e293b;
-        }
-        
-        /* Custom placeholder styling */
-        .placeholder-gray-300::placeholder {
-            color: #cbd5e1;
-        }
-        
-        .dark .placeholder-gray-300::placeholder {
-            color: #475569;
-        }
-        
-        /* Custom chat bubbles */
-        .chat-bubble-left {
-            border-top-left-radius: 0;
-        }
-        
-        .chat-bubble-right {
-            border-top-right-radius: 0;
-        }
-        
-        /* Custom typing indicator */
-        .typing-indicator {
-            display: inline-flex;
-            align-items: center;
-        }
-        
-        .typing-indicator span {
-            height: 8px;
-            width: 8px;
-            margin: 0 2px;
-            background-color: #94a3b8;
-            border-radius: 50%;
-            display: inline-block;
-            animation: bounce 1.5s infinite ease-in-out;
-        }
-        
-        .typing-indicator span:nth-child(1) {
-            animation-delay: 0s;
-        }
-        
-        .typing-indicator span:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-        
-        .typing-indicator span:nth-child(3) {
-            animation-delay: 0.4s;
-        }
-        
-        @keyframes bounce {
-            0%, 60%, 100% {
-                transform: translateY(0);
-            }
-            30% {
-                transform: translateY(-5px);
-            }
-        }
-
-        /* Additional custom styles */
-        .message-container {
-            scroll-behavior: smooth;
-        }
-
-        .message-input:focus {
-            box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.3);
-        }
-
-        .online-status {
-            position: relative;
-        }
-
-        .online-status::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            width: 10px;
-            height: 10px;
-            background-color: #10B981;
-            border-radius: 50%;
-            border: 2px solid white;
-        }
-
-        .dark .online-status::after {
-            border-color: #1E293B;
-        }
-
-        /* Mobile menu animation */
-        @keyframes slideInLeft {
-            from {
-                transform: translateX(-100%);
-            }
-            to {
-                transform: translateX(0);
-            }
-        }
-
-        .mobile-menu {
-            animation: slideInLeft 0.3s ease-out;
-        }
-    </style>
+    .conversation-item.active {
+      @apply bg-primary-50 dark:bg-primary-900/20 border-r-2 border-r-primary-500;
+    }
+    
+    .placeholder-avatar {
+      @apply w-10 h-10 rounded-full bg-gradient-to-r from-primary-400 to-primary-600 flex items-center justify-center text-white font-medium;
+    }
+  </style>
 </head>
-<body class="h-full bg-gray-50 dark:bg-gray-900">
-    <div class="flex h-full">
-        <!-- Sidebar -->
-        <div class="hidden md:flex flex-col w-64 border-r border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
-            <!-- Logo -->
-            <div class="flex items-center justify-center h-16 px-4 border-b border-gray-200 dark:border-gray-700">
-                <div class="flex items-center">
-                    <img src="vuno.png" alt="VUNO Logo" class="h-14 w-14 mr-2">
-                    <span class="text-xl font-bold text-gray-800 dark:text-white">VUNO</span>
+<body class="h-full overflow-hidden">
+ 
+
+<div class="flex flex-col lg:flex-row h-screen bg-white dark:bg-gray-900">
+  <!-- Desktop Sidebar -->
+  <aside class="hidden lg:flex flex-col w-20 fixed h-full surface border-r border-light">
+    
+    <nav class="flex-1 p-4 space-y-4">
+      <a href="#" class="flex items-center justify-center p-3 rounded-xl surface hover:bg-primary-50 dark:hover:bg-primary-900/20 active-scale transition-smooth group">
+        <i class="fas fa-home text-secondary w-6 text-center group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors"></i>
+      </a>
+      <a href="#" class="flex items-center justify-center p-3 rounded-xl surface hover:bg-primary-50 dark:hover:bg-primary-900/20 active-scale transition-smooth group">
+        <i class="fas fa-newspaper text-secondary w-6 text-center group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors"></i>
+      </a>
+      <a href="#" class="flex items-center justify-center p-3 rounded-xl bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400 active-scale transition-smooth">
+        <i class="fas fa-comments w-6 text-center"></i>
+      </a>
+      <a href="#" class="flex items-center justify-center p-3 rounded-xl surface hover:bg-primary-50 dark:hover:bg-primary-900/20 active-scale transition-smooth group">
+        <i class="fas fa-user text-secondary w-6 text-center group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors"></i>
+      </a>
+    </nav>
+    
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content flex-1 flex flex-col h-full lg:ml-20">
+    <!-- Messages Header -->
+    <header class="surface border-b border-light p-4 lg:p-6 flex justify-between items-center">
+      <div>
+   <h2 class="text-display font-bold text-3xl bg-gradient-to-r from-sky-500 to-blue-600 bg-clip-text text-transparent drop-shadow-lg tracking-tight">
+  Vuno
+</h2>
+      </div>
+      
+      <div class="flex items-center space-x-3">
+        <div class="relative">
+          <input type="text" placeholder="Search messages..." class="pl-10 pr-4 py-2 rounded-full surface border border-light focus:ring-2 focus:ring-primary-200 focus:border-primary-400 transition-all w-64">
+          <i class="fas fa-search text-secondary absolute left-3 top-1/2 transform -translate-y-1/2"></i>
+        </div>
+      </div>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden">
+      <!-- Conversations List -->
+      <section class="w-full lg:w-96 border-r border-light surface overflow-y-auto">
+        <div class="p-4 lg:p-6">
+          <h3 class="font-medium text-secondary mb-4 text-sm uppercase tracking-wide">Recent Conversations</h3>
+          
+          <!-- Conversation Items -->
+          <div class="space-y-2">
+            <div class="conversation-item active p-4 rounded-xl cursor-pointer bg-primary-50 dark:bg-primary-900/20 border-l-4 border-primary-600 transition-all">
+              <div class="flex items-center space-x-4">
+                <div class="relative">
+                  <div class="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center text-white font-semibold text-sm shadow-lg">AJ</div>
+                  <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 border-2 border-white dark:border-gray-900 rounded-full"></div>
                 </div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex justify-between items-center mb-1">
+                    <h4 class="font-semibold truncate text-gray-900 dark:text-white">Alex Johnson</h4>
+                    <span class="text-xs text-secondary">2h ago</span>
+                  </div>
+                  <p class="text-sm text-secondary truncate">Hey, are we still meeting tomorrow?</p>
+                </div>
+              </div>
             </div>
             
-            <!-- Navigation -->
-            <nav class="space-y-1 flex-1 overflow-y-auto px-2 py-4">
-                <a href="index.html" class="flex items-center p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                    <i class="fas fa-house mr-3 text-gray-500 dark:text-gray-400"></i>
-                    <span class="text-gray-700 dark:text-gray-200">Home</span>
-                </a>
-                <a href="feed.html" class="flex items-center p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                    <i class="fas fa-rss mr-3 text-gray-500 dark:text-gray-400"></i>
-                    <span class="text-gray-700 dark:text-gray-200">Feeds</span>
-                </a>
-                <a href="#" class="flex items-center p-3 rounded-lg bg-primary-50 dark:bg-gray-700 text-primary-600 dark:text-white font-medium">
-                    <i class="fas fa-comment-dots mr-3"></i>
-                    <span>Chat</span>
-                </a>
-                <a href="#" class="flex items-center p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                    <i class="fas fa-users mr-3 text-gray-500 dark:text-gray-400"></i>
-                    <span class="text-gray-700 dark:text-gray-200">Contacts</span>
-                </a>
-                <a href="#" class="flex items-center p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                    <i class="fas fa-calendar mr-3 text-gray-500 dark:text-gray-400"></i>
-                    <span class="text-gray-700 dark:text-gray-200">Calendar</span>
-                </a>
-                <a href="#" class="flex items-center p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                    <i class="fas fa-folder mr-3 text-gray-500 dark:text-gray-400"></i>
-                    <span class="text-gray-700 dark:text-gray-200">Files</span>
-                </a>
-                <a href="meeting.html" class="flex items-center p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                    <i class="fas fa-video mr-3 text-gray-500 dark:text-gray-400"></i>
-                    <span class="text-gray-700 dark:text-gray-200">Meetings</span>
-                </a>
-                <a href="#" class="flex items-center p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                    <i class="fas fa-cog mr-3 text-gray-500 dark:text-gray-400"></i>
-                    <span class="text-gray-700 dark:text-gray-200">Settings</span>
-                </a>
-            </nav>
-            
-            <!-- User profile -->
-            <div class="p-4 border-t border-gray-200 dark:border-gray-700">
-                <div class="flex items-center">
-                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" class="w-10 h-10 rounded-full">
-                    <div class="ml-3">
-                        <p class="text-sm font-medium text-gray-800 dark:text-white">John Doe</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">john@example.com</p>
-                    </div>
-                    <button id="dark-mode-toggle" class="ml-auto text-gray-500 dark:text-gray-400 hover:text-primary-500 dark:hover:text-primary-400">
-                        <i class="fas fa-moon dark:hidden"></i>
-                        <i class="fas fa-sun hidden dark:block"></i>
-                    </button>
+            <div class="conversation-item p-4 rounded-xl cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-all border-l-4 border-transparent">
+              <div class="flex items-center space-x-4">
+                <div class="relative">
+                  <div class="w-12 h-12 rounded-full bg-gradient-to-r from-purple-500 to-purple-600 flex items-center justify-center text-white font-semibold text-sm shadow-lg">SM</div>
+                  <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-gray-300 border-2 border-white dark:border-gray-900 rounded-full"></div>
                 </div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex justify-between items-center mb-1">
+                    <h4 class="font-semibold truncate text-gray-900 dark:text-white">Sam Martinez</h4>
+                    <span class="text-xs text-secondary">5h ago</span>
+                  </div>
+                  <p class="text-sm text-secondary truncate">I sent you the files you requested</p>
+                </div>
+              </div>
             </div>
+            
+            <div class="conversation-item p-4 rounded-xl cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-all border-l-4 border-transparent">
+              <div class="flex items-center space-x-4">
+                <div class="relative">
+                  <div class="w-12 h-12 rounded-full bg-gradient-to-r from-green-500 to-green-600 flex items-center justify-center text-white font-semibold text-sm shadow-lg">TR</div>
+                  <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 border-2 border-white dark:border-gray-900 rounded-full"></div>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex justify-between items-center mb-1">
+                    <h4 class="font-semibold truncate text-gray-900 dark:text-white">Taylor Roberts</h4>
+                    <span class="text-xs text-secondary">Yesterday</span>
+                  </div>
+                  <p class="text-sm text-secondary truncate">Thanks for your help with the project!</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="conversation-item p-4 rounded-xl cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-all border-l-4 border-transparent">
+              <div class="flex items-center space-x-4">
+                <div class="relative">
+                  <div class="w-12 h-12 rounded-full bg-gradient-to-r from-yellow-500 to-yellow-600 flex items-center justify-center text-white font-semibold text-sm shadow-lg">JK</div>
+                  <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 border-2 border-white dark:border-gray-900 rounded-full"></div>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex justify-between items-center mb-1">
+                    <h4 class="font-semibold truncate text-gray-900 dark:text-white">Jordan Kim</h4>
+                    <span class="text-xs text-secondary">2 days ago</span>
+                  </div>
+                  <p class="text-sm text-secondary truncate">Let me know when you're available</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Chat Area -->
+      <section class="flex-1 hidden lg:flex flex-col">
+        <!-- Empty State -->
+        <div class="flex-1 flex flex-col items-center justify-center p-8 text-center">
+          <div class="w-64 h-64 mb-8 rounded-full bg-gradient-to-br from-primary-50 to-primary-100 dark:from-primary-900/10 dark:to-primary-800/10 flex items-center justify-center shadow-lg">
+            <img src='message.png' alt="Messages Illustration"  />
+          </div>
+          <h3 class="text-display font-semibold text-xl mb-2 text-gray-900 dark:text-white">Your messages live here</h3>
+          <p class="text-secondary max-w-md">Select a conversation or start a new one to see messages here. Stay connected with your community.</p>
+          <button class="mt-6 px-6 py-3 bg-primary-600 text-white rounded-full active-scale transition-smooth flex items-center shadow-lg hover:bg-primary-700">
+            <i class="fas fa-plus mr-2"></i>
+            New Message
+          </button>
         </div>
         
-        <!-- Main content -->
-        <div class="flex-1 flex flex-col overflow-hidden">
-            <!-- Top bar -->
-            <header class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
-                <div class="flex items-center justify-between px-4 py-3">
-                    <div class="flex items-center">
-                        <button class="md:hidden mr-4 text-gray-500 dark:text-gray-400" id="mobile-menu-button">
-                            <i class="fas fa-bars"></i>
-                        </button>
-                        <h1 class="text-xl font-semibold text-gray-800 dark:text-white">Messaging</h1>
-                    </div>
-                    <div class="flex items-center space-x-4">
-                        <button class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white">
-                            <i class="fas fa-search"></i>
-                        </button>
-                        <button class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white">
-                            <i class="fas fa-bell"></i>
-                        </button>
-                        <div class="relative">
-                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="User" class="w-8 h-8 rounded-full">
-                            <span class="absolute top-0 right-0 block h-2 w-2 rounded-full bg-primary-500 ring-2 ring-white dark:ring-gray-800"></span>
-                        </div>
-                    </div>
-                </div>
-            </header>
-            
-            <!-- Mobile Menu (hidden by default) -->
-            <div id="mobile-menu" class="hidden fixed inset-0 z-50 md:hidden">
-                <div class="fixed inset-0 bg-black bg-opacity-50" id="mobile-menu-backdrop"></div>
-                <div class="fixed inset-y-0 left-0 w-64 bg-white dark:bg-gray-800 shadow-lg mobile-menu">
-                    <div class="flex items-center justify-center h-16 px-4 border-b border-gray-200 dark:border-gray-700">
-                        <div class="flex items-center">
-                            <img src="vuno.png" alt="VUNO Logo" class="h-12 w-12 mr-2">
-                            <span class="text-xl font-bold text-gray-800 dark:text-white">VUNO</span>
-                        </div>
-                        <button class="ml-auto text-gray-500 dark:text-gray-400" id="close-mobile-menu">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                    <nav class="space-y-1 flex-1 overflow-y-auto px-2 py-4">
-                        <a href="index.html" class="flex items-center p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                            <i class="fas fa-house mr-3 text-gray-500 dark:text-gray-400"></i>
-                            <span class="text-gray-700 dark:text-gray-200">Home</span>
-                        </a>
-                        <a href="feed.html" class="flex items-center p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                            <i class="fas fa-rss mr-3 text-gray-500 dark:text-gray-400"></i>
-                            <span class="text-gray-700 dark:text-gray-200">Feeds</span>
-                        </a>
-                        <a href="#" class="flex items-center p-3 rounded-lg bg-primary-50 dark:bg-gray-700 text-primary-600 dark:text-white font-medium">
-                            <i class="fas fa-comment-dots mr-3"></i>
-                            <span>Chat</span>
-                        </a>
-                        <a href="#" class="flex items-center p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                            <i class="fas fa-users mr-3 text-gray-500 dark:text-gray-400"></i>
-                            <span class="text-gray-700 dark:text-gray-200">Contacts</span>
-                        </a>
-                        <a href="#" class="flex items-center p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                            <i class="fas fa-calendar mr-3 text-gray-500 dark:text-gray-400"></i>
-                            <span class="text-gray-700 dark:text-gray-200">Calendar</span>
-                        </a>
-                        <a href="#" class="flex items-center p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                            <i class="fas fa-folder mr-3 text-gray-500 dark:text-gray-400"></i>
-                            <span class="text-gray-700 dark:text-gray-200">Files</span>
-                        </a>
-                        <a href="meeting.html" class="flex items-center p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                            <i class="fas fa-video mr-3 text-gray-500 dark:text-gray-400"></i>
-                            <span class="text-gray-700 dark:text-gray-200">Meetings</span>
-                        </a>
-                        <a href="#" class="flex items-center p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
-                            <i class="fas fa-cog mr-3 text-gray-500 dark:text-gray-400"></i>
-                            <span class="text-gray-700 dark:text-gray-200">Settings</span>
-                        </a>
-                    </nav>
-                    <div class="p-4 border-t border-gray-200 dark:border-gray-700">
-                        <button id="mobile-dark-mode-toggle" class="ml-auto text-gray-500 dark:text-gray-400 hover:text-primary-500 dark:hover:text-primary-400">
-                            <i class="fas fa-moon dark:hidden"></i>
-                            <i class="fas fa-sun hidden dark:block"></i>
-                        </button>
-                    </div>
-                </div>
+        <!-- Chat Interface (Hidden by default) -->
+        <div class="hidden flex-1 flex-col">
+          <!-- Chat Header -->
+          <div class="surface border-b border-light p-4 lg:p-6 flex items-center space-x-4">
+            <div class="relative">
+              <div class="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center text-white font-semibold text-lg shadow-lg">AJ</div>
+              <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 border-2 border-white dark:border-gray-900 rounded-full"></div>
+            </div>
+            <div>
+              <h4 class="font-semibold text-gray-900 dark:text-white">Alex Johnson</h4>
+              <p class="text-xs text-secondary">Online</p>
+            </div>
+          </div>
+          
+          <!-- Messages -->
+          <div class="flex-1 overflow-y-auto p-4 lg:p-6 space-y-4">
+            <div class="flex justify-start">
+              <div class="message-in max-w-xs lg:max-w-md p-4 rounded-2xl rounded-tl-none bg-gray-100 dark:bg-gray-800 shadow-sm">
+                <p class="text-gray-900 dark:text-white">Hey, are we still meeting tomorrow?</p>
+                <span class="text-xs opacity-70 block mt-2 text-right">10:24 AM</span>
+              </div>
             </div>
             
-            <!-- Messages area -->
-            <div class="flex-1 flex overflow-hidden">
-                <!-- Conversations list -->
-                <div class="w-full md:w-80 border-r border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-y-auto conversation-list">
-                    <div class="p-4">
-                        <input type="text" placeholder="Search messages..." class="w-full p-2 border border-gray-300 dark:border-gray-600 rounded-lg mb-4 bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
-                        
-                        <div class="mb-6">
-                            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-2">Recent Conversations</h3>
-                            <ul class="space-y-2">
-                                <li class="flex items-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer">
-                                    <div class="relative">
-                                        <img src="https://randomuser.me/api/portraits/men/41.jpg" alt="User Avatar" class="w-10 h-10 rounded-full mr-3">
-                                        <span class="absolute bottom-0 right-2 block h-2.5 w-2.5 rounded-full bg-green-500 ring-2 ring-white dark:ring-gray-800"></span>
-                                    </div>
-                                    <div>
-                                        <h4 class="text-gray-800 dark:text-white font-medium">John Doe</h4>
-                                        <p class="text-gray-500 dark:text-gray-400 text-sm">Hey, how are you?</p>
-                                    </div>
-                                    <span class="text-xs text-gray-500 dark:text-gray-400 ml-auto">2m ago</span>
-                                </li>
-
-                                <li class="flex items-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer">
-                                    <div class="relative">
-                                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User Avatar" class="w-10 h-10 rounded-full mr-3">
-                                        <span class="absolute bottom-0 right-2 block h-2.5 w-2.5 rounded-full bg-green-500 ring-2 ring-white dark:ring-gray-800"></span>
-                                    </div>
-                                    <div>
-                                        <h4 class="text-gray-800 dark:text-white font-medium">Jane Smith</h4>
-                                        <p class="text-gray-500 dark:text-gray-400 text-sm">Let's catch up later.</p>
-                                    </div>
-                                    <span class="text-xs text-gray-500 dark:text-gray-400 ml-auto">5m ago</span>
-                                </li>
-                                <li class="flex items-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer">
-                                    <img src="https://randomuser.me/api/portraits/women/63.jpg" alt="User Avatar" class="w-10 h-10 rounded-full mr-3">
-                                    <div>
-                                        <h4 class="text-gray-800 dark:text-white font-medium">Alice Johnson</h4>
-                                        <p class="text-gray-500 dark:text-gray-400 text-sm">Did you receive my last email?</p>
-                                    </div>
-                                    <span class="text-xs text-gray-500 dark:text-gray-400 ml-auto">10m ago</span>
-                                </li>
-                                <li class="flex items-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer">
-                                    <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="User Avatar" class="w-10 h-10 rounded-full mr-3">
-                                    <div>
-                                        <h4 class="text-gray-800 dark:text-white font-medium">Bob Brown</h4>
-                                        <p class="text-gray-500 dark:text-gray-400 text-sm">Can we reschedule our meeting?</p>
-                                    </div>
-                                    <span class="text-xs text-gray-500 dark:text-gray-400 ml-auto">15m ago</span>
-                                </li>
-                            </ul>   
-                        </div>                       
-                        
-                        <div class="mt-6">
-                            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-2">Archived Conversations</h3>
-                            <ul class="space-y-2">
-                                <li class="flex items-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer">
-                                    <img src="https://randomuser.me/api/portraits/men/33.jpg" alt="User Avatar" class="w-10 h-10 rounded-full mr-3">
-                                    <div>
-                                        <h4 class="text-gray-800 dark:text-white font-medium">Charlie Green</h4>
-                                        <p class="text-gray-500 dark:text-gray-400 text-sm">Looking forward to our project.</p>
-                                    </div>
-                                    <span class="text-xs text-gray-500 dark:text-gray-400 ml-auto">1d ago</span>
-                                </li>
-                                <li class="flex items-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer">
-                                    <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="User Avatar" class="w-10 h-10 rounded-full mr-3">
-                                    <div>
-                                        <h4 class="text-gray-800 dark:text-white font-medium">David Wilson</h4>
-                                        <p class="text-gray-500 dark:text-gray-400 text-sm">Great job on the presentation!</p>
-                                    </div>
-                                    <span class="text-xs text-gray-500 dark:text-gray-400 ml-auto">2d ago</span>    
-                                </li>
-                                <li class="flex items-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer">
-                                    <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="User Avatar" class="w-10 h-10 rounded-full mr-3">
-                                    <div>
-                                        <h4 class="text-gray-800 dark:text-white font-medium">Emily Davis</h4>
-                                        <p class="text-gray-500 dark:text-gray-400 text-sm">Let's discuss the new features.</p>
-                                    </div>
-                                    <span class="text-xs text-gray-500 dark:text-gray-400 ml-auto">3d ago</span>
-                                </li>
-                                <li class="flex items-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors cursor-pointer">
-                                    <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="User Avatar" class="w-10 h-10 rounded-full mr-3">
-                                    <div>
-                                        <h4 class="text-gray-800 dark:text-white font-medium">Michael Taylor</h4>
-                                        <p class="text-gray-500 dark:text-gray-400 text-sm">Thanks for your help!</p>
-                                    </div>
-                                    <span class="text-xs text-gray-500 dark:text-gray-400 ml-auto">4d ago</span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Chat area -->
-                <div class="flex-1 flex flex-col bg-gray-50 dark:bg-gray-900 chat-area">
-                    <!-- Chat header -->
-                    <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
-                        <div class="flex items-center">
-                            <button class="md:hidden mr-3 text-gray-500 dark:text-gray-400" id="back-to-conversations">
-                                <i class="fas fa-arrow-left"></i>
-                            </button>
-                            <div class="relative">
-                                <img src="https://randomuser.me/api/portraits/men/41.jpg" alt="User Avatar" class="w-10 h-10 rounded-full mr-3">
-                                <span class="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full bg-green-500 ring-2 ring-white dark:ring-gray-800"></span>
-                            </div>
-                            <div>
-                                <h3 class="text-lg font-semibold text-gray-800 dark:text-white">John Doe</h3>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">Online</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center space-x-4">
-                            <button class="text-gray-500 dark:text-gray-400 hover:text-primary-500 dark:hover:text-primary-400" data-tooltip="Voice call">
-                                <i class="fas fa-phone"></i>
-                            </button>
-                            <button class="text-gray-500 dark:text-gray-400 hover:text-primary-500 dark:hover:text-primary-400" data-tooltip="Video call">
-                                <i class="fas fa-video"></i>
-                            </button>
-                            <button class="text-gray-500 dark:text-gray-400 hover:text-primary-500 dark:hover:text-primary-400" data-tooltip="Profile info">
-                                <i class="fas fa-info-circle"></i>
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <!-- Messages -->
-                    <div class="flex-1 p-4 overflow-y-auto message-container">
-                        <div class="space-y-4">
-                            <!-- Received message -->
-                            <div class="flex items-start">
-                                <img src="https://randomuser.me/api/portraits/men/41.jpg" alt="User Avatar" class="w-8 h-8 rounded-full mr-3">
-                                <div>
-                                    <div class="bg-white dark:bg-gray-700 rounded-lg p-3 max-w-xs md:max-w-md shadow">
-                                        <p class="text-gray-800 dark:text-gray-200">Hey there! How's it going?</p>
-                                    </div>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">10:30 AM</p>
-                                </div>
-                            </div>
-                            
-                            <!-- Sent message -->
-                            <div class="flex items-start justify-end">
-                                <div class="text-right">
-                                    <div class="bg-primary-500 text-white rounded-lg p-3 max-w-xs md:max-w-md shadow">
-                                        <p>I'm doing great! Just working on some projects.</p>
-                                    </div>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">10:32 AM</p>
-                                </div>
-                                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Your Avatar" class="w-8 h-8 rounded-full ml-3">
-                            </div>
-                            
-                            <!-- Received message -->
-                            <div class="flex items-start">
-                                <img src="https://randomuser.me/api/portraits/men/41.jpg" alt="User Avatar" class="w-8 h-8 rounded-full mr-3">
-                                <div>
-                                    <div class="bg-white dark:bg-gray-700 rounded-lg p-3 max-w-xs md:max-w-md shadow">
-                                        <p class="text-gray-800 dark:text-gray-200">That sounds interesting! What kind of projects?</p>
-                                    </div>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">10:33 AM</p>
-                                </div>
-                            </div>
-                            
-                            <!-- Sent message -->
-                            <div class="flex items-start justify-end">
-                                <div class="text-right">
-                                    <div class="bg-primary-500 text-white rounded-lg p-3 max-w-xs md:max-w-md shadow">
-                                        <p>Mostly web development stuff. Building a new messaging interface actually!</p>
-                                    </div>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">10:35 AM</p>
-                                </div>
-                                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Your Avatar" class="w-8 h-8 rounded-full ml-3">
-                            </div>
-                            
-                            <!-- Date divider -->
-                            <div class="relative flex items-center justify-center my-6">
-                                <div class="absolute inset-0 border-t border-gray-200 dark:border-gray-700"></div>
-                                <span class="relative px-3 bg-gray-50 dark:bg-gray-900 text-xs text-gray-500 dark:text-gray-400 rounded-full">Today</span>
-                            </div>
-                            
-                            <!-- Received message -->
-                            <div class="flex items-start">
-                                <img src="https://randomuser.me/api/portraits/men/41.jpg" alt="User Avatar" class="w-8 h-8 rounded-full mr-3">
-                                <div>
-                                    <div class="bg-white dark:bg-gray-700 rounded-lg p-3 max-w-xs md:max-w-md shadow">
-                                        <p class="text-gray-800 dark:text-gray-200">That's awesome! I'd love to see it when you're done.</p>
-                                    </div>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">10:36 AM</p>
-                                </div>
-                            </div>
-
-                            <!-- Typing indicator -->
-                            <div class="flex items-start">
-                                <img src="https://randomuser.me/api/portraits/men/41.jpg" alt="User Avatar" class="w-8 h-8 rounded-full mr-3">
-                                <div>
-                                    <div class="bg-white dark:bg-gray-700 rounded-lg p-3 max-w-xs md:max-w-md shadow">
-                                        <div class="typing-indicator">
-                                            <span></span>
-                                            <span></span>
-                                            <span></span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Message input -->
-                    <div class="p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
-                        <div class="flex items-center">
-                            <button class="text-gray-500 dark:text-gray-400 hover:text-primary-500 dark:hover:text-primary-400 mr-3" data-tooltip="Attach file">
-                                <i class="fas fa-paperclip"></i>
-                            </button>
-                            <input type="text" placeholder="Type a message..." class="flex-1 p-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-800 dark:text-white message-input">
-                            <button class="ml-3 text-gray-500 dark:text-gray-400 hover:text-primary-500 dark:hover:text-primary-400" data-tooltip="Send message">
-                                <i class="fas fa-paper-plane"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+            <div class="flex justify-end">
+              <div class="message-out max-w-xs lg:max-w-md p-4 rounded-2xl rounded-tr-none bg-primary-600 text-white shadow-sm">
+                <p>Yes, definitely! 2 PM at the usual place?</p>
+                <span class="text-xs opacity-90 block mt-2 text-right">10:26 AM</span>
+              </div>
             </div>
+            
+            <div class="flex justify-start">
+              <div class="message-in max-w-xs lg:max-w-md p-4 rounded-2xl rounded-tl-none bg-gray-100 dark:bg-gray-800 shadow-sm">
+                <p class="text-gray-900 dark:text-white">Perfect, see you then!</p>
+                <span class="text-xs opacity-70 block mt-2 text-right">10:27 AM</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Message Input -->
+          <div class="surface border-t border-light p-4 lg:p-6">
+            <div class="flex space-x-3">
+              <input type="text" placeholder="Type a message..." class="flex-1 px-6 py-3 rounded-full surface border border-light focus:ring-2 focus:ring-primary-200 focus:border-primary-400 transition-all">
+              <button class="w-12 h-12 rounded-full bg-primary-600 text-white flex items-center justify-center active-scale shadow-lg hover:bg-primary-700">
+                <i class="fas fa-paper-plane"></i>
+              </button>
+            </div>
+          </div>
         </div>
+      </section>
     </div>
+  </main>
+</div>
 
-    <!-- JavaScript for dark mode and mobile menu -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Dark mode functionality
-            const darkModeToggle = document.getElementById('dark-mode-toggle');
-            const mobileDarkModeToggle = document.getElementById('mobile-dark-mode-toggle');
-            const html = document.documentElement;
-            
-            // Check for saved user preference or system preference
-            function checkDarkModePreference() {
-                const savedMode = localStorage.getItem('darkMode');
-                if (savedMode) {
-                    return savedMode === 'dark';
-                }
-                return window.matchMedia('(prefers-color-scheme: dark)').matches;
-            }
-            
-            // Set initial mode
-            function setInitialMode() {
-                const isDarkMode = checkDarkModePreference();
-                if (isDarkMode) {
-                    html.classList.add('dark');
-                } else {
-                    html.classList.remove('dark');
-                }
-            }
-            
-            // Toggle dark mode
-            function toggleDarkMode() {
-                const isDark = html.classList.toggle('dark');
-                localStorage.setItem('darkMode', isDark ? 'dark' : 'light');
-            }
-            
-            // Set initial mode on page load
-            setInitialMode();
-            
-            // Add event listeners for dark mode toggles
-            if (darkModeToggle) {
-                darkModeToggle.addEventListener('click', toggleDarkMode);
-            }
-            
-            if (mobileDarkModeToggle) {
-                mobileDarkModeToggle.addEventListener('click', toggleDarkMode);
-            }
-            
-            // Mobile menu functionality
-            const mobileMenuButton = document.getElementById('mobile-menu-button');
-            const mobileMenu = document.getElementById('mobile-menu');
-            const mobileMenuBackdrop = document.getElementById('mobile-menu-backdrop');
-            const closeMobileMenu = document.getElementById('close-mobile-menu');
-            
-            if (mobileMenuButton && mobileMenu) {
-                mobileMenuButton.addEventListener('click', function() {
-                    mobileMenu.classList.remove('hidden');
-                });
-                
-                mobileMenuBackdrop.addEventListener('click', function() {
-                    mobileMenu.classList.add('hidden');
-                });
-                
-                closeMobileMenu.addEventListener('click', function() {
-                    mobileMenu.classList.add('hidden');
-                });
-            }
-            
-            // Back to conversations button (for mobile)
-            const backToConversations = document.getElementById('back-to-conversations');
-            const conversationList = document.querySelector('.conversation-list');
-            const chatArea = document.querySelector('.chat-area');
-            
-            if (backToConversations && conversationList && chatArea) {
-                backToConversations.addEventListener('click', function() {
-                    conversationList.classList.remove('hidden');
-                    chatArea.classList.add('hidden');
-                });
-                
-                // Show chat area when clicking on a conversation (mobile only)
-                const conversationItems = document.querySelectorAll('.conversation-list li');
-                conversationItems.forEach(item => {
-                    item.addEventListener('click', function() {
-                        if (window.innerWidth < 768) {
-                            conversationList.classList.add('hidden');
-                            chatArea.classList.remove('hidden');
-                        }
-                    });
-                });
-            }
-            
-            // Listen for system color scheme changes
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-                // Only update if user hasn't set a preference
-                if (!localStorage.getItem('darkMode')) {
-                    setInitialMode();
-                }
-            });
-        });
-    </script>
+
+
+
+  <!-- Mobile Bottom Navigation -->
+  <nav class="mobile-nav lg:hidden fixed bottom-0 left-0 right-0 surface border-t border-light flex justify-around p-2">
+    <a href="#" class="flex flex-col items-center p-2 text-secondary active-scale">
+      <i class="fas fa-home mb-1"></i>
+      <span class="text-xs">Home</span>
+    </a>
+    <a href="#" class="flex flex-col items-center p-2 text-secondary active-scale">
+      <i class="fas fa-newspaper mb-1"></i>
+      <span class="text-xs">Feed</span>
+    </a>
+    <a href="#" class="flex flex-col items-center p-2 text-primary-600 dark:text-primary-400 active-scale">
+      <i class="fas fa-comments mb-1"></i>
+      <span class="text-xs">Messages</span>
+    </a>
+    <a href="#" class="flex flex-col items-center p-2 text-secondary active-scale">
+      <i class="fas fa-user mb-1"></i>
+      <span class="text-xs">Profile</span>
+    </a>
+  </nav>
+
+ 
+ <script>
+document.addEventListener("DOMContentLoaded", async () => {
+  const BASE_URL = "https://vuno-1.onrender.com"; // 🔹 Local dev server
+
+  // 🔑 Load tokens set by index.html
+  let accessToken = localStorage.getItem("authToken");
+  let refreshToken = localStorage.getItem("refreshToken");
+
+  // 🔹 Refresh access token (silent, no redirect)
+  async function refreshAccessToken() {
+    if (!refreshToken) return false;
+
+    try {
+      const response = await fetch(`${BASE_URL}/token/refresh/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ refresh: refreshToken })
+      });
+
+      if (!response.ok) throw new Error("Failed to refresh token");
+
+      const data = await response.json();
+      accessToken = data.access;
+      localStorage.setItem("authToken", accessToken);
+      console.log("🔄 Access token refreshed!");
+      return true;
+    } catch (err) {
+      console.error("❌ Token refresh failed:", err);
+      return false;
+    }
+  }
+
+  // 🔹 Fetch with auto-refresh (no redirect)
+  async function fetchWithAuth(url, options = {}) {
+    if (!accessToken) {
+      console.warn("⚠️ No access token available.");
+      return null;
+    }
+
+    options.headers = {
+      ...options.headers,
+      "Authorization": `Bearer ${accessToken}`,
+      "Content-Type": "application/json"
+    };
+
+    let response = await fetch(url, options);
+
+    if (response.status === 401) {
+      console.warn("⚠️ Access token expired. Attempting refresh...");
+      const refreshed = await refreshAccessToken();
+
+      if (refreshed) {
+        options.headers["Authorization"] = `Bearer ${accessToken}`;
+        response = await fetch(url, options);
+      } else {
+        console.error("❌ Could not refresh token. Data fetch stopped.");
+        return null;
+      }
+    }
+
+    return response;
+  }
+
+  // ===============================
+  // 🔹 Fetch Conversations
+  // ===============================
+  try {
+    const response = await fetchWithAuth(`${BASE_URL}/call/conversations/`);
+    if (!response || !response.ok) throw new Error("Failed to load conversations");
+
+    const conversations = await response.json();
+    console.log("✅ Conversations:", conversations);
+
+    // Example: render in conversation list
+    const container = document.querySelector(".space-y-2");
+    container.innerHTML = "";
+    conversations.forEach(conv => {
+      const item = document.createElement("div");
+      item.className =
+        "conversation-item p-4 rounded-xl cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-all border-l-4 border-transparent";
+      item.innerHTML = `
+        <div class="flex items-center space-x-4">
+          <div class="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center text-white font-semibold text-sm">
+            ${conv.title ? conv.title.charAt(0).toUpperCase() : "?"}
+          </div>
+          <div class="flex-1 min-w-0">
+            <h4 class="font-semibold truncate text-gray-900 dark:text-white">${conv.title || "Untitled"}</h4>
+            <p class="text-sm text-secondary truncate">${conv.last_message || "No messages yet"}</p>
+          </div>
+        </div>
+      `;
+      container.appendChild(item);
+    });
+  } catch (err) {
+    console.error("❌ Error loading conversations:", err);
+  }
+});
+</script>
+
+
+<!-- chat javascript-->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const BASE_URL = "https://vuno-1.onrender.com"; // backend API
+  const newMsgBtn = document.querySelector("button.mt-6"); // The "New Message" button
+  const token = localStorage.getItem("authToken");
+
+  if (!newMsgBtn) return;
+
+  // 🔹 Helper: fetch with auth
+  async function fetchWithAuth(url, options = {}) {
+    options.headers = {
+      ...options.headers,
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json",
+    };
+    const response = await fetch(url, options);
+    if (!response.ok) throw new Error("Request failed");
+    return response.json();
+  }
+
+  // 🔹 Step 1: Ask for username/email to search
+  async function searchUser() {
+    const query = prompt("Enter username or email to start chat:");
+    if (!query) return null;
+
+    try {
+      const results = await fetchWithAuth(`${BASE_URL}/users/?search=${encodeURIComponent(query)}`);
+      if (results.length === 0) {
+        alert("No users found");
+        return null;
+      }
+
+      // For demo: just pick the first user
+      const user = results[0];
+      return user;
+    } catch (err) {
+      console.error("❌ Error searching user:", err);
+      alert("Failed to search user");
+      return null;
+    }
+  }
+
+  // 🔹 Step 2: Create (or fetch) conversation with user
+  async function startConversation(userId) {
+    try {
+      const conv = await fetchWithAuth(`${BASE_URL}/call/conversations/`, {
+        method: "POST",
+        body: JSON.stringify({ participant_id: userId }),
+      });
+      console.log("✅ Conversation created:", conv);
+
+      // 👉 You can now load messages into chat area
+      alert(`Conversation started with user ID: ${userId}`);
+      return conv;
+    } catch (err) {
+      console.error("❌ Error creating conversation:", err);
+      alert("Could not start conversation");
+      return null;
+    }
+  }
+
+  // 🔹 Attach button event
+  newMsgBtn.addEventListener("click", async () => {
+    const user = await searchUser();
+    if (!user) return;
+
+    await startConversation(user.id);
+  });
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const BASE_URL = "https://vuno-1.onrender.com";
+  const token = localStorage.getItem("authToken");
+
+  const conversationsList = document.querySelector(".space-y-2"); // conversation container
+  const chatEmpty = document.querySelector("section.flex-1 > .flex-1.flex-col.items-center"); 
+  const chatBox = document.querySelector("section.flex-1 > .hidden.flex-1"); 
+  const messagesContainer = chatBox.querySelector(".flex-1.overflow-y-auto");
+  const inputField = chatBox.querySelector("input[type='text']");
+  const sendBtn = chatBox.querySelector("button i.fas.fa-paper-plane").parentElement;
+
+  let currentConversationId = null;
+
+  // 🔹 Helper: fetch with auth
+  async function fetchWithAuth(url, options = {}) {
+    options.headers = {
+      ...options.headers,
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json",
+    };
+    const response = await fetch(url, options);
+    if (!response.ok) throw new Error(await response.text());
+    return response.json();
+  }
+
+  // 🔹 Render conversations
+  async function loadConversations() {
+    try {
+      const conversations = await fetchWithAuth(`${BASE_URL}/call/conversations/`);
+      conversationsList.innerHTML = "";
+
+      conversations.forEach(conv => {
+        const participant = conv.participants.find(p => p.id !== conv.owner); // other person
+        const name = participant?.username || "Unknown User";
+        const initials = name.slice(0,2).toUpperCase();
+
+        const div = document.createElement("div");
+        div.className = "conversation-item p-4 rounded-xl cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-all border-l-4 border-transparent";
+        div.innerHTML = `
+          <div class="flex items-center space-x-4">
+            <div class="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center text-white font-semibold shadow-lg">${initials}</div>
+            <div class="flex-1 min-w-0">
+              <h4 class="font-semibold truncate text-gray-900 dark:text-white">${name}</h4>
+              <p class="text-sm text-secondary truncate">${conv.last_message?.content || "No messages yet"}</p>
+            </div>
+          </div>
+        `;
+        div.addEventListener("click", () => openConversation(conv.id, name, initials));
+        conversationsList.appendChild(div);
+      });
+    } catch (err) {
+      console.error("❌ Failed to load conversations:", err);
+    }
+  }
+
+  // 🔹 Open conversation & load messages
+  async function openConversation(conversationId, name, initials) {
+    currentConversationId = conversationId;
+
+    // hide empty state, show chat
+    chatEmpty.classList.add("hidden");
+    chatBox.classList.remove("hidden");
+
+    // Update header
+    chatBox.querySelector("h4").textContent = name;
+    chatBox.querySelector(".w-12.h-12").textContent = initials;
+
+    try {
+      const messages = await fetchWithAuth(`${BASE_URL}/call/conversations/${conversationId}/messages/`);
+      messagesContainer.innerHTML = "";
+
+      messages.forEach(msg => {
+        const isMine = msg.sender.id === parseInt(localStorage.getItem("userId")); 
+        const div = document.createElement("div");
+        div.className = `flex ${isMine ? "justify-end" : "justify-start"}`;
+        div.innerHTML = `
+          <div class="${isMine 
+              ? "message-out max-w-xs lg:max-w-md p-4 rounded-2xl rounded-tr-none bg-primary-600 text-white shadow-sm"
+              : "message-in max-w-xs lg:max-w-md p-4 rounded-2xl rounded-tl-none bg-gray-100 dark:bg-gray-800 shadow-sm"}">
+            <p>${msg.content}</p>
+            <span class="text-xs opacity-70 block mt-2 text-right">${new Date(msg.created_at).toLocaleTimeString()}</span>
+          </div>
+        `;
+        messagesContainer.appendChild(div);
+      });
+
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    } catch (err) {
+      console.error("❌ Failed to load messages:", err);
+    }
+  }
+
+  // 🔹 Send message
+  async function sendMessage() {
+    if (!currentConversationId) return;
+    const content = inputField.value.trim();
+    if (!content) return;
+
+    try {
+      const newMsg = await fetchWithAuth(`${BASE_URL}/call/conversations/${currentConversationId}/send/`, {
+        method: "POST",
+        body: JSON.stringify({ content }),
+      });
+
+      // append to UI
+      const div = document.createElement("div");
+      div.className = "flex justify-end";
+      div.innerHTML = `
+        <div class="message-out max-w-xs lg:max-w-md p-4 rounded-2xl rounded-tr-none bg-primary-600 text-white shadow-sm">
+          <p>${newMsg.content}</p>
+          <span class="text-xs opacity-90 block mt-2 text-right">${new Date(newMsg.created_at).toLocaleTimeString()}</span>
+        </div>
+      `;
+      messagesContainer.appendChild(div);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+      inputField.value = "";
+    } catch (err) {
+      console.error("❌ Failed to send message:", err);
+    }
+  }
+
+  sendBtn.addEventListener("click", sendMessage);
+  inputField.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") sendMessage();
+  });
+
+  // Initial load
+  loadConversations();
+});
+</script>
+
+
 </body>
 </html>
