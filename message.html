@@ -218,10 +218,10 @@
   <aside class="hidden lg:flex flex-col w-20 fixed h-full surface border-r border-light">
     
     <nav class="flex-1 p-4 space-y-4">
-      <a href="#" class="flex items-center justify-center p-3 rounded-xl surface hover:bg-primary-50 dark:hover:bg-primary-900/20 active-scale transition-smooth group">
+      <a href="index.html" class="flex items-center justify-center p-3 rounded-xl surface hover:bg-primary-50 dark:hover:bg-primary-900/20 active-scale transition-smooth group">
         <i class="fas fa-home text-secondary w-6 text-center group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors"></i>
       </a>
-      <a href="#" class="flex items-center justify-center p-3 rounded-xl surface hover:bg-primary-50 dark:hover:bg-primary-900/20 active-scale transition-smooth group">
+      <a href="feed.html" class="flex items-center justify-center p-3 rounded-xl surface hover:bg-primary-50 dark:hover:bg-primary-900/20 active-scale transition-smooth group">
         <i class="fas fa-newspaper text-secondary w-6 text-center group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors"></i>
       </a>
       <a href="#" class="flex items-center justify-center p-3 rounded-xl bg-primary-50 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400 active-scale transition-smooth">
@@ -245,10 +245,20 @@
       </div>
       
       <div class="flex items-center space-x-3">
-        <div class="relative">
-          <input type="text" placeholder="Search messages..." class="pl-10 pr-4 py-2 rounded-full surface border border-light focus:ring-2 focus:ring-primary-200 focus:border-primary-400 transition-all w-64">
-          <i class="fas fa-search text-secondary absolute left-3 top-1/2 transform -translate-y-1/2"></i>
-        </div>
+    <div class="relative">
+  <input id="userSearch" type="text" placeholder="Search users..."
+    class="pl-10 pr-4 py-2 rounded-full surface border border-light 
+           focus:ring-2 focus:ring-primary-200 focus:border-primary-400 
+           transition-all w-64">
+  <i class="fas fa-search text-secondary absolute left-3 top-1/2 
+            transform -translate-y-1/2"></i>
+
+  <!-- 🔹 Dropdown results -->
+  <div id="searchResults" 
+       class="absolute mt-2 w-64 bg-white dark:bg-gray-900 shadow-lg rounded-xl hidden z-50">
+  </div>
+</div>
+
       </div>
     </header>
 
@@ -419,310 +429,294 @@
   </nav>
 
  
- <script>
-document.addEventListener("DOMContentLoaded", async () => {
-  const BASE_URL = "https://vuno-1.onrender.com"; // 🔹 Local dev server
-
-  // 🔑 Load tokens set by index.html
-  let accessToken = localStorage.getItem("authToken");
-  let refreshToken = localStorage.getItem("refreshToken");
-
-  // 🔹 Refresh access token (silent, no redirect)
-  async function refreshAccessToken() {
-    if (!refreshToken) return false;
-
-    try {
-      const response = await fetch(`${BASE_URL}/token/refresh/`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ refresh: refreshToken })
-      });
-
-      if (!response.ok) throw new Error("Failed to refresh token");
-
-      const data = await response.json();
-      accessToken = data.access;
-      localStorage.setItem("authToken", accessToken);
-      console.log("🔄 Access token refreshed!");
-      return true;
-    } catch (err) {
-      console.error("❌ Token refresh failed:", err);
-      return false;
-    }
-  }
-
-  // 🔹 Fetch with auto-refresh (no redirect)
-  async function fetchWithAuth(url, options = {}) {
-    if (!accessToken) {
-      console.warn("⚠️ No access token available.");
-      return null;
-    }
-
-    options.headers = {
-      ...options.headers,
-      "Authorization": `Bearer ${accessToken}`,
-      "Content-Type": "application/json"
-    };
-
-    let response = await fetch(url, options);
-
-    if (response.status === 401) {
-      console.warn("⚠️ Access token expired. Attempting refresh...");
-      const refreshed = await refreshAccessToken();
-
-      if (refreshed) {
-        options.headers["Authorization"] = `Bearer ${accessToken}`;
-        response = await fetch(url, options);
-      } else {
-        console.error("❌ Could not refresh token. Data fetch stopped.");
-        return null;
-      }
-    }
-
-    return response;
-  }
-
-  // ===============================
-  // 🔹 Fetch Conversations
-  // ===============================
-  try {
-    const response = await fetchWithAuth(`${BASE_URL}/call/conversations/`);
-    if (!response || !response.ok) throw new Error("Failed to load conversations");
-
-    const conversations = await response.json();
-    console.log("✅ Conversations:", conversations);
-
-    // Example: render in conversation list
-    const container = document.querySelector(".space-y-2");
-    container.innerHTML = "";
-    conversations.forEach(conv => {
-      const item = document.createElement("div");
-      item.className =
-        "conversation-item p-4 rounded-xl cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-all border-l-4 border-transparent";
-      item.innerHTML = `
-        <div class="flex items-center space-x-4">
-          <div class="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center text-white font-semibold text-sm">
-            ${conv.title ? conv.title.charAt(0).toUpperCase() : "?"}
-          </div>
-          <div class="flex-1 min-w-0">
-            <h4 class="font-semibold truncate text-gray-900 dark:text-white">${conv.title || "Untitled"}</h4>
-            <p class="text-sm text-secondary truncate">${conv.last_message || "No messages yet"}</p>
-          </div>
-        </div>
-      `;
-      container.appendChild(item);
-    });
-  } catch (err) {
-    console.error("❌ Error loading conversations:", err);
-  }
-});
-</script>
-
-
-<!-- chat javascript-->
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const BASE_URL = "https://vuno-1.onrender.com"; // backend API
-  const newMsgBtn = document.querySelector("button.mt-6"); // The "New Message" button
-  const token = localStorage.getItem("authToken");
-
-  if (!newMsgBtn) return;
-
-  // 🔹 Helper: fetch with auth
-  async function fetchWithAuth(url, options = {}) {
-    options.headers = {
-      ...options.headers,
-      "Authorization": `Bearer ${token}`,
-      "Content-Type": "application/json",
-    };
-    const response = await fetch(url, options);
-    if (!response.ok) throw new Error("Request failed");
-    return response.json();
-  }
-
-  // 🔹 Step 1: Ask for username/email to search
-  async function searchUser() {
-    const query = prompt("Enter username or email to start chat:");
-    if (!query) return null;
-
-    try {
-      const results = await fetchWithAuth(`${BASE_URL}/users/?search=${encodeURIComponent(query)}`);
-      if (results.length === 0) {
-        alert("No users found");
-        return null;
-      }
-
-      // For demo: just pick the first user
-      const user = results[0];
-      return user;
-    } catch (err) {
-      console.error("❌ Error searching user:", err);
-      alert("Failed to search user");
-      return null;
-    }
-  }
-
-  // 🔹 Step 2: Create (or fetch) conversation with user
-  async function startConversation(userId) {
-    try {
-      const conv = await fetchWithAuth(`${BASE_URL}/call/conversations/`, {
-        method: "POST",
-        body: JSON.stringify({ participant_id: userId }),
-      });
-      console.log("✅ Conversation created:", conv);
-
-      // 👉 You can now load messages into chat area
-      alert(`Conversation started with user ID: ${userId}`);
-      return conv;
-    } catch (err) {
-      console.error("❌ Error creating conversation:", err);
-      alert("Could not start conversation");
-      return null;
-    }
-  }
-
-  // 🔹 Attach button event
-  newMsgBtn.addEventListener("click", async () => {
-    const user = await searchUser();
-    if (!user) return;
-
-    await startConversation(user.id);
-  });
-});
-</script>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
   const BASE_URL = "https://vuno-1.onrender.com";
-  const token = localStorage.getItem("authToken");
+  let accessToken = localStorage.getItem("authToken");
+  let refreshToken = localStorage.getItem("refreshToken");
+  let currentConversationId = null;
 
-  const conversationsList = document.querySelector(".space-y-2"); // conversation container
+  const conversationsList = document.querySelector(".space-y-2"); 
   const chatEmpty = document.querySelector("section.flex-1 > .flex-1.flex-col.items-center"); 
   const chatBox = document.querySelector("section.flex-1 > .hidden.flex-1"); 
   const messagesContainer = chatBox.querySelector(".flex-1.overflow-y-auto");
   const inputField = chatBox.querySelector("input[type='text']");
   const sendBtn = chatBox.querySelector("button i.fas.fa-paper-plane").parentElement;
 
-  let currentConversationId = null;
+  const newMsgBtn = document.querySelector("button.mt-6");
+  const userSearch = document.getElementById("userSearch");
+  const searchResults = document.getElementById("searchResults");
 
-  // 🔹 Helper: fetch with auth
+  // -----------------------------
+  // Token refresh
+  // -----------------------------
+  async function refreshAccessToken() {
+    if (!refreshToken) return false;
+    try {
+      const response = await fetch(`${BASE_URL}/token/refresh/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ refresh: refreshToken })
+      });
+      if (!response.ok) throw new Error("Failed to refresh token");
+      const data = await response.json();
+      accessToken = data.access;
+      localStorage.setItem("authToken", accessToken);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  // -----------------------------
+  // Fetch with auth + auto refresh
+  // -----------------------------
   async function fetchWithAuth(url, options = {}) {
     options.headers = {
       ...options.headers,
-      "Authorization": `Bearer ${token}`,
+      "Authorization": `Bearer ${accessToken}`,
       "Content-Type": "application/json",
     };
-    const response = await fetch(url, options);
-    if (!response.ok) throw new Error(await response.text());
-    return response.json();
-  }
-
-  // 🔹 Render conversations
-  async function loadConversations() {
-    try {
-      const conversations = await fetchWithAuth(`${BASE_URL}/call/conversations/`);
-      conversationsList.innerHTML = "";
-
-      conversations.forEach(conv => {
-        const participant = conv.participants.find(p => p.id !== conv.owner); // other person
-        const name = participant?.username || "Unknown User";
-        const initials = name.slice(0,2).toUpperCase();
-
-        const div = document.createElement("div");
-        div.className = "conversation-item p-4 rounded-xl cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-all border-l-4 border-transparent";
-        div.innerHTML = `
-          <div class="flex items-center space-x-4">
-            <div class="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center text-white font-semibold shadow-lg">${initials}</div>
-            <div class="flex-1 min-w-0">
-              <h4 class="font-semibold truncate text-gray-900 dark:text-white">${name}</h4>
-              <p class="text-sm text-secondary truncate">${conv.last_message?.content || "No messages yet"}</p>
-            </div>
-          </div>
-        `;
-        div.addEventListener("click", () => openConversation(conv.id, name, initials));
-        conversationsList.appendChild(div);
-      });
-    } catch (err) {
-      console.error("❌ Failed to load conversations:", err);
+    let res = await fetch(url, options);
+    if (res.status === 401) {
+      if (await refreshAccessToken()) {
+        options.headers["Authorization"] = `Bearer ${accessToken}`;
+        res = await fetch(url, options);
+      } else {
+        throw new Error("Unauthorized");
+      }
     }
+    if (!res.ok) throw new Error(await res.text());
+    return res.json();
   }
 
-  // 🔹 Open conversation & load messages
-  async function openConversation(conversationId, name, initials) {
-    currentConversationId = conversationId;
+// -----------------------------
+// Conversations
+// -----------------------------
 
-    // hide empty state, show chat
-    chatEmpty.classList.add("hidden");
-    chatBox.classList.remove("hidden");
+// Load all conversations
+async function loadConversations() {
+  try {
+    const conversations = await fetchWithAuth(`${BASE_URL}/call/conversations/`);
+    conversationsList.innerHTML = "";
 
-    // Update header
-    chatBox.querySelector("h4").textContent = name;
-    chatBox.querySelector(".w-12.h-12").textContent = initials;
+    const currentUserId = localStorage.getItem("userId");
 
-    try {
-      const messages = await fetchWithAuth(`${BASE_URL}/call/conversations/${conversationId}/messages/`);
-      messagesContainer.innerHTML = "";
+    conversations.forEach(conv => {
+      const otherUser = conv.participants.find(p => p.id !== currentUserId);
 
-      messages.forEach(msg => {
-        const isMine = msg.sender.id === parseInt(localStorage.getItem("userId")); 
-        const div = document.createElement("div");
-        div.className = `flex ${isMine ? "justify-end" : "justify-start"}`;
-        div.innerHTML = `
-          <div class="${isMine 
-              ? "message-out max-w-xs lg:max-w-md p-4 rounded-2xl rounded-tr-none bg-primary-600 text-white shadow-sm"
-              : "message-in max-w-xs lg:max-w-md p-4 rounded-2xl rounded-tl-none bg-gray-100 dark:bg-gray-800 shadow-sm"}">
-            <p>${msg.content}</p>
-            <span class="text-xs opacity-70 block mt-2 text-right">${new Date(msg.created_at).toLocaleTimeString()}</span>
-          </div>
-        `;
-        messagesContainer.appendChild(div);
-      });
+      const name = otherUser?.username || "Unknown User";
+      const initials = (otherUser?.username || "U").slice(0, 2).toUpperCase();
+      const avatarUrl = otherUser?.avatar_url || "/default-avatar.png";
 
-      messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    } catch (err) {
-      console.error("❌ Failed to load messages:", err);
-    }
-  }
-
-  // 🔹 Send message
-  async function sendMessage() {
-    if (!currentConversationId) return;
-    const content = inputField.value.trim();
-    if (!content) return;
-
-    try {
-      const newMsg = await fetchWithAuth(`${BASE_URL}/call/conversations/${currentConversationId}/send/`, {
-        method: "POST",
-        body: JSON.stringify({ content }),
-      });
-
-      // append to UI
       const div = document.createElement("div");
-      div.className = "flex justify-end";
+      div.className =
+        "conversation-item p-4 rounded-xl cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-all border-l-4 border-transparent";
       div.innerHTML = `
-        <div class="message-out max-w-xs lg:max-w-md p-4 rounded-2xl rounded-tr-none bg-primary-600 text-white shadow-sm">
-          <p>${newMsg.content}</p>
-          <span class="text-xs opacity-90 block mt-2 text-right">${new Date(newMsg.created_at).toLocaleTimeString()}</span>
+        <div class="flex items-center space-x-4">
+          <div class="w-12 h-12 rounded-full overflow-hidden flex items-center justify-center text-white font-semibold">
+            <img src="${avatarUrl}" class="w-full h-full object-cover rounded-full" onerror="this.src='/default-avatar.png'" />
+          </div>
+          <div class="flex-1 min-w-0">
+            <h4 class="font-semibold truncate text-gray-900 dark:text-white">${name}</h4>
+            <p class="text-sm text-secondary truncate">${conv.last_message?.content || "No messages yet"}</p>
+          </div>
+        </div>
+      `;
+
+      div.addEventListener("click", () => openConversation(conv.id, name, initials));
+      conversationsList.appendChild(div);
+    });
+  } catch (err) {
+    console.error("❌ Failed to load conversations:", err);
+  }
+}
+
+
+// ✅ Start a new conversation with a user
+async function startConversation(userId) {
+  console.log("🚀 Starting conversation with userId:", userId);
+
+  if (!userId || isNaN(Number(userId))) {
+    console.error("❌ Valid user ID is required");
+    return;
+  }
+
+  // ✅ Must use `participant_ids` (plural)
+  const payload = {
+    name: "",            // optional
+    is_group: false,     // direct chat
+    participant_ids: [Number(userId)]
+  };
+
+  console.log("📤 Payload prepared for POST:", payload);
+
+  try {
+    const conv = await fetchWithAuth(`${BASE_URL}/call/conversations/`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    console.log("✅ Conversation successfully started:", conv);
+    await loadConversations();
+
+    const currentUserId = Number(localStorage.getItem("userId"));
+    const otherUser = conv.participants.find(p => p.id !== currentUserId);
+
+    const name = otherUser?.username || "Unknown User";
+    const initials = (otherUser?.username || "U").slice(0, 2).toUpperCase();
+
+    openConversation(conv.id, name, initials);
+  } catch (err) {
+    console.error("❌ Failed to start conversation:", err);
+  }
+}
+
+
+
+
+// Open and load a conversation
+async function openConversation(id, name, initials) {
+  currentConversationId = id;
+  chatEmpty.classList.add("hidden");
+  chatBox.classList.remove("hidden");
+  chatBox.querySelector("h4").textContent = name;
+  chatBox.querySelector(".w-12.h-12").textContent = initials;
+
+  try {
+    const messages = await fetchWithAuth(`${BASE_URL}/call/conversations/${id}/messages/`);
+    messagesContainer.innerHTML = "";
+
+    const currentUserId = localStorage.getItem("userId");
+    messages.forEach(msg => {
+      const isMine = msg.sender.id === currentUserId;
+      const div = document.createElement("div");
+      div.className = `flex ${isMine ? "justify-end" : "justify-start"}`;
+      div.innerHTML = `
+        <div class="${
+          isMine
+            ? "message-out max-w-xs lg:max-w-md p-4 rounded-2xl rounded-tr-none bg-primary-600 text-white"
+            : "message-in max-w-xs lg:max-w-md p-4 rounded-2xl rounded-tl-none bg-gray-100 dark:bg-gray-800"
+        }">
+          <p>${msg.content}</p>
+          <span class="text-xs opacity-70 block mt-2 text-right">${new Date(
+            msg.created_at
+          ).toLocaleTimeString()}</span>
         </div>
       `;
       messagesContainer.appendChild(div);
-      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    });
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  } catch (err) {
+    console.error("❌ Failed to load messages:", err);
+  }
+}
 
-      inputField.value = "";
+// Send a new message
+async function sendMessage() {
+  if (!currentConversationId) return;
+  const content = inputField.value.trim();
+  if (!content) return;
+
+  try {
+    const newMsg = await fetchWithAuth(
+      `${BASE_URL}/call/conversations/${currentConversationId}/send/`,
+      { method: "POST", body: JSON.stringify({ content }) }
+    );
+
+    const div = document.createElement("div");
+    div.className = "flex justify-end";
+    div.innerHTML = `
+      <div class="message-out max-w-xs lg:max-w-md p-4 rounded-2xl rounded-tr-none bg-primary-600 text-white">
+        <p>${newMsg.content}</p>
+        <span class="text-xs opacity-90 block mt-2 text-right">${new Date(
+          newMsg.created_at
+        ).toLocaleTimeString()}</span>
+      </div>
+    `;
+    messagesContainer.appendChild(div);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    inputField.value = "";
+  } catch (err) {
+    console.error("❌ Failed to send message:", err);
+  }
+}
+
+// Event listeners
+sendBtn.addEventListener("click", sendMessage);
+inputField.addEventListener("keypress", e => e.key === "Enter" && sendMessage());
+
+
+
+
+  // -----------------------------
+  // User search + new message
+  // -----------------------------
+  let searchTimeout;
+  if (userSearch) {
+    userSearch.addEventListener("input", () => {
+      clearTimeout(searchTimeout);
+      const query = userSearch.value.trim();
+      if (!query) {
+        searchResults.classList.add("hidden");
+        return;
+      }
+      searchTimeout = setTimeout(() => searchUsers(query), 400);
+    });
+  }
+
+  async function searchUsers(query) {
+    try {
+      const users = await fetchWithAuth(`${BASE_URL}/users/?search=${encodeURIComponent(query)}`);
+      searchResults.innerHTML = "";
+      if (!users.length) {
+        searchResults.innerHTML = `<p class="p-3 text-sm text-secondary">No users found</p>`;
+      } else {
+        users.forEach(user => {
+          const div = document.createElement("div");
+          div.className = "flex items-center p-3 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50";
+          div.innerHTML = `
+            <img src="${user.profile_image || '/default-avatar.png'}" class="w-10 h-10 rounded-full mr-3"/>
+            <span class="font-medium">${user.username}</span>
+          `;
+          div.addEventListener("click", () => startConversation(user));
+          searchResults.appendChild(div);
+        });
+      }
+      searchResults.classList.remove("hidden");
     } catch (err) {
-      console.error("❌ Failed to send message:", err);
+      console.error("❌ User search failed:", err);
     }
   }
 
-  sendBtn.addEventListener("click", sendMessage);
-  inputField.addEventListener("keypress", (e) => {
-    if (e.key === "Enter") sendMessage();
-  });
+  async function startConversation(user) {
+    searchResults.classList.add("hidden");
+    userSearch.value = "";
+    try {
+      const conv = await fetchWithAuth(`${BASE_URL}/call/conversations/`, {
+        method: "POST",
+        body: JSON.stringify({ participants: [user.id] }),
+      });
+      console.log("✅ Conversation created:", conv);
+      loadConversations();
+    } catch (err) {
+      console.error("❌ Failed to start conversation:", err);
+    }
+  }
 
+  if (newMsgBtn) {
+    newMsgBtn.addEventListener("click", () => {
+      userSearch.focus();
+    });
+  }
+
+  // -----------------------------
   // Initial load
+  // -----------------------------
   loadConversations();
 });
 </script>
-
 
 </body>
 </html>

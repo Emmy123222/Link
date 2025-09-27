@@ -254,6 +254,7 @@
   </div>
 </div>
 
+
 <script>
   // DOM Elements
   const myVideoPreview = document.getElementById("my-video-preview");
@@ -267,71 +268,97 @@
 
   // --- Token + Meeting Setup ---
   const meetingId = new URLSearchParams(window.location.search).get("meeting");
-  const protocol = window.location.protocol === "https:" ? "wss://" : "ws://";
+  const baseURL = "https://vuno-1.onrender.com";  // ✅ backend base URL
+
+  // 🔑 Use the same storage keys as index.html
+  let accessToken = localStorage.getItem("authToken");
+  let refreshToken = localStorage.getItem("refreshToken");
 
   // 🔹 Helper: refresh token if expired
   async function refreshAccessToken() {
-    const refresh = localStorage.getItem("refresh");
-    if (!refresh) return null;
+    if (!refreshToken) {
+      console.warn("⚠️ No refresh token found");
+      return null;
+    }
 
-    const resp = await fetch("http://127.0.0.1:8000/token/refresh/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ refresh }),
-    });
+    try {
+      const resp = await fetch(`${baseURL}/token/refresh/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ refresh: refreshToken }),
+      });
 
-    if (!resp.ok) return null;
-    const data = await resp.json();
-    localStorage.setItem("access", data.access);
-    return data.access;
+      if (!resp.ok) {
+        console.error("❌ Failed to refresh access token");
+        return null;
+      }
+
+      const data = await resp.json();
+
+      // Save new access token
+      localStorage.setItem("authToken", data.access);
+      accessToken = data.access;
+      return data.access;
+    } catch (err) {
+      console.error("❌ Refresh token error:", err);
+      return null;
+    }
   }
 
   async function getAccessToken() {
-    let accessToken = localStorage.getItem("access");
-    if (!accessToken) {
-      accessToken = await refreshAccessToken();
+    let token = localStorage.getItem("authToken");
+
+    console.log("🔑 Access token from storage:", token);
+
+    if (!token) {
+      console.warn("⚠️ No access token, trying refresh...");
+      token = await refreshAccessToken();
     }
-    return accessToken;
+
+    if (token) {
+      localStorage.setItem("authToken", token);
+    }
+
+    accessToken = token; // update global
+    return token;
   }
 
-  // --- WebSocket Connection ---
+ // --- WebSocket Connection ---
 async function connectWebSocket() {
-  const accessToken = await getAccessToken();
+  let token = localStorage.getItem("authToken");
 
-  if (!accessToken) {
-    console.warn("⚠️ No access token available, cannot connect to WS");
+  // Refresh if no token or expired
+  if (!token) {
+    console.warn("⚠️ No access token, trying refresh...");
+    token = await refreshAccessToken();
+  }
+
+  if (!token) {
+    console.error("❌ No valid access token, cannot connect to WS");
     return null;
   }
 
+  // ✅ Check if expired before using
+  const payload = JSON.parse(atob(token.split(".")[1]));
+  const now = Math.floor(Date.now() / 1000);
+  if (payload.exp < now) {
+    console.warn("⚠️ Access token expired, refreshing...");
+    token = await refreshAccessToken();
+    if (!token) return null;
+  }
+
+  console.log("🔑 Using token for WS:", token);
+
   const socket = new WebSocket(
-    `${protocol}127.0.0.1:8000/ws/call/${meetingId}/?token=${accessToken}`
+    `wss://vuno-1.onrender.com/ws/call/${meetingId}/?token=${token}`
   );
 
   socket.onopen = () => console.log("✅ WebSocket connected");
   socket.onclose = () => console.log("❌ WebSocket closed");
   socket.onerror = (err) => console.error("WS Error:", err);
 
+  ws = socket; // ✅ assign to global
   return socket;
-}
-
-async function startMyVideo() {
-  try {
-    localStream = await navigator.mediaDevices.getUserMedia({
-      video: true,
-      audio: true,
-    });
-    myVideoPreview.srcObject = localStream;
-
-    ws = await connectWebSocket();
-    if (!ws) {
-      alert("Could not connect to signaling server. Please login first.");
-      return;
-    }
-
-    // only now attach ws.onmessage + peer connection logic
-  } catch (err) {
-    console.error("❌ Failed to access media devices:", err);
-  }
 }
 
 
@@ -346,11 +373,19 @@ async function startMyVideo() {
       myVideoPreview.srcObject = localStream;
 
       callStatusText.textContent = "Connected";
-      document.querySelector(".call-status .w-3").classList.remove("bg-red-500");
-      document.querySelector(".call-status .w-3").classList.add("bg-green-500");
+      const statusDot = document.querySelector(".call-status div.rounded-full");
+      if (statusDot) {
+        statusDot.classList.remove("bg-red-500");
+        statusDot.classList.add("bg-green-500");
+      }
 
       // Connect WebSocket
-      await connectWebSocket();
+      const socket = await connectWebSocket();
+      if (!socket) {
+        alert("❌ Please login first to get an access token.");
+        return;
+      }
+      ws = socket;
 
       // Create PeerConnection
       pc = new RTCPeerConnection();
@@ -383,13 +418,15 @@ async function startMyVideo() {
         participantGrid.appendChild(remoteContainer);
       };
 
-      // When WS is ready, create and send offer
-      ws.onopen = async () => {
-        console.log("📡 Sending offer");
-        const offer = await pc.createOffer();
-        await pc.setLocalDescription(offer);
-        ws.send(JSON.stringify({ type: "offer", offer: offer }));
-      };
+      // ✅ Send offer once WS is open
+      if (ws) {
+        ws.onopen = async () => {
+          console.log("📡 Sending offer");
+          const offer = await pc.createOffer();
+          await pc.setLocalDescription(offer);
+          ws.send(JSON.stringify({ type: "offer", offer }));
+        };
+      }
     } catch (err) {
       console.error("❌ Failed to access media devices:", err);
       alert("Could not access camera/microphone.");
@@ -399,6 +436,9 @@ async function startMyVideo() {
   // Start video on load
   document.addEventListener("DOMContentLoaded", startMyVideo);
 </script>
+
+
+
 
 
 
@@ -595,7 +635,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let participants = []; // store real users
 
-  // Create floating participant panel
+  // Floating participant panel
   const panel = document.createElement("div");
   panel.id = "participants-panel";
   panel.className =
@@ -648,17 +688,27 @@ document.addEventListener("DOMContentLoaded", () => {
     updateParticipantsUI();
   }
 
-  // ✅ Real-time signaling connection (replace with your server)
-  const roomId = "demo-room-123"; // get dynamically in real app
-  const username = "You"; // replace with logged-in user's name
-  const protocol = window.location.protocol === "https:" ? "wss://" : "ws://";
-const meetingId = new URLSearchParams(window.location.search).get("meeting"); 
-const socket = new WebSocket(`${protocol}${window.location.host}/ws/call/${meetingId}/`);
+  // ✅ Signaling connection with token
+  const meetingId = new URLSearchParams(window.location.search).get("meeting"); 
+  const token = localStorage.getItem("authToken");
+  if (!token) {
+    console.warn("⚠️ No access token available, cannot connect to WS");
+    return;
+  }
+
+  // Always connect to your backend
+  const socket = new WebSocket(
+    `wss://vuno-1.onrender.com/ws/call/${meetingId}/?token=${token}`
+  );
 
   socket.onopen = () => {
     console.log("✅ Connected to signaling server");
     // announce yourself
-    socket.send(JSON.stringify({ type: "join", id: Date.now().toString(), name: username }));
+    socket.send(JSON.stringify({
+      type: "join",
+      id: Date.now().toString(),
+      name: "You" // replace with actual username if available
+    }));
   };
 
   socket.onmessage = (event) => {
@@ -669,7 +719,6 @@ const socket = new WebSocket(`${protocol}${window.location.host}/ws/call/${meeti
     } else if (data.type === "leave") {
       removeParticipant(data.id);
     } else if (data.type === "current-users") {
-      // server sends full list when you connect
       participants = data.users;
       updateParticipantsUI();
     }
@@ -681,11 +730,15 @@ const socket = new WebSocket(`${protocol}${window.location.host}/ws/call/${meeti
 
   // 👉 Notify server when leaving
   window.addEventListener("beforeunload", () => {
-    socket.send(JSON.stringify({ type: "leave", id: Date.now().toString() }));
+    if (socket.readyState === WebSocket.OPEN) {
+      socket.send(JSON.stringify({ type: "leave", id: Date.now().toString() }));
+    }
     socket.close();
   });
 });
 </script>
+
+
 
 </body>
 </html>
